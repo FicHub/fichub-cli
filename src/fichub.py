@@ -26,4 +26,4 @@ def get_fic_data(url, format_type):
     download_url = "https://fichub.net"+cache_url
     data = requests.get(download_url, allow_redirects=True).content
 
-    return fic_name + file_format, data
+    return fic_name, file_format, data

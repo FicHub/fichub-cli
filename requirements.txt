@@ -4,6 +4,7 @@ chardet==4.0.0
 click==7.1.2
 flake8==3.9.1
 idna==2.10
+loguru==0.5.3
 mccabe==0.6.1
 pip==21.0.1
 pycodestyle==2.7.0

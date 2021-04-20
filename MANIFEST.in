@@ -1,0 +1,6 @@
+include pyproject.toml
+include *.md
+include LICENSE.txt
+include setup.py
+global-exclude *.pyc
+recursive-include src *.py
