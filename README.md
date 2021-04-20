@@ -19,7 +19,7 @@ Download the executables from [Releases](https://github.com/FicHub/fichub-cli/re
 ### Linux
 
 ```
-\.fichub_cli --help
+./fichub_cli --help
 ```
 
 # Usage
