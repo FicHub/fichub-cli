@@ -36,7 +36,7 @@ def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_si
         get_fic_with_url(url, format_type, out_dir, debug)
 
     if version:
-        click.echo("Version: 0.2.1")
+        click.echo("Version: 0.2.2")
 
     if supported_sites:
         click.echo("""
