@@ -1,5 +1,5 @@
 import click
-from loguru import logger
+import sys
 
 from .util import get_fic_with_infile, get_fic_with_list, \
     get_fic_with_url, get_format_type
@@ -22,18 +22,21 @@ def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_si
 
     To report issues for the CLI, open an issue at https://github.com/FicHub/fichub-cli/issues
     """
-    if debug:
-        logger.debug("Download Started")
 
     format_type = get_format_type(format)
     if infile:
-        get_fic_with_infile(infile, format_type, out_dir, debug)
+        exit_status = get_fic_with_infile(
+            infile, format_type, out_dir, debug)
 
     elif list_url:
-        get_fic_with_list(list_url, format_type, out_dir, debug)
+        exit_status = get_fic_with_list(
+            list_url, format_type, out_dir, debug)
 
     elif url:
-        get_fic_with_url(url, format_type, out_dir, debug)
+        exit_status = get_fic_with_url(
+            url, format_type, out_dir, debug)
+
+    sys.exit(exit_status)
 
     if version:
         click.echo("Version: 0.2.2")
