@@ -4,22 +4,10 @@ A CLI for the fichub.net API<br>
 
 # Installation
 
-## Pip method
-
 Install the package using pip
 
 ```
 pip install -U fichub_cli
-```
-
-## Executable method
-
-Download the executables from [Releases](https://github.com/FicHub/fichub-cli/releases) and run them.
-
-### Linux
-
-```
-./fichub_cli --help
 ```
 
 # Usage
