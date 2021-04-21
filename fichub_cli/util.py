@@ -30,7 +30,8 @@ def get_fic_with_infile(infile=None, format_type=0, out_dir="", debug=False):
         urls = f.read().splitlines()
 
     count = 1
-    with click.progressbar(urls, label=f"Downloading {len(urls)} files", length=len(urls), show_eta=False) as bar:
+    with click.progressbar(urls, label=f"Downloading {len(urls)} files",
+                           length=len(urls), show_eta=False, show_pos=True) as bar:
         for url in bar:
             count += 1
 
@@ -57,7 +58,8 @@ def get_fic_with_list(list_url=None, format_type=0, out_dir="", debug=False):
     urls = list_url.split(",")
 
     count = 1
-    with click.progressbar(urls, label=f"Downloading {len(urls)} files",  length=len(urls), show_eta=False) as bar:
+    with click.progressbar(urls, label=f"Downloading {len(urls)} files",
+                           length=len(urls), show_eta=False, show_pos=True) as bar:
         for url in bar:
             count += 1
 
@@ -81,7 +83,8 @@ def get_fic_with_list(list_url=None, format_type=0, out_dir="", debug=False):
 
 def get_fic_with_url(url=None, format_type=0, out_dir="", debug=False):
 
-    with click.progressbar(label="Downloaded 1 file",  length=1, show_eta=False) as bar:
+    with click.progressbar(label="Downloaded 1 file",  length=1,
+                           show_eta=False, show_pos=True) as bar:
 
         if check_url(url, debug):
             try:
@@ -93,7 +96,7 @@ def get_fic_with_url(url=None, format_type=0, out_dir="", debug=False):
 
                 with open(out_dir+fic_name+file_format, "wb") as f:
                     f.write(data)
-                    bar.update(2)
+                    bar.update(1)
 
             except TypeError:
                 pass  # skip the unsupported url
