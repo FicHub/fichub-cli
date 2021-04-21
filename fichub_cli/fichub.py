@@ -3,11 +3,15 @@ import click
 from loguru import logger
 
 
-def get_fic_data(url, format_type, debug):
+def get_fic_data(url, format_type, debug, pbar, exit_status=0):
+
+    headers = {
+        'User-Agent': 'fichub_cli/0.2.2',
+    }
 
     response = requests.get(
         "https://fichub.net/api/v0/epub", params={'q': url},
-        allow_redirects=True
+        allow_redirects=True, headers=headers
     ).json()
 
     try:
@@ -32,12 +36,15 @@ def get_fic_data(url, format_type, debug):
         download_url = "https://fichub.net"+cache_url
         data = requests.get(download_url, allow_redirects=True).content
 
-        return fic_name, file_format, data
+        return fic_name, file_format, data, exit_status
 
     except KeyError:
+        exit_status = 1
         if debug:
             logger.error(
-                f"\nSkipping unsupported URL: {url}.\nTo see the supported site list, fichub_cli -s")
+                f"\n\nSkipping unsupported URL: {url}\nTo see the supported site list, fichub_cli -s")
         else:
-            click.echo(
-                f"\nSkipping unsupported URL: {url}.\nTo see the supported site list, fichub_cli -s")
+            click.echo(click.style(
+                f"\n\nSkipping unsupported URL: {url}", fg='red') + "\nTo see the supported site list, fichub_cli -s")
+
+        return None, None, None, exit_status

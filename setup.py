@@ -18,7 +18,8 @@ setup(
     install_requires=[
         'click',
         'requests',
-        'loguru'
+        'loguru',
+        'tqdm'
     ],
     entry_points='''
         [console_scripts]
