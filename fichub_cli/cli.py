@@ -22,8 +22,9 @@ def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_si
 
     To report issues for the CLI, open an issue at https://github.com/FicHub/fichub-cli/issues
     """
-
+    exit_status = 0
     format_type = get_format_type(format)
+
     if infile:
         exit_status = get_fic_with_infile(
             infile, format_type, out_dir, debug)
@@ -35,8 +36,6 @@ def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_si
     elif url:
         exit_status = get_fic_with_url(
             url, format_type, out_dir, debug)
-
-    sys.exit(exit_status)
 
     if version:
         click.echo("Version: 0.2.3")
@@ -65,3 +64,5 @@ def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_si
 
     To report issues upstream for these sites, visit https://fichub.net/#contact     
 """)
+
+    sys.exit(exit_status)
