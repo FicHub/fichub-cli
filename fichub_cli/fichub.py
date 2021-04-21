@@ -4,8 +4,11 @@ from loguru import logger
 
 
 def get_fic_data(url, format_type, debug):
+
     response = requests.get(
-        "https://fichub.net/api/v0/epub?q="+url, allow_redirects=True).json()
+        "https://fichub.net/api/v0/epub", params={'q': url},
+        allow_redirects=True
+    ).json()
 
     try:
         if format_type == 0:

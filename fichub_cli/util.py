@@ -46,7 +46,7 @@ def get_fic_with_infile(infile=None, format_type=0, out_dir="", debug=False):
                     with open(out_dir+fic_name+file_format, "wb") as f:
                         f.write(data)
                 except TypeError:
-                    pass
+                    pass  # skip the unsupported url
 
             else:  # skip the unsupported url
                 pass
@@ -73,7 +73,8 @@ def get_fic_with_list(list_url=None, format_type=0, out_dir="", debug=False):
                     with open(out_dir+fic_name+file_format, "wb") as f:
                         f.write(data)
                 except TypeError:
-                    pass
+                    pass  # skip the unsupported url
+
             else:  # skip the unsupported url
                 pass
 
@@ -95,7 +96,7 @@ def get_fic_with_url(url=None, format_type=0, out_dir="", debug=False):
                     bar.update(2)
 
             except TypeError:
-                pass
+                pass  # skip the unsupported url
 
         else:  # skip the unsupported url
             pass
