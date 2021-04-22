@@ -3,11 +3,15 @@ import click
 from loguru import logger
 
 
-def get_fic_metadata(url, format_type, debug, pbar, exit_status=0):
+def get_fic_metadata(url, format_type, debug,
+                     pbar, exit_status=0, automated=False):
 
     headers = {
         'User-Agent': 'fichub_cli/0.3.0',
     }
+
+    if automated:  # for internal testing
+        headers['automated'] = 'true'
 
     response = requests.get(
         "https://fichub.net/api/v0/epub", params={'q': url},
@@ -49,11 +53,14 @@ def get_fic_metadata(url, format_type, debug, pbar, exit_status=0):
         return None, None, None, exit_status
 
 
-def get_fic_data(download_url):
+def get_fic_data(download_url, automated=False):
 
     headers = {
         'User-Agent': 'fichub_cli/0.3.0',
     }
+
+    if automated:  # for internal testing
+        headers['automated'] = 'true'
 
     data = requests.get(
         download_url, allow_redirects=True, headers=headers).content

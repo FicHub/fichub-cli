@@ -1,6 +1,5 @@
 import click
 import sys
-from loguru import logger
 
 from .util import get_fic_with_infile, get_fic_with_list, \
     get_fic_with_url, get_format_type
@@ -15,8 +14,9 @@ from .util import get_fic_with_infile, get_fic_with_list, \
 @click.option('--force', default=False, help=' Force overwrite of an existing file', is_flag=True)
 @click.option('-s', '--supported_sites', default=False, help='List of supported sites', is_flag=True)
 @click.option('-d', '--debug', default=False, help='Debug mode', is_flag=True)
+@click.option('-a', '--automated', default=False, help='For internal testing only', is_flag=True, hidden=True)
 @click.option('-v', '--version', default=False, help='Display version & quit.', is_flag=True)
-def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_sites, force):
+def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_sites, force, automated):
     """
     A CLI for the fichub.net API
 
@@ -29,15 +29,15 @@ def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_si
 
     if infile:
         exit_status = get_fic_with_infile(
-            infile, format_type, out_dir, debug, force)
+            infile, format_type, out_dir, debug, force, automated)
 
     elif list_url:
         exit_status = get_fic_with_list(
-            list_url, format_type, out_dir, debug, force)
+            list_url, format_type, out_dir, debug, force, automated)
 
     elif url:
         exit_status = get_fic_with_url(
-            url, format_type, out_dir, debug, force)
+            url, format_type, out_dir, debug, force, automated)
 
     if version:
         click.echo("Version: 0.3.0")

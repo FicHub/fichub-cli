@@ -26,7 +26,8 @@ def get_format_type(format):
     return format_type
 
 
-def get_fic_with_infile(infile=None, format_type=0, out_dir="", debug=False, force=False):
+def get_fic_with_infile(infile=None, format_type=0, out_dir="",
+                        debug=False, force=False, automated=False):
 
     exit_status = 0
     with open(infile, "r") as f:
@@ -44,7 +45,7 @@ def get_fic_with_infile(infile=None, format_type=0, out_dir="", debug=False, for
             if supported_url:
                 try:
                     fic_name, file_format, download_url, exit_status = get_fic_metadata(
-                        url, format_type, debug, pbar, exit_status)
+                        url, format_type, debug, pbar, exit_status, automated)
 
                     if fic_name is None:
                         exit_status = 1
@@ -57,7 +58,7 @@ def get_fic_with_infile(infile=None, format_type=0, out_dir="", debug=False, for
 
                     exit_status = save_data(out_dir, fic_name, file_format,
                                             download_url, debug, force,
-                                            exit_status)
+                                            exit_status, automated)
 
                     pbar.update(1)
 
@@ -72,7 +73,8 @@ def get_fic_with_infile(infile=None, format_type=0, out_dir="", debug=False, for
     return exit_status
 
 
-def get_fic_with_list(list_url=None, format_type=0, out_dir="", debug=False, force=False):
+def get_fic_with_list(list_url=None, format_type=0, out_dir="",
+                      debug=False, force=False, automated=False):
 
     exit_status = 0
     urls = list_url.split(",")
@@ -89,7 +91,7 @@ def get_fic_with_list(list_url=None, format_type=0, out_dir="", debug=False, for
             if supported_url:
                 try:
                     fic_name, file_format, download_url, exit_status = get_fic_metadata(
-                        url, format_type, debug, pbar, exit_status)
+                        url, format_type, debug, pbar, exit_status, automated)
 
                     if fic_name is None:
                         exit_status = 1
@@ -102,7 +104,7 @@ def get_fic_with_list(list_url=None, format_type=0, out_dir="", debug=False, for
 
                     exit_status = save_data(out_dir, fic_name, file_format,
                                             download_url, debug, force,
-                                            exit_status)
+                                            exit_status, automated)
 
                     pbar.update(1)
 
@@ -117,7 +119,8 @@ def get_fic_with_list(list_url=None, format_type=0, out_dir="", debug=False, for
     return exit_status
 
 
-def get_fic_with_url(url, format_type=0, out_dir="", debug=False, force=False):
+def get_fic_with_url(url, format_type=0, out_dir="",
+                     debug=False, force=False, automated=False):
 
     exit_status = 0
 
@@ -131,7 +134,7 @@ def get_fic_with_url(url, format_type=0, out_dir="", debug=False, force=False):
         if supported_url:
             try:
                 fic_name, file_format, download_url, exit_status = get_fic_metadata(
-                    url, format_type, debug, pbar, exit_status)
+                    url, format_type, debug, pbar, exit_status, automated)
 
                 if fic_name is None:
                     exit_status = 1
@@ -145,7 +148,7 @@ def get_fic_with_url(url, format_type=0, out_dir="", debug=False, force=False):
 
                     exit_status = save_data(out_dir, fic_name, file_format,
                                             download_url, debug, force,
-                                            exit_status)
+                                            exit_status, automated)
 
                 pbar.update(1)
 
@@ -188,7 +191,9 @@ def check_url(pbar, url, debug=False, exit_status=0):
         return True, exit_status
 
 
-def save_data(out_dir, fic_name, file_format, download_url, debug, force, exit_status):
+def save_data(out_dir, fic_name, file_format, download_url,
+              debug, force, exit_status, automated):
+
     if os.path.exists(out_dir+fic_name+file_format) and force is False:
         exit_status = 1
         if debug:
@@ -202,7 +207,7 @@ def save_data(out_dir, fic_name, file_format, download_url, debug, force, exit_s
             logger.warning(
                 "--force flag was passed. Files will be overwritten.")
 
-        data = get_fic_data(download_url)
+        data = get_fic_data(download_url, automated)
         with open(out_dir+fic_name+file_format, "wb") as f:
             f.write(data)
 
