@@ -4,7 +4,7 @@ import os
 from tqdm import tqdm
 
 from loguru import logger
-from fichub import get_fic_metadata, get_fic_data
+from .fichub import get_fic_metadata, get_fic_data
 
 
 def get_format_type(format):
@@ -33,15 +33,7 @@ def get_fic_with_infile(infile=None, format_type=0, out_dir="", debug=False, for
         urls = f.read().splitlines()
 
     if debug:
-        logger.debug("Download Started")
-        if force:
-            logger.warning(
-                "--force flag was passed. Files will be overwritten.")
-    else:
-        click.secho("Download Started", fg='green')
-        if force:
-            click.secho(
-                "WARNING: --force flag was passed. Files will be overwritten.", fg='yellow')
+        logger.info("Inside get_fic_with_infile() function")
 
     with tqdm(range(len(urls)), ascii=True) as pbar:
         for url in urls:
@@ -57,27 +49,14 @@ def get_fic_with_infile(infile=None, format_type=0, out_dir="", debug=False, for
                         exit_status = 1
 
                     if debug:
-                        logger.debug(f"\n\nDownloading: {fic_name}")
+                        logger.info(f"\n\nDownloading: {fic_name}")
                     else:
                         click.secho(
                             f"\n\nDownloading: {fic_name}", fg='green')
 
-                    if os.path.exists(out_dir+fic_name+file_format) and force is False:
-
-                        if debug:
-                            logger.warning(
-                                f"\n{out_dir+fic_name+file_format} already exits. Skipping download. Use --force option to overwrite.")
-                        else:
-                            click.secho(
-                                f"\n{out_dir+fic_name+file_format} already exits. Skipping download. Use --force option to overwrite.", fg='yellow')
-                    else:
-                        if force and debug:
-                            logger.warning(
-                                "--force flag was passed. Files will be overwritten.")
-
-                        data = get_fic_data(download_url)
-                        with open(out_dir+fic_name+file_format, "wb") as f:
-                            f.write(data)
+                    exit_status = save_data(out_dir, fic_name, file_format,
+                                            download_url, debug, force,
+                                            exit_status)
 
                     pbar.update(1)
 
@@ -98,15 +77,7 @@ def get_fic_with_list(list_url=None, format_type=0, out_dir="", debug=False, for
     urls = list_url.split(",")
 
     if debug:
-        logger.debug("Download Started")
-        if force:
-            logger.warning(
-                "--force flag was passed. Files will be overwritten.")
-    else:
-        click.secho("Download Started", fg='green')
-        if force:
-            click.secho(
-                "WARNING: --force flag was passed. Files will be overwritten.", fg='yellow')
+        logger.info("Inside get_fic_with_list() function")
 
     with tqdm(range(len(urls)), ascii=True) as pbar:
         for url in urls:
@@ -122,27 +93,14 @@ def get_fic_with_list(list_url=None, format_type=0, out_dir="", debug=False, for
                         exit_status = 1
 
                     if debug:
-                        logger.debug(f"\n\nDownloading: {fic_name}")
+                        logger.info(f"\n\nDownloading: {fic_name}")
                     else:
                         click.secho(
                             f"\n\nDownloading: {fic_name}", fg='green')
 
-                    if os.path.exists(out_dir+fic_name+file_format) and force is False:
-
-                        if debug:
-                            logger.warning(
-                                f"\n{out_dir+fic_name+file_format} already exits. Skipping download. Use --force option to overwrite.")
-                        else:
-                            click.secho(
-                                f"\n{out_dir+fic_name+file_format} already exits. Skipping download. Use --force option to overwrite.", fg='yellow')
-                    else:
-                        if force and debug:
-                            logger.warning(
-                                "--force flag was passed. Files will be overwritten.")
-
-                        data = get_fic_data(download_url)
-                        with open(out_dir+fic_name+file_format, "wb") as f:
-                            f.write(data)
+                    exit_status = save_data(out_dir, fic_name, file_format,
+                                            download_url, debug, force,
+                                            exit_status)
 
                     pbar.update(1)
 
@@ -162,15 +120,7 @@ def get_fic_with_url(url, format_type=0, out_dir="", debug=False, force=False):
     exit_status = 0
 
     if debug:
-        logger.debug("Download Started")
-        if force:
-            logger.warning(
-                "--force flag was passed. Files will be overwritten.")
-    else:
-        click.secho("Download Started", fg='green')
-        if force:
-            click.secho(
-                "WARNING: --force flag was passed. Files will be overwritten.", fg='yellow')
+        logger.info("Inside get_fic_with_url() function")
 
     with tqdm(range(1), ascii=True) as pbar:
 
@@ -185,27 +135,14 @@ def get_fic_with_url(url, format_type=0, out_dir="", debug=False, force=False):
 
                 else:
                     if debug:
-                        logger.debug(f"\n\nDownloading: {fic_name}")
+                        logger.info(f"\n\nDownloading: {fic_name}")
                     else:
                         click.secho(
                             f"\n\nDownloading: {fic_name}", fg='green')
 
-                    if os.path.exists(out_dir+fic_name+file_format) and force is False:
-
-                        if debug:
-                            logger.warning(
-                                f"\n{out_dir+fic_name+file_format} already exits. Skipping download. Use --force option to overwrite.")
-                        else:
-                            click.secho(
-                                f"\n{out_dir+fic_name+file_format} already exits. Skipping download. Use --force option to overwrite.", fg='yellow')
-                    else:
-                        if force and debug:
-                            logger.warning(
-                                "--force flag was passed. Files will be overwritten.")
-
-                        data = get_fic_data(download_url)
-                        with open(out_dir+fic_name+file_format, "wb") as f:
-                            f.write(data)
+                    exit_status = save_data(out_dir, fic_name, file_format,
+                                            download_url, debug, force,
+                                            exit_status)
 
                 pbar.update(1)
 
@@ -246,3 +183,24 @@ def check_url(pbar, url, debug=False, exit_status=0):
 
     else:  # for supported urls
         return True, exit_status
+
+
+def save_data(out_dir, fic_name, file_format, download_url, debug, force, exit_status):
+    if os.path.exists(out_dir+fic_name+file_format) and force is False:
+        exit_status = 1
+        if debug:
+            logger.error(
+                f"\n{out_dir+fic_name+file_format} already exits. Skipping download. Use --force option to overwrite.")
+        else:
+            click.secho(
+                f"\n{out_dir+fic_name+file_format} already exits. Skipping download. Use --force option to overwrite.", fg='red')
+    else:
+        if force and debug:
+            logger.warning(
+                "--force flag was passed. Files will be overwritten.")
+
+        data = get_fic_data(download_url)
+        with open(out_dir+fic_name+file_format, "wb") as f:
+            f.write(data)
+
+    return exit_status
