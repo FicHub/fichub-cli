@@ -10,11 +10,12 @@ def get_fic_metadata(url, format_type, debug,
         'User-Agent': 'fichub_cli/0.3.1',
     }
 
+    params = {'q': url}
     if automated:  # for internal testing
-        headers['automated'] = 'true'
+        params['automated'] = 'true'
 
     response = requests.get(
-        "https://fichub.net/api/v0/epub", params={'q': url},
+        "https://fichub.net/api/v0/epub", params=params,
         allow_redirects=True, headers=headers
     ).json()
 
@@ -59,10 +60,11 @@ def get_fic_data(download_url, automated=False):
         'User-Agent': 'fichub_cli/0.3.1',
     }
 
+    params = {}
     if automated:  # for internal testing
-        headers['automated'] = 'true'
+        params['automated'] = 'true'
 
     data = requests.get(
-        download_url, allow_redirects=True, headers=headers).content
+        download_url, allow_redirects=True, headers=headers, params=params).content
 
     return data
