@@ -40,7 +40,7 @@ def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_si
             url, format_type, out_dir, debug, force, automated)
 
     if version:
-        click.echo("Version: 0.3.0")
+        click.echo("Version: 0.3.1")
 
     if supported_sites:
         click.echo("""
