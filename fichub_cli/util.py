@@ -146,9 +146,9 @@ def get_fic_with_url(url, format_type=0, out_dir="",
                         click.secho(
                             f"\n\nDownloading: {fic_name}", fg='green')
 
-                    # exit_status = save_data(out_dir, fic_name, file_format,
-                    #                         download_url, debug, force,
-                    #                         exit_status, automated)
+                    exit_status = save_data(out_dir, fic_name, file_format,
+                                            download_url, debug, force,
+                                            exit_status, automated)
 
                 pbar.update(1)
 
