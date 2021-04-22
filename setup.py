@@ -12,7 +12,7 @@ setup(
     long_description_content_type="text/markdown",
     version='0.2.4',
     license='MIT',
-    url="https://github.com/FicHub/fichub_cli",
+    url="https://github.com/FicHub/fichub-cli",
     packages=['fichub_cli'],
     include_package_data=True,
     install_requires=[

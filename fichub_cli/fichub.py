@@ -34,7 +34,8 @@ def get_fic_data(url, format_type, debug, pbar, exit_status=0):
         fic_name = response['epub_url'].split("/")[4].split("?")[0]
         fic_name = fic_name.replace(".epub", "")
         download_url = "https://fichub.net"+cache_url
-        data = requests.get(download_url, allow_redirects=True).content
+        data = requests.get(
+            download_url, allow_redirects=True, headers=headers).content
 
         return fic_name, file_format, data, exit_status
 
