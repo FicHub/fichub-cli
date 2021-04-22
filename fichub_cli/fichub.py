@@ -6,7 +6,7 @@ from loguru import logger
 def get_fic_metadata(url, format_type, debug, pbar, exit_status=0):
 
     headers = {
-        'User-Agent': 'fichub_cli/0.2.5',
+        'User-Agent': 'fichub_cli/0.3.0',
     }
 
     response = requests.get(
@@ -52,7 +52,7 @@ def get_fic_metadata(url, format_type, debug, pbar, exit_status=0):
 def get_fic_data(download_url):
 
     headers = {
-        'User-Agent': 'fichub_cli/0.2.5',
+        'User-Agent': 'fichub_cli/0.3.0',
     }
 
     data = requests.get(
