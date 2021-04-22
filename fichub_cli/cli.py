@@ -1,7 +1,7 @@
 import click
 import sys
 
-from .util import get_fic_with_infile, get_fic_with_list, \
+from util import get_fic_with_infile, get_fic_with_list, \
     get_fic_with_url, get_format_type
 
 
@@ -11,10 +11,11 @@ from .util import get_fic_with_infile, get_fic_with_list, \
 @click.option('-l', '--list_url', default=None, help='Enter a comma separated list of urls to download, enclosed within quotes')
 @click.option('-o', '--out_dir', default="", help='Output directory for files (default: Current Directory)')
 @click.option('-f', '--format', default="epub", help='Download Format: epub (default), mobi, pdf or html')
+@click.option('--force', default=False, help=' Force overwrite of an existing file', is_flag=True)
 @click.option('-s', '--supported_sites', default=False, help='List of supported sites', is_flag=True)
 @click.option('-d', '--debug', default=False, help='Debug mode', is_flag=True)
 @click.option('-v', '--version', default=False, help='Display version & quit.', is_flag=True)
-def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_sites):
+def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_sites, force):
     """
     A CLI for the fichub.net API
 
@@ -27,15 +28,15 @@ def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_si
 
     if infile:
         exit_status = get_fic_with_infile(
-            infile, format_type, out_dir, debug)
+            infile, format_type, out_dir, debug, force)
 
     elif list_url:
         exit_status = get_fic_with_list(
-            list_url, format_type, out_dir, debug)
+            list_url, format_type, out_dir, debug, force)
 
     elif url:
         exit_status = get_fic_with_url(
-            url, format_type, out_dir, debug)
+            url, format_type, out_dir, debug, force)
 
     if version:
         click.echo("Version: 0.2.5")
@@ -66,3 +67,6 @@ def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_si
 """)
 
     sys.exit(exit_status)
+
+
+run_cli()
