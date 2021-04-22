@@ -8,16 +8,16 @@ from .fichub import get_fic_metadata, get_fic_data
 
 
 def get_format_type(format):
-    if format.startswith("epub"):
+    if re.search(r"\bepub\b", format, re.I):
         format_type = 0
 
-    elif format.startswith("mobi"):
+    elif re.search(r"\bmobi\b", format, re.I):
         format_type = 1
 
-    elif format.startswith("pdf"):
+    elif re.search(r"\bpdf\b", format, re.I):
         format_type = 2
 
-    elif format.startswith("html"):
+    elif re.search(r"\bhtml\b", format, re.I):
         format_type = 3
 
     else:  # default epub format
@@ -146,9 +146,9 @@ def get_fic_with_url(url, format_type=0, out_dir="",
                         click.secho(
                             f"\n\nDownloading: {fic_name}", fg='green')
 
-                    exit_status = save_data(out_dir, fic_name, file_format,
-                                            download_url, debug, force,
-                                            exit_status, automated)
+                    # exit_status = save_data(out_dir, fic_name, file_format,
+                    #                         download_url, debug, force,
+                    #                         exit_status, automated)
 
                 pbar.update(1)
 
