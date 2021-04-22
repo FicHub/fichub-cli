@@ -32,8 +32,9 @@ Options:
   -u, --url TEXT         The url of the fanfiction enclosed within quotes
   -i, --infile TEXT      Give a filename to read URLs from
   -l, --list_url TEXT    Enter a comma separated list of urls to download, enclosed within quotes
-  -o, --out_dir TEXT     Output directory for files (default: Current Directory)
+  -o, --out_dir TEXT     Absolute/Relative path to the Output directory for files (default: Current Directory
   -f, --format TEXT      Download Format: epub (default), mobi, pdf or html
+  --force                Force overwrite of an existing file
   -s, --supported_sites  List of supported sites
   -d, --debug            Debug mode
   -v, --version          Display version & quit.

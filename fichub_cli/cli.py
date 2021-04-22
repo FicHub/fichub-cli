@@ -10,7 +10,7 @@ from .util import get_fic_with_infile, get_fic_with_list, \
 @click.option('-u', '--url', default=None, help='The url of the fanfiction enclosed within quotes ')
 @click.option('-i', '--infile', default=None, help='Give a filename to read URLs from')
 @click.option('-l', '--list_url', default=None, help='Enter a comma separated list of urls to download, enclosed within quotes')
-@click.option('-o', '--out_dir', default="", help='Output directory for files (default: Current Directory)')
+@click.option('-o', '--out_dir', default="", help='Absolute/Relative path to the Output directory for files (default: Current Directory)')
 @click.option('-f', '--format', default="epub", help='Download Format: epub (default), mobi, pdf or html')
 @click.option('--force', default=False, help=' Force overwrite of an existing file', is_flag=True)
 @click.option('-s', '--supported_sites', default=False, help='List of supported sites', is_flag=True)
