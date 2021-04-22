@@ -27,17 +27,6 @@ def run_cli(infile, url, list_url, format, out_dir, debug, version, supported_si
     exit_status = 0
     format_type = get_format_type(format)
 
-    if debug:
-        logger.info("Download Started")
-        if force:
-            logger.warning(
-                "--force flag was passed. Files will be overwritten.")
-    else:
-        click.secho("Download Started", fg='green')
-        if force:
-            click.secho(
-                "WARNING: --force flag was passed. Files will be overwritten.", fg='yellow')
-
     if infile:
         exit_status = get_fic_with_infile(
             infile, format_type, out_dir, debug, force)

@@ -32,6 +32,7 @@ def get_fic_with_infile(infile=None, format_type=0, out_dir="", debug=False, for
     with open(infile, "r") as f:
         urls = f.read().splitlines()
 
+    init_log(debug, force)
     if debug:
         logger.info("Inside get_fic_with_infile() function")
 
@@ -76,6 +77,7 @@ def get_fic_with_list(list_url=None, format_type=0, out_dir="", debug=False, for
     exit_status = 0
     urls = list_url.split(",")
 
+    init_log(debug, force)
     if debug:
         logger.info("Inside get_fic_with_list() function")
 
@@ -119,6 +121,7 @@ def get_fic_with_url(url, format_type=0, out_dir="", debug=False, force=False):
 
     exit_status = 0
 
+    init_log(debug, force)
     if debug:
         logger.info("Inside get_fic_with_url() function")
 
@@ -204,3 +207,16 @@ def save_data(out_dir, fic_name, file_format, download_url, debug, force, exit_s
             f.write(data)
 
     return exit_status
+
+
+def init_log(debug, force):
+    if debug:
+        logger.info("Download Started")
+        if force:
+            logger.warning(
+                "--force flag was passed. Files will be overwritten.")
+    else:
+        click.secho("Download Started", fg='green')
+        if force:
+            click.secho(
+                "WARNING: --force flag was passed. Files will be overwritten.", fg='yellow')
