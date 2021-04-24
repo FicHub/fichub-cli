@@ -6,7 +6,7 @@ with open("README.md", "r") as f:
 setup(
     name='fichub-cli',
     author='arzkar',
-    author_email="roguedevone@gmail.com",
+    author_email="arzkar.dev@gmail.com",
     description="A CLI tool for the fichub.net API",
     long_description=long_description,
     long_description_content_type="text/markdown",

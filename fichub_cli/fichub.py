@@ -1,5 +1,6 @@
 import requests
 import click
+import re
 from loguru import logger
 
 
@@ -22,25 +23,33 @@ def get_fic_metadata(url, format_type, debug,
     try:
         if format_type == 0:
             cache_url = response['epub_url']
+            cache_hash = (
+                re.search(r"\?h=(.*)", response['epub_url'])).group(1)
             file_format = ".epub"
 
         elif format_type == 1:
             cache_url = response['mobi_url']
+            cache_hash = (
+                re.search(r"\?h=(.*)", response['epub_url'])).group(1)
             file_format = ".mobi"
 
         elif format_type == 2:
             cache_url = response['pdf_url']
+            cache_hash = (
+                re.search(r"\?h=(.*)", response['epub_url'])).group(1)
             file_format = ".pdf"
 
         elif format_type == 3:
             cache_url = response['html_url']
+            cache_hash = (
+                re.search(r"\?h=(.*)", response['epub_url'])).group(1)
             file_format = ".zip"
 
         fic_name = response['epub_url'].split("/")[4].split("?")[0]
         fic_name = fic_name.replace(".epub", "")
         download_url = "https://fichub.net"+cache_url
 
-        return fic_name, file_format, download_url, exit_status
+        return fic_name, file_format, download_url, cache_hash, exit_status
 
     except KeyError:
         exit_status = 1
