@@ -8,10 +8,16 @@ To report issues for the CLI, open an issue at https://github.com/FicHub/fichub-
 
 # Installation
 
-Install the package using pip
+## Using pip (Recommended)
 
 ```
 pip install -U fichub-cli
+```
+
+## From Source (Might have bugs, for development use)
+
+```
+pip install git+https://github.com/FicHub/fichub-cli.git@main
 ```
 
 # Usage
