@@ -1,11 +1,15 @@
 import requests
+from typing import Tuple, Optional
 import click
 import re
 from loguru import logger
 
 
-def get_fic_metadata(url, format_type, debug,
-                     pbar, exit_status=0, automated=False):
+def get_fic_metadata(
+    url: str, format_type: int, debug: bool,
+    pbar, exit_status: int = 0, automated: bool = False
+) -> Tuple[Optional[str], Optional[str],
+           Optional[str], Optional[str], int]:
 
     headers = {
         'User-Agent': 'fichub_cli/0.3.3',
@@ -60,10 +64,10 @@ def get_fic_metadata(url, format_type, debug,
             click.echo(click.style(
                 f"\n\nSkipping unsupported URL: {url}", fg='red') + "\nTo see the supported site list, fichub_cli -s")
 
-        return None, None, None, exit_status
+        return None, None, None, None, exit_status
 
 
-def get_fic_data(download_url, automated=False):
+def get_fic_data(download_url: str, automated: bool = False) -> bytes:
 
     headers = {
         'User-Agent': 'fichub_cli/0.3.3',

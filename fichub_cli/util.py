@@ -1,34 +1,37 @@
-import click
+from typing import Tuple
 import re
 import os
 import hashlib
-from tqdm import tqdm
 
+import click
+from tqdm import tqdm
 from loguru import logger
+
 from .fichub import get_fic_metadata, get_fic_data
 
 
-def get_format_type(format):
-    if re.search(r"\bepub\b", format, re.I):
+def get_format_type(_format: str = "epub") -> int:
+    if re.search(r"\bepub\b", _format, re.I):
         format_type = 0
 
-    elif re.search(r"\bmobi\b", format, re.I):
+    elif re.search(r"\bmobi\b", _format, re.I):
         format_type = 1
 
-    elif re.search(r"\bpdf\b", format, re.I):
+    elif re.search(r"\bpdf\b", _format, re.I):
         format_type = 2
 
-    elif re.search(r"\bhtml\b", format, re.I):
+    elif re.search(r"\bhtml\b", _format, re.I):
         format_type = 3
 
-    else:  # default epub format
+    else:  # default epub _format
         format_type = 0
 
     return format_type
 
 
-def get_fic_with_infile(infile=None, format_type=0, out_dir="",
-                        debug=False, force=False, automated=False):
+def get_fic_with_infile(infile: str, format_type: int = 0,
+                        out_dir: str = "", debug: bool = False,
+                        force: bool = False, automated: bool = False) -> int:
 
     exit_status = 0
     with open(infile, "r") as f:
@@ -45,8 +48,10 @@ def get_fic_with_infile(infile=None, format_type=0, out_dir="",
                 pbar, url, debug, exit_status)
             if supported_url:
                 try:
-                    fic_name, file_format, download_url, cache_hash, exit_status = get_fic_metadata(
-                        url, format_type, debug, pbar, exit_status, automated)
+                    fic_name, file_format, download_url, \
+                        cache_hash, exit_status = get_fic_metadata(
+                            url, format_type, debug, pbar,
+                            exit_status, automated)
 
                     if fic_name is None:
                         exit_status = 1
@@ -58,8 +63,8 @@ def get_fic_with_infile(infile=None, format_type=0, out_dir="",
                             f"\n\nDownloading: {fic_name}", fg='green')
 
                     exit_status = save_data(out_dir, fic_name, file_format,
-                                            download_url, debug, force, cache_hash,
-                                            exit_status, automated)
+                                            download_url, debug, force,
+                                            cache_hash, exit_status, automated)
 
                     pbar.update(1)
 
@@ -74,8 +79,9 @@ def get_fic_with_infile(infile=None, format_type=0, out_dir="",
     return exit_status
 
 
-def get_fic_with_list(list_url=None, format_type=0, out_dir="",
-                      debug=False, force=False, automated=False):
+def get_fic_with_list(list_url: str, format_type: int = 0,
+                      out_dir: str = "", debug: bool = False,
+                      force: bool = False, automated: bool = False) -> int:
 
     exit_status = 0
     urls = list_url.split(",")
@@ -91,8 +97,10 @@ def get_fic_with_list(list_url=None, format_type=0, out_dir="",
                 pbar, url, debug, exit_status)
             if supported_url:
                 try:
-                    fic_name, file_format, download_url, cache_hash, exit_status = get_fic_metadata(
-                        url, format_type, debug, pbar, exit_status, automated)
+                    fic_name, file_format, download_url, \
+                        cache_hash, exit_status = get_fic_metadata(
+                            url, format_type, debug, pbar,
+                            exit_status, automated)
 
                     if fic_name is None:
                         exit_status = 1
@@ -104,8 +112,8 @@ def get_fic_with_list(list_url=None, format_type=0, out_dir="",
                             f"\n\nDownloading: {fic_name}", fg='green')
 
                     exit_status = save_data(out_dir, fic_name, file_format,
-                                            download_url, debug, force, cache_hash,
-                                            exit_status, automated)
+                                            download_url, debug, force,
+                                            cache_hash, exit_status, automated)
 
                     pbar.update(1)
 
@@ -120,8 +128,9 @@ def get_fic_with_list(list_url=None, format_type=0, out_dir="",
     return exit_status
 
 
-def get_fic_with_url(url, format_type=0, out_dir="",
-                     debug=False, force=False, automated=False):
+def get_fic_with_url(url: str, format_type: int = 0, out_dir: str = "",
+                     debug: bool = False, force: bool = False,
+                     automated: bool = False) -> int:
 
     exit_status = 0
 
@@ -134,8 +143,9 @@ def get_fic_with_url(url, format_type=0, out_dir="",
         supported_url, exit_status = check_url(pbar, url, debug, exit_status)
         if supported_url:
             try:
-                fic_name, file_format, download_url, cache_hash, exit_status = get_fic_metadata(
-                    url, format_type, debug, pbar, exit_status, automated)
+                fic_name, file_format, download_url, cache_hash, \
+                    exit_status = get_fic_metadata(
+                        url, format_type, debug, pbar, exit_status, automated)
 
                 if fic_name is None:
                     exit_status = 1
@@ -148,8 +158,8 @@ def get_fic_with_url(url, format_type=0, out_dir="",
                             f"\n\nDownloading: {fic_name}", fg='green')
 
                     exit_status = save_data(out_dir, fic_name, file_format,
-                                            download_url, debug, force, cache_hash,
-                                            exit_status, automated)
+                                            download_url, debug, force,
+                                            cache_hash, exit_status, automated)
 
                 pbar.update(1)
 
@@ -164,7 +174,8 @@ def get_fic_with_url(url, format_type=0, out_dir="",
     return exit_status
 
 
-def check_url(pbar, url, debug=False, exit_status=0):
+def check_url(pbar, url: str, debug: bool = False,
+              exit_status: int = 0) -> Tuple[bool, int]:
 
     if re.search(r"\barchiveofourown.org/series\b", url):
         unsupported_flag = True
@@ -192,8 +203,10 @@ def check_url(pbar, url, debug=False, exit_status=0):
         return True, exit_status
 
 
-def save_data(out_dir, fic_name, file_format, download_url,
-              debug, force, cache_hash, exit_status, automated):
+def save_data(out_dir: str, fic_name:  str, file_format: str, download_url: str,
+              debug: bool, force: bool, cache_hash: str,
+              exit_status: int, automated: bool) -> int:
+
     ebook_file = out_dir+fic_name+file_format
     try:
         hash_flag = check_hash(ebook_file, cache_hash)
@@ -225,7 +238,7 @@ def save_data(out_dir, fic_name, file_format, download_url,
     return exit_status
 
 
-def init_log(debug, force):
+def init_log(debug: bool, force: bool):
     if debug:
         logger.info("Download Started")
         if force:
@@ -238,7 +251,7 @@ def init_log(debug, force):
                 "WARNING: --force flag was passed. Files will be overwritten.", fg='yellow')
 
 
-def check_hash(ebook_file, cache_hash):
+def check_hash(ebook_file: str, cache_hash: str) -> bool:
 
     with open(ebook_file, 'rb') as file:
         data = file.read()
