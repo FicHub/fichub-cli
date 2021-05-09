@@ -8,6 +8,7 @@ from tqdm import tqdm
 from loguru import logger
 
 from .fichub import get_fic_metadata, get_fic_data
+from .logging import init_log, downloaded_log, download_processing_log
 
 
 def get_format_type(_format: str = "epub") -> int:
@@ -48,6 +49,7 @@ def get_fic_with_infile(infile: str, format_type: int = 0,
                 pbar, url, debug, exit_status)
             if supported_url:
                 try:
+                    download_processing_log(debug, url)
                     fic_name, file_format, download_url, \
                         cache_hash, exit_status = get_fic_metadata(
                             url, format_type, debug, pbar,
@@ -56,15 +58,10 @@ def get_fic_with_infile(infile: str, format_type: int = 0,
                     if fic_name is None:
                         exit_status = 1
 
-                    if debug:
-                        logger.info(f"Downloading: {fic_name}")
                     else:
-                        click.secho(
-                            f"\n\nDownloading: {fic_name}", fg='green')
-
-                    exit_status = save_data(out_dir, fic_name, file_format,
-                                            download_url, debug, force,
-                                            cache_hash, exit_status, automated)
+                        exit_status = save_data(out_dir, fic_name, file_format,
+                                                download_url, debug, force,
+                                                cache_hash, exit_status, automated)
 
                     pbar.update(1)
 
@@ -97,6 +94,7 @@ def get_fic_with_list(list_url: str, format_type: int = 0,
                 pbar, url, debug, exit_status)
             if supported_url:
                 try:
+                    download_processing_log(debug, url)
                     fic_name, file_format, download_url, \
                         cache_hash, exit_status = get_fic_metadata(
                             url, format_type, debug, pbar,
@@ -105,15 +103,10 @@ def get_fic_with_list(list_url: str, format_type: int = 0,
                     if fic_name is None:
                         exit_status = 1
 
-                    if debug:
-                        logger.info(f"Downloading: {fic_name}")
                     else:
-                        click.secho(
-                            f"\n\nDownloading: {fic_name}", fg='green')
-
-                    exit_status = save_data(out_dir, fic_name, file_format,
-                                            download_url, debug, force,
-                                            cache_hash, exit_status, automated)
+                        exit_status = save_data(out_dir, fic_name, file_format,
+                                                download_url, debug, force,
+                                                cache_hash, exit_status, automated)
 
                     pbar.update(1)
 
@@ -143,6 +136,7 @@ def get_fic_with_url(url: str, format_type: int = 0, out_dir: str = "",
         supported_url, exit_status = check_url(pbar, url, debug, exit_status)
         if supported_url:
             try:
+                download_processing_log(debug, url)
                 fic_name, file_format, download_url, cache_hash, \
                     exit_status = get_fic_metadata(
                         url, format_type, debug, pbar, exit_status, automated)
@@ -151,12 +145,6 @@ def get_fic_with_url(url: str, format_type: int = 0, out_dir: str = "",
                     exit_status = 1
 
                 else:
-                    if debug:
-                        logger.info(f"Downloading: {fic_name}")
-                    else:
-                        click.secho(
-                            f"\n\nDownloading: {fic_name}", fg='green')
-
                     exit_status = save_data(out_dir, fic_name, file_format,
                                             download_url, debug, force,
                                             cache_hash, exit_status, automated)
@@ -192,10 +180,10 @@ def check_url(pbar, url: str, debug: bool = False,
 
         if debug:
             logger.error(
-                f"\n\nSkipping unsupported URL: {url}\nTo see the supported site list, fichub_cli -s")
+                f"Skipping unsupported URL: {url}\nTo see the supported site list, fichub_cli -s")
         else:
             click.echo(click.style(
-                f"\n\nSkipping unsupported URL: {url}", fg='red') + "\nTo see the supported site list, fichub_cli -s")
+                f"Skipping unsupported URL: {url}", fg='red') + "\nstTo see the supported site list, fichub_cli -s")
 
         return False, exit_status
 
@@ -219,12 +207,12 @@ def save_data(out_dir: str, fic_name:  str, file_format: str, download_url: str,
         exit_status = 1
         if debug:
             logger.error(
-                f"\n{out_dir+fic_name+file_format} is already the latest version. Skipping download. Use --force option to overwrite.")
+                f"{out_dir+fic_name+file_format} is already the latest version. Skipping download. Use --force option to overwrite.")
             logger.warning(
                 "The hash of the local file & the remote file is the same.")
         else:
             click.secho(
-                f"\n{out_dir+fic_name+file_format} is already the latest version. Skipping download. Use --force option to overwrite.", fg='red')
+                f"{out_dir+fic_name+file_format} is already the latest version. Skipping download. Use --force option to overwrite.", fg='red')
 
     else:
         if force and debug:
@@ -232,23 +220,11 @@ def save_data(out_dir: str, fic_name:  str, file_format: str, download_url: str,
                 "--force flag was passed. Files will be overwritten.")
 
         data = get_fic_data(download_url, automated)
+        downloaded_log(debug, fic_name)
         with open(ebook_file, "wb") as f:
             f.write(data)
 
     return exit_status
-
-
-def init_log(debug: bool, force: bool):
-    if debug:
-        logger.info("Download Started")
-        if force:
-            logger.warning(
-                "--force flag was passed. Files will be overwritten.")
-    else:
-        click.secho("Download Started", fg='green')
-        if force:
-            click.secho(
-                "WARNING: --force flag was passed. Files will be overwritten.", fg='yellow')
 
 
 def check_hash(ebook_file: str, cache_hash: str) -> bool:

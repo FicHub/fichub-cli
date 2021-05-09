@@ -18,6 +18,8 @@ def get_fic_metadata(
     params = {'q': url}
     if automated:  # for internal testing
         params['automated'] = 'true'
+        if debug:
+            logger.info("-a flag was passed. Internal Testing mode is on.")
 
     response = requests.get(
         "https://fichub.net/api/v0/epub", params=params,

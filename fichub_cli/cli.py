@@ -1,7 +1,7 @@
 import click
 import sys
 
-from .util import get_fic_with_infile, get_fic_with_list, \
+from .util.processing import get_fic_with_infile, get_fic_with_list, \
     get_fic_with_url, get_format_type
 
 
