@@ -17,7 +17,7 @@ pip install -U fichub-cli
 ## From Source (Might have bugs, for development use)
 
 ```
-pip install git+https://github.com/FicHub/fichub-cli.git@main
+pip install git+https://github.com/FicHub/fichub-cli@main
 ```
 
 # Usage
@@ -38,7 +38,7 @@ Options:
   -u, --url TEXT         The url of the fanfiction enclosed within quotes
   -i, --infile TEXT      Give a filename to read URLs from
   -l, --list_url TEXT    Enter a comma separated list of urls to download, enclosed within quotes
-  -o, --out_dir TEXT     Absolute/Relative path to the Output directory for files (default: Current Directory
+  -o, --out_dir TEXT     Absolute/Relative path to the Output directory for files (default: Current Directory)
   -f, --format TEXT      Download Format: epub (default), mobi, pdf or html
   --force                Force overwrite of an existing file
   -s, --supported_sites  List of supported sites
@@ -53,7 +53,6 @@ Options:
 
 ```
 fichub_cli -u https://archiveofourown.org/works/10916730/chapters/24276864
-
 ```
 
 - To download using a file containing URLs
