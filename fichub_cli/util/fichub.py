@@ -12,7 +12,7 @@ def get_fic_metadata(
            Optional[str], Optional[str], int]:
 
     headers = {
-        'User-Agent': 'fichub_cli/0.3.4a',
+        'User-Agent': 'fichub_cli/0.3.4',
     }
 
     params = {'q': url}
@@ -72,7 +72,7 @@ def get_fic_metadata(
 def get_fic_data(download_url: str, automated: bool = False) -> bytes:
 
     headers = {
-        'User-Agent': 'fichub_cli/0.3.4a',
+        'User-Agent': 'fichub_cli/0.3.4',
     }
 
     params = {}
