@@ -55,7 +55,7 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         exit_status = get_urls_from_page(get_urls, debug, automated)
 
     if version:
-        click.echo("Version: 0.3.4")
+        click.echo("Version: 0.3.4a")
 
     if supported_sites:
         click.echo("""
