@@ -17,9 +17,11 @@ setup(
     include_package_data=True,
     install_requires=[
         'click>=7.1.2',
+        'click-spinner>=0.1.10',
         'requests>=2.25.1',
         'loguru>=0.5.3',
-        'tqdm>=4.60.0'
+        'tqdm>=4.60.0',
+        'BeautifulSoup4>=4.9.3'
     ],
     entry_points='''
         [console_scripts]

@@ -1,15 +1,16 @@
 attrs==20.3.0
 autopep8==1.5.6
+beautifulsoup4==4.9.3
 bleach==3.3.0
 bump2version==1.0.1
 certifi==2020.12.5
 cffi==1.14.5
 chardet==4.0.0
 click==7.1.2
+click-spinner==0.1.10
 colorama==0.4.4
 cryptography==3.4.7
 docutils==0.16
-fichub-cli==0.3.3
 flake8==3.9.1
 idna==2.10
 importlib-metadata==4.0.1
@@ -38,6 +39,7 @@ rfc3986==1.4.0
 SecretStorage==3.3.1
 setuptools==52.0.0.post20210125
 six==1.15.0
+soupsieve==2.2.1
 toml==0.10.2
 tqdm==4.60.0
 twine==3.4.1
