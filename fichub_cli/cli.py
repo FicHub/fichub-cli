@@ -86,6 +86,3 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         logger.info(f"{20*'-'}EXITING{20*'-'}")
 
     sys.exit(exit_status)
-
-
-run_cli()
