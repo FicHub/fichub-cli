@@ -1,23 +1,29 @@
 import click
 import sys
+from loguru import logger
 
-from .util.processing import get_fic_with_infile, get_fic_with_list, \
-    get_fic_with_url, get_format_type
+from .utils.get_fic import get_fic_with_infile, get_fic_with_list, \
+    get_fic_with_url, get_urls_from_page
+
+from .utils.processing import get_format_type
 
 
+# @logger.catch
 @click.command(no_args_is_help=True)
 @click.option('-u', '--url', help='The url of the fanfiction enclosed within quotes ')
 @click.option('-i', '--infile', help='Give a filename to read URLs from')
 @click.option('-l', '--list-url', 'list_url',  help='Enter a comma separated list of urls to download, enclosed within quotes')
-@click.option('-o', '--out-dir', 'out_dir', default="", help='Absolute/Relative path to the Output directory for files (default: Current Directory)')
+@click.option('-o', '--out-dir', 'out_dir', default="", help='Absolute path to the Output directory for files (default: Current Directory)')
 @click.option('-f', '--format', '_format', default="epub", help='Download Format: epub (default), mobi, pdf or html')
 @click.option('--force', default=False, help=' Force overwrite of an existing file', is_flag=True)
+@click.option('--get-urls', 'get_urls', default=False, help='Get all story urls found from a page. Currently supports archiveofourown.org only.')
 @click.option('-s', '--supported-sites', 'supported_sites', default=False, help='List of supported sites', is_flag=True)
-@click.option('-d', '--debug', default=False, help='Debug mode', is_flag=True)
+@click.option('-d', '--debug', default=False, help='Show the log in the console for debugging', is_flag=True)
+@click.option('--log', default=False, help='Save the logfile for debugging', is_flag=True)
 @click.option('-a', '--automated', default=False, help='For internal testing only', is_flag=True, hidden=True)
 @click.option('-v', '--version', default=False, help='Display version & quit.', is_flag=True)
-def run_cli(infile: str, url: str, list_url: str, _format: str,
-            out_dir: str, debug: bool, version: bool,
+def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
+            out_dir: str, debug: bool, version: bool, log: bool,
             supported_sites: bool, force: bool, automated: bool):
     """
     A CLI for the fichub.net API
@@ -26,6 +32,11 @@ def run_cli(infile: str, url: str, list_url: str, _format: str,
 
     To report issues for the CLI, open an issue at https://github.com/FicHub/fichub-cli/issues
     """
+
+    if log:
+        debug = True
+        logger.add("fichub_cli.log")
+
     exit_status = 0
     format_type = get_format_type(_format)
     if infile:
@@ -40,8 +51,11 @@ def run_cli(infile: str, url: str, list_url: str, _format: str,
         exit_status = get_fic_with_url(
             url, format_type, out_dir, debug, force, automated)
 
+    elif get_urls:
+        exit_status = get_urls_from_page(get_urls, debug, automated)
+
     if version:
-        click.echo("Version: 0.3.4")
+        click.echo("Version: 0.3.4a")
 
     if supported_sites:
         click.echo("""
@@ -67,5 +81,8 @@ def run_cli(infile: str, url: str, list_url: str, _format: str,
 
     To report issues upstream for these sites, visit https://fichub.net/#contact     
 """)
+
+    if log:  # To separate each run
+        logger.info(f"{20*'-'}EXITING{20*'-'}")
 
     sys.exit(exit_status)
