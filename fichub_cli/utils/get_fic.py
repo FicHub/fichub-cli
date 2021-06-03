@@ -30,7 +30,7 @@ def get_fic_with_infile(infile: str, format_type: int = 0,
     if debug:
         logger.debug("Calling get_fic_with_infile()")
 
-    with tqdm(range(len(urls)), ascii=False) as pbar:
+    with tqdm(range(len(urls)), ascii=False, unit="file") as pbar:
         for url in urls:
 
             supported_url, exit_status = check_url(
@@ -76,7 +76,7 @@ def get_fic_with_list(list_url: str, format_type: int = 0,
     if debug:
         logger.debug("Calling get_fic_with_list()")
 
-    with tqdm(range(len(urls)), ascii=False) as pbar:
+    with tqdm(range(len(urls)), ascii=False, unit="file") as pbar:
         for url in urls:
 
             supported_url, exit_status = check_url(
@@ -120,7 +120,7 @@ def get_fic_with_url(url: str, format_type: int = 0, out_dir: str = "",
     if debug:
         logger.debug("Calling get_fic_with_url()")
 
-    with tqdm(range(1), ascii=False) as pbar:
+    with tqdm(range(1), ascii=False, unit="file") as pbar:
 
         supported_url, exit_status = check_url(pbar, url, debug, exit_status)
         if supported_url:
