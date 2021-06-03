@@ -8,7 +8,7 @@ from .utils.get_fic import get_fic_with_infile, get_fic_with_list, \
 from .utils.processing import get_format_type
 
 
-# @logger.catch # for debugging
+@logger.catch  # for debugging
 @click.command(no_args_is_help=True)
 @click.option('-u', '--url', help='The url of the fanfiction enclosed within quotes ')
 @click.option('-i', '--infile', help='Give a filename to read URLs from')

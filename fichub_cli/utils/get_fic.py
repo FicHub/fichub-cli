@@ -10,6 +10,8 @@ from .fichub import get_fic_metadata
 from .logging import init_log, download_processing_log
 from .processing import check_url, save_data
 
+bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
+
 
 def get_fic_with_infile(infile: str, format_type: int = 0,
                         out_dir: str = "", debug: bool = False,
@@ -30,7 +32,9 @@ def get_fic_with_infile(infile: str, format_type: int = 0,
     if debug:
         logger.debug("Calling get_fic_with_infile()")
 
-    with tqdm(range(len(urls)), ascii=False, unit="file") as pbar:
+    with tqdm(total=len(urls), ascii=False,
+              unit="file", bar_format=bar_format) as pbar:
+
         for url in urls:
 
             supported_url, exit_status = check_url(
@@ -76,7 +80,9 @@ def get_fic_with_list(list_url: str, format_type: int = 0,
     if debug:
         logger.debug("Calling get_fic_with_list()")
 
-    with tqdm(range(len(urls)), ascii=False, unit="file") as pbar:
+    with tqdm(total=len(urls), ascii=False,
+              unit="file", bar_format=bar_format) as pbar:
+
         for url in urls:
 
             supported_url, exit_status = check_url(
@@ -120,7 +126,8 @@ def get_fic_with_url(url: str, format_type: int = 0, out_dir: str = "",
     if debug:
         logger.debug("Calling get_fic_with_url()")
 
-    with tqdm(range(1), ascii=False, unit="file") as pbar:
+    with tqdm(total=1, ascii=False,
+              unit="file", bar_format=bar_format) as pbar:
 
         supported_url, exit_status = check_url(pbar, url, debug, exit_status)
         if supported_url:
