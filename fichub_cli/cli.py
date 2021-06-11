@@ -52,7 +52,7 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
             url, format_type, out_dir, debug, force, automated)
 
     elif get_urls:
-        exit_status = get_urls_from_page(get_urls, debug, automated)
+        exit_status = get_urls_from_page(get_urls, debug)
 
     if version:
         click.echo("Version: 0.3.4a")

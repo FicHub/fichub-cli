@@ -160,7 +160,7 @@ def get_fic_with_url(url: str, format_type: int = 0, out_dir: str = "",
     return exit_status
 
 
-def get_urls_from_page(get_urls: str, debug: bool, automated: bool):
+def get_urls_from_page(get_urls: str, debug: bool):
 
     with click_spinner.spinner():
         response = requests.get(get_urls)
@@ -185,13 +185,13 @@ def get_urls_from_page(get_urls: str, debug: bool, automated: bool):
             for i in ao3_series_works_html_h4:
                 ao3_series_works_html += str(i)
 
-            ao3_works = BeautifulSoup(ao3_series_works_html, 'html.parser')
+            ao3_urls = BeautifulSoup(ao3_series_works_html, 'html.parser')
 
-            for tag in ao3_works.findAll('a', {'href': re.compile('/works/')}):
+            for tag in ao3_urls.findAll('a', {'href': re.compile('/works/')}):
                 ao3_works_list.append(
                     "https://archiveofourown.org"+tag['href'])
 
-            for tag in ao3_works.findAll('a', {'href': re.compile('/series/')}):
+            for tag in ao3_urls.findAll('a', {'href': re.compile('/series/')}):
                 ao3_series_list.append(
                     "https://archiveofourown.org"+tag['href'])
 
