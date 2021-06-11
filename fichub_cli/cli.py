@@ -2,10 +2,8 @@ import click
 import sys
 from loguru import logger
 
-from .utils.get_fic import get_fic_with_infile, get_fic_with_list, \
-    get_fic_with_url, get_urls_from_page
-
-from .utils.processing import get_format_type
+from utils.fetch_data import FetchData
+from utils.processing import get_format_type
 
 
 @logger.catch  # for debugging
@@ -28,7 +26,7 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
     """
     A CLI for the fichub.net API
 
-    To report issues upstream for supported sites, visit https://fichub.net/#contact 
+    To report issues upstream for supported sites, visit https://fichub.net/#contact
 
     To report issues for the CLI, open an issue at https://github.com/FicHub/fichub-cli/issues
     """
@@ -37,22 +35,25 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         debug = True
         logger.add("fichub_cli.log")
 
-    exit_status = 0
     format_type = get_format_type(_format)
     if infile:
-        exit_status = get_fic_with_infile(
-            infile, format_type, out_dir, debug, force, automated)
+        fic = FetchData(format_type, out_dir, force,
+                        debug, automated)
+        fic.get_fic_with_infile(infile)
 
     elif list_url:
-        exit_status = get_fic_with_list(
-            list_url, format_type, out_dir, debug, force, automated)
+        fic = FetchData(format_type, out_dir, force,
+                        debug, automated)
+        fic.get_fic_with_list(list_url)
 
     elif url:
-        exit_status = get_fic_with_url(
-            url, format_type, out_dir, debug, force, automated)
+        fic = FetchData(format_type, out_dir, force,
+                        debug, automated)
+        fic.get_fic_with_url(url)
 
     elif get_urls:
-        exit_status = get_urls_from_page(get_urls, debug)
+        fic = FetchData(debug)
+        fic.get_urls_from_page(get_urls)
 
     if version:
         click.echo("Version: 0.3.4a")
@@ -85,4 +86,7 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
     if log:  # To separate each run
         logger.info(f"{20*'-'}EXITING{20*'-'}")
 
-    sys.exit(exit_status)
+    sys.exit(fic.exit_status)
+
+
+run_cli()

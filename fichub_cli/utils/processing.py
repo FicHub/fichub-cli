@@ -6,7 +6,7 @@ import hashlib
 import click
 from loguru import logger
 
-from .fichub import get_fic_data
+from .fichub import FicHub
 from .logging import downloaded_log
 
 
@@ -86,10 +86,12 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
             logger.warning(
                 "--force flag was passed. Files will be overwritten.")
 
-        data = get_fic_data(download_url, automated, debug)
+        fic = FicHub(debug, automated, exit_status)
+        fic.get_fic_data(download_url)
+
         downloaded_log(debug, file_name)
         with open(ebook_file, "wb") as f:
-            f.write(data)
+            f.write(fic.response_data.content)
 
     return exit_status
 
@@ -100,6 +102,7 @@ def check_hash(ebook_file: str, cache_hash: str) -> bool:
         data = file.read()
 
     ebook_hash = hashlib.md5(data).hexdigest()
+
     if ebook_hash.strip() == cache_hash.strip():
         hash_flag = True
     else:
