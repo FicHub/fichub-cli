@@ -3,6 +3,10 @@ import click
 import re
 from loguru import logger
 
+headers = {
+    'User-Agent': 'fichub_cli/0.3.4b',
+}
+
 
 class FicHub:
     def __init__(self, debug, automated, exit_status):
@@ -11,10 +15,6 @@ class FicHub:
         self.exit_status = exit_status
 
     def get_fic_metadata(self, url: str, format_type: int, pbar):
-
-        headers = {
-            'User-Agent': 'fichub_cli/0.3.4b',
-        }
 
         params = {'q': url}
         if self.automated:  # for internal testing
@@ -72,10 +72,6 @@ class FicHub:
                     f"\n\nSkipping unsupported URL: {url}", fg='red') + "\nTo see the supported site list, fichub_cli -s")
 
     def get_fic_data(self, download_url: str):
-
-        headers = {
-            'User-Agent': 'fichub_cli/0.3.4b',
-        }
 
         params = {}
         if self.automated:  # for internal testing
