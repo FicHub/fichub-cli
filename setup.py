@@ -10,7 +10,7 @@ setup(
     description="A CLI tool for the fichub.net API",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version='0.3.4a',
+    version='0.3.4b',
     license='MIT',
     url="https://github.com/FicHub/fichub-cli",
     packages=find_packages(include=['fichub_cli', 'fichub_cli.*']),

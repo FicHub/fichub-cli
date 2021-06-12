@@ -13,7 +13,7 @@ class FicHub:
     def get_fic_metadata(self, url: str, format_type: int, pbar):
 
         headers = {
-            'User-Agent': 'fichub_cli/0.3.4a',
+            'User-Agent': 'fichub_cli/0.3.4b',
         }
 
         params = {'q': url}
@@ -74,7 +74,7 @@ class FicHub:
     def get_fic_data(self, download_url: str):
 
         headers = {
-            'User-Agent': 'fichub_cli/0.3.4a',
+            'User-Agent': 'fichub_cli/0.3.4b',
         }
 
         params = {}
