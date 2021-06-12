@@ -24,7 +24,7 @@ class FetchData:
         self.automated = automated
         self.exit_status = 0
 
-    def get_fic_with_infile(self, infile: str) -> int:
+    def get_fic_with_infile(self, infile: str):
 
         try:
             with open(infile, "r") as f:
@@ -76,7 +76,7 @@ class FetchData:
                 else:  # skip the unsupported url
                     pass
 
-    def get_fic_with_list(self, list_url: str) -> int:
+    def get_fic_with_list(self, list_url: str):
 
         urls = list_url.split(",")
 
@@ -120,7 +120,7 @@ class FetchData:
                 else:  # skip the unsupported url
                     pass
 
-    def get_fic_with_url(self, url: str) -> int:
+    def get_fic_with_url(self, url: str):
 
         init_log(self.debug, self.force)
         if self.debug:

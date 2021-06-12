@@ -1,9 +1,7 @@
 import requests
-from typing import Tuple, Optional
 import click
 import re
 from loguru import logger
-import hashlib
 
 
 class FicHub:
@@ -12,9 +10,7 @@ class FicHub:
         self.automated = automated
         self.exit_status = exit_status
 
-    def get_fic_metadata(self, url: str, format_type: int, pbar
-                         ) -> Tuple[Optional[str], Optional[str],
-                                    Optional[str], Optional[str], int]:
+    def get_fic_metadata(self, url: str, format_type: int, pbar):
 
         headers = {
             'User-Agent': 'fichub_cli/0.3.4a',
@@ -75,7 +71,7 @@ class FicHub:
                 self.click.echo(click.style(
                     f"\n\nSkipping unsupported URL: {url}", fg='red') + "\nTo see the supported site list, fichub_cli -s")
 
-    def get_fic_data(self, download_url: str) -> bytes:
+    def get_fic_data(self, download_url: str):
 
         headers = {
             'User-Agent': 'fichub_cli/0.3.4a',
