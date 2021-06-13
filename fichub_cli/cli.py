@@ -1,9 +1,12 @@
 import click
 import sys
 from loguru import logger
+from datetime import datetime
 
 from .utils.fetch_data import FetchData
 from .utils.processing import get_format_type
+
+time = datetime.now().strftime("%H_%M_%S")
 
 
 # @logger.catch  # for internal debugging
@@ -33,7 +36,7 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
 
     if log:
         debug = True
-        logger.add("fichub_cli.log")
+        logger.add(f"fichub_cli_{time}.log")
 
     format_type = get_format_type(_format)
     if infile:
@@ -84,8 +87,5 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
     To report issues upstream for these sites, visit https://fichub.net/#contact
 """)
         sys.exit(0)
-
-    if log:  # To separate each run
-        logger.info(f"{20*'-'}EXITING{20*'-'}")
 
     sys.exit(fic.exit_status)

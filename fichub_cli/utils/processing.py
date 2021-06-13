@@ -73,10 +73,12 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
 
         exit_status = 1
         if debug:
-            logger.error(
-                f"{out_dir+file_name} is already the latest version. Skipping download. Use --force flag to overwrite.")
             logger.warning(
                 "The hash of the local file & the remote file is the same.")
+
+            logger.error(
+                f"{out_dir+file_name} is already the latest version. Skipping download. Use --force flag to overwrite.")
+
         else:
             click.secho(
                 f"{out_dir+file_name} is already the latest version. Skipping download. Use --force flag to overwrite.", fg='red')
