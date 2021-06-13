@@ -56,6 +56,10 @@ class FetchData:
                         # update the exit status
                         self.exit_status = fic.exit_status
 
+                        if self.exit_status == 1:
+                            pbar.update(1)
+                            continue
+
                         if fic.file_name is None:
                             self.exit_status = 1
 
@@ -91,6 +95,7 @@ class FetchData:
 
                 supported_url,  self.exit_status = check_url(
                     pbar, url, self.debug, self.exit_status)
+
                 if supported_url:
                     try:
                         download_processing_log(self.debug, url)
@@ -100,6 +105,10 @@ class FetchData:
 
                         # update the exit status
                         self.exit_status = fic.exit_status
+
+                        if self.exit_status == 1:
+                            pbar.update(1)
+                            continue
 
                         if fic.file_name is None:
                             self.exit_status = 1
@@ -131,6 +140,7 @@ class FetchData:
 
             supported_url, self.exit_status = check_url(
                 pbar, url, self.debug, self.exit_status)
+
             if supported_url:
                 try:
                     download_processing_log(self.debug, url)
@@ -140,6 +150,10 @@ class FetchData:
 
                     # update the exit status
                     self.exit_status = fic.exit_status
+
+                    if self.exit_status == 1:
+                        pbar.update(1)
+                        exit(self.exit_status)
 
                     if fic.file_name is None:
                         self.exit_status = 1

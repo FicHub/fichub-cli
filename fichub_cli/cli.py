@@ -2,11 +2,11 @@ import click
 import sys
 from loguru import logger
 
-from utils.fetch_data import FetchData
-from utils.processing import get_format_type
+from .utils.fetch_data import FetchData
+from .utils.processing import get_format_type
 
 
-@logger.catch  # for debugging
+# @logger.catch  # for internal debugging
 @click.command(no_args_is_help=True)
 @click.option('-u', '--url', help='The url of the fanfiction enclosed within quotes ')
 @click.option('-i', '--infile', help='Give a filename to read URLs from')
@@ -57,6 +57,7 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
 
     if version:
         click.echo("Version: 0.3.4b")
+        sys.exit(0)
 
     if supported_sites:
         click.echo("""
@@ -80,13 +81,11 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         - FanficAuthors (minimal)
         - Harry Potter Fanfiction (archive from pre-revival)
 
-    To report issues upstream for these sites, visit https://fichub.net/#contact     
+    To report issues upstream for these sites, visit https://fichub.net/#contact
 """)
+        sys.exit(0)
 
     if log:  # To separate each run
         logger.info(f"{20*'-'}EXITING{20*'-'}")
 
     sys.exit(fic.exit_status)
-
-
-run_cli()

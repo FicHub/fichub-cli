@@ -68,7 +68,7 @@ class FicHub:
                 logger.error(
                     f"\n\nSkipping unsupported URL: {url}\nTo see the supported site list, fichub_cli -s")
             else:
-                self.click.echo(click.style(
+                click.echo(click.style(
                     f"\n\nSkipping unsupported URL: {url}", fg='red') + "\nTo see the supported site list, fichub_cli -s")
 
     def get_fic_data(self, download_url: str):

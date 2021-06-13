@@ -4,8 +4,7 @@ from loguru import logger
 
 def init_log(debug: bool, force: bool):
     if debug:
-        logger.info(
-            "Download Started. Will update existing epub files if found. Use --force flag to overwrite.")
+        logger.info("Download Started.")
         if force:
             logger.warning(
                 "--force flag was passed. Files will be overwritten.")
@@ -13,7 +12,8 @@ def init_log(debug: bool, force: bool):
         click.secho("Download Started", fg='green')
         if force:
             click.secho(
-                "WARNING: --force flag was passed. Files will be overwritten.", fg='yellow')
+                "WARNING: --force flag was passed. Files will be overwritten.",
+                fg='yellow')
 
 
 def downloaded_log(debug: bool, file_name: str):
