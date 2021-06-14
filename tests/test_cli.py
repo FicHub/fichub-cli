@@ -47,4 +47,4 @@ def test_cli_version():
 
     assert not result.exception
     assert result.exit_code == 0
-    assert result.output.strip() == 'Version: 0.3.4b'
+    assert result.output.strip() == 'Version: 0.3.5a'

@@ -4,7 +4,7 @@ import re
 from loguru import logger
 
 headers = {
-    'User-Agent': 'fichub_cli/0.3.4b',
+    'User-Agent': 'fichub_cli/0.3.5a',
 }
 
 
