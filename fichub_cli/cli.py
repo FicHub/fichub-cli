@@ -2,10 +2,12 @@ import click
 import sys
 from loguru import logger
 from datetime import datetime
+from colorama import init, Fore
 
-from .utils.fetch_data import FetchData
 from .utils.processing import get_format_type
+from .utils.fetch_data import FetchData
 
+init(autoreset=True)  # colorama init
 time = datetime.now().strftime("%H_%M_%S")
 
 
@@ -36,6 +38,8 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
 
     if log:
         debug = True
+        click.echo(
+            Fore.GREEN + f"Creating fichub_cli_{time}.log in the current directory")
         logger.add(f"fichub_cli_{time}.log")
 
     format_type = get_format_type(_format)
@@ -63,7 +67,7 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         sys.exit(0)
 
     if supported_sites:
-        click.echo("""
+        click.echo(Fore.GREEN + """
     Supported Sites
 
         - SpaceBattles, SufficientVelocity, QuestionableQuesting (XenForo)

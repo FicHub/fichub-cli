@@ -3,9 +3,9 @@ certifi==2020.12.5
 chardet==4.0.0
 click==7.1.2
 click-spinner==0.1.10
+colorama==0.4.4
 idna==2.10
 loguru==0.5.3
-pip==21.0.1
 requests==2.25.1
 setuptools==52.0.0
 soupsieve==2.2.1

@@ -3,7 +3,8 @@ import re
 import os
 import hashlib
 
-import click
+from colorama import Fore, Style
+from tqdm import tqdm
 from loguru import logger
 
 from .fichub import FicHub
@@ -49,8 +50,9 @@ def check_url(pbar, url: str, debug: bool = False,
             logger.error(
                 f"Skipping unsupported URL: {url}\nTo see the supported site list, fichub_cli -s")
         else:
-            click.echo(click.style(
-                f"Skipping unsupported URL: {url}", fg='red') + "\nstTo see the supported site list, fichub_cli -s")
+            tqdm.write(
+                Fore.RED + f"Skipping unsupported URL: {url}" +
+                Style.RESET_ALL + "\nTo see the supported site list, fichub_cli -s")
 
         return False, exit_status
 
@@ -80,8 +82,9 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
                 f"{out_dir+file_name} is already the latest version. Skipping download. Use --force flag to overwrite.")
 
         else:
-            click.secho(
-                f"{out_dir+file_name} is already the latest version. Skipping download. Use --force flag to overwrite.", fg='red')
+            tqdm.write(
+                Fore.RED +
+                f"{out_dir+file_name} is already the latest version. Skipping download. Use --force flag to overwrite.")
 
     else:
         if force and debug:
@@ -92,6 +95,7 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
         fic.get_fic_data(download_url)
 
         downloaded_log(debug, file_name)
+
         with open(ebook_file, "wb") as f:
             f.write(fic.response_data.content)
 

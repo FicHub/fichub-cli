@@ -21,7 +21,8 @@ setup(
         'requests>=2.25.1',
         'loguru>=0.5.3',
         'tqdm>=4.60.0',
-        'BeautifulSoup4>=4.9.3'
+        'BeautifulSoup4>=4.9.3',
+        'colorama>=0.4.4'
     ],
     entry_points='''
         [console_scripts]

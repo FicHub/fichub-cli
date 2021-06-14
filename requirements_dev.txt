@@ -11,7 +11,6 @@ click-spinner==0.1.10
 colorama==0.4.4
 cryptography==3.4.7
 docutils==0.16
-fichub-cli==0.3.4
 flake8==3.9.1
 idna==2.10
 importlib-metadata==4.0.1

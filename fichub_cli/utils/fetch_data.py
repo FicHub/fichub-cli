@@ -1,6 +1,6 @@
-import click
 import click_spinner
 from tqdm import tqdm
+from colorama import Fore
 from loguru import logger
 from bs4 import BeautifulSoup
 import requests
@@ -31,8 +31,9 @@ class FetchData:
                 urls = f.read().splitlines()
 
         except FileNotFoundError:
-            click.secho(
-                f"{infile} file could not be found. Please enter a valid file path.", fg="red")
+            tqdm.write(
+                Fore.RED +
+                f"{infile} file could not be found. Please enter a valid file path.")
             exit(1)
 
         init_log(self.debug, self.force)
@@ -56,10 +57,6 @@ class FetchData:
                         # update the exit status
                         self.exit_status = fic.exit_status
 
-                        if self.exit_status == 1:
-                            pbar.update(1)
-                            continue
-
                         if fic.file_name is None:
                             self.exit_status = 1
 
@@ -72,13 +69,15 @@ class FetchData:
 
                         pbar.update(1)
 
-                    except TypeError:
+                    # Error: 'FicHub' object has no attribute 'file_name'
+                    # Reason: Unsupported URL
+                    except AttributeError:
                         pbar.update(1)
                         self.exit_status = 1
                         pass  # skip the unsupported url
 
                 else:  # skip the unsupported url
-                    pass
+                    continue
 
     def get_fic_with_list(self, list_url: str):
 
@@ -106,10 +105,6 @@ class FetchData:
                         # update the exit status
                         self.exit_status = fic.exit_status
 
-                        if self.exit_status == 1:
-                            pbar.update(1)
-                            continue
-
                         if fic.file_name is None:
                             self.exit_status = 1
 
@@ -121,13 +116,15 @@ class FetchData:
 
                         pbar.update(1)
 
-                    except TypeError:
+                    # Error: 'FicHub' object has no attribute 'file_name'
+                    # Reason: Unsupported URL
+                    except AttributeError:
                         pbar.update(1)
                         self.exit_status = 1
                         pass  # skip the unsupported url
 
                 else:  # skip the unsupported url
-                    pass
+                    continue
 
     def get_fic_with_url(self, url: str):
 
@@ -151,10 +148,6 @@ class FetchData:
                     # update the exit status
                     self.exit_status = fic.exit_status
 
-                    if self.exit_status == 1:
-                        pbar.update(1)
-                        exit(self.exit_status)
-
                     if fic.file_name is None:
                         self.exit_status = 1
 
@@ -166,7 +159,9 @@ class FetchData:
 
                     pbar.update(1)
 
-                except TypeError:
+                # Error: 'FicHub' object has no attribute 'file_name'
+                # Reason: Unsupported URL
+                except AttributeError:
                     pbar.update(1)
                     self.exit_status = 1
                     pass  # skip the unsupported url
@@ -212,18 +207,18 @@ class FetchData:
 
                 if ao3_works_list:
                     found_flag = True
-                    click.secho(
-                        f"\nFound {len(ao3_works_list)} works urls.", fg='green')
+                    tqdm.write(Fore.GREEN +
+                               f"\nFound {len(ao3_works_list)} works urls.")
                     ao3_works_list = '\n'.join(ao3_works_list)
-                    click.echo(ao3_works_list)
+                    tqdm.write(ao3_works_list)
 
                 if ao3_series_list:
                     found_flag = True
-                    click.secho(
-                        f"\nFound {len(ao3_series_list)} series urls.", fg='green')
+                    tqdm.write(Fore.GREEN +
+                               f"\nFound {len(ao3_series_list)} series urls.")
                     ao3_series_list = '\n'.join(ao3_series_list)
-                    click.echo(ao3_series_list)
+                    tqdm.write(ao3_series_list)
 
             if found_flag is False:
-                click.secho("Found 0 urls.", fg='red')
+                tqdm.write(Fore.RED + "\nFound 0 urls.")
                 self.exit_status = 1
