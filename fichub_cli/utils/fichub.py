@@ -15,7 +15,7 @@ class FicHub:
         self.automated = automated
         self.exit_status = exit_status
 
-    def get_fic_metadata(self, url: str, format_type: int, pbar):
+    def get_fic_metadata(self, url: str, format_type: int):
 
         params = {'q': url}
         if self.automated:  # for internal testing

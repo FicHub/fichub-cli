@@ -1,6 +1,6 @@
 <h1 align="center">fichub-cli</h1>
 
-A CLI tool for the fichub.net API<br><br>
+A CLI for the fichub.net API<br><br>
 
 To report issues upstream for the supported sites, visit https://fichub.net/#contact<br>
 

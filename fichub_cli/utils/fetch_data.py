@@ -1,17 +1,17 @@
-import click_spinner
 from tqdm import tqdm
 from colorama import Fore
 from loguru import logger
 from bs4 import BeautifulSoup
 import requests
 import re
-
+from rich.console import Console
 
 from .fichub import FicHub
 from .logging import init_log, download_processing_log
 from .processing import check_url, save_data
 
 bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
+console = Console()
 
 
 class FetchData:
@@ -52,7 +52,7 @@ class FetchData:
                         download_processing_log(self.debug, url)
                         fic = FicHub(self.debug, self.automated,
                                      self.exit_status)
-                        fic.get_fic_metadata(url, self.format_type, pbar)
+                        fic.get_fic_metadata(url, self.format_type)
 
                         # update the exit status
                         self.exit_status = fic.exit_status
@@ -100,7 +100,7 @@ class FetchData:
                         download_processing_log(self.debug, url)
                         fic = FicHub(self.debug, self.automated,
                                      self.exit_status)
-                        fic.get_fic_metadata(url, self.format_type, pbar)
+                        fic.get_fic_metadata(url, self.format_type)
 
                         # update the exit status
                         self.exit_status = fic.exit_status
@@ -143,7 +143,7 @@ class FetchData:
                     download_processing_log(self.debug, url)
 
                     fic = FicHub(self.debug, self.automated, self.exit_status)
-                    fic.get_fic_metadata(url, self.format_type, pbar)
+                    fic.get_fic_metadata(url, self.format_type)
 
                     # update the exit status
                     self.exit_status = fic.exit_status
@@ -171,7 +171,7 @@ class FetchData:
 
     def get_urls_from_page(self, get_urls: str):
 
-        with click_spinner.spinner():
+        with console.status("[bold green]Processing..."):
             response = requests.get(get_urls)
 
             if self.debug:

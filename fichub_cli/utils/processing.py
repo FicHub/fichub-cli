@@ -89,7 +89,7 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
     else:
         if force and debug:
             logger.warning(
-                "--force flag was passed. Files will be overwritten.")
+                f"--force flag was passed. Overwriting {out_dir+file_name}")
 
         fic = FicHub(debug, automated, exit_status)
         fic.get_fic_data(download_url)
