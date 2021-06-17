@@ -5,7 +5,7 @@ from tqdm import tqdm
 from loguru import logger
 
 headers = {
-    'User-Agent': 'fichub_cli/0.3.5a',
+    'User-Agent': 'fichub_cli/0.3.5',
 }
 
 

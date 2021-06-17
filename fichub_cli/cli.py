@@ -19,7 +19,7 @@ time = datetime.now().strftime("%H_%M_%S")
 @click.option('-o', '--out-dir', 'out_dir', default="", help='Absolute path to the Output directory for files (default: Current Directory)')
 @click.option('-f', '--format', '_format', default="epub", help='Download Format: epub (default), mobi, pdf or html')
 @click.option('--force', default=False, help=' Force overwrite of an existing file', is_flag=True)
-@click.option('--get-urls', 'get_urls', default=False, help='Get all story urls found from a page. Currently supports archiveofourown.org only.')
+@click.option('--get-urls', 'get_urls', default=None, help='Get all story urls found from a page. Currently supports archiveofourown.org only.')
 @click.option('-s', '--supported-sites', 'supported_sites', default=False, help='List of supported sites', is_flag=True)
 @click.option('-d', '--debug', default=False, help='Show the log in the console for debugging', is_flag=True)
 @click.option('--log', default=False, help='Save the logfile for debugging', is_flag=True)
@@ -63,7 +63,7 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         fic.get_urls_from_page(get_urls)
 
     if version:
-        click.echo("Version: 0.3.5a")
+        click.echo("Version: 0.3.5")
         sys.exit(0)
 
     if supported_sites:

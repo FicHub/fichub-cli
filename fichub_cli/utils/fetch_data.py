@@ -1,9 +1,9 @@
+import re
+import requests
 from tqdm import tqdm
 from colorama import Fore
 from loguru import logger
 from bs4 import BeautifulSoup
-import requests
-import re
 from rich.console import Console
 
 from .fichub import FicHub
