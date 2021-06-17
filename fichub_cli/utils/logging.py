@@ -1,32 +1,29 @@
-import click
+from colorama import Fore
 from loguru import logger
+from tqdm import tqdm
 
 
 def init_log(debug: bool, force: bool):
     if debug:
-        logger.info("Download Started.")
         if force:
             logger.warning(
                 "--force flag was passed. Files will be overwritten.")
     else:
-        click.secho("Download Started", fg='green')
         if force:
-            click.secho(
-                "WARNING: --force flag was passed. Files will be overwritten.",
-                fg='yellow')
+            tqdm.write(
+                Fore.YELLOW +
+                "WARNING: --force flag was passed. Files will be overwritten.")
 
 
 def downloaded_log(debug: bool, file_name: str):
     if debug:
         logger.info(f"Downloaded {file_name}")
     else:
-        click.secho(
-            f"Downloaded {file_name}", fg='green')
+        tqdm.write(Fore.GREEN + f"Downloaded {file_name}")
 
 
 def download_processing_log(debug: bool, url: str):
     if debug:
         logger.info(f"Processing {url}")
     else:
-        click.secho(
-            f"\n\nProcessing {url}", fg='blue')
+        tqdm.write(Fore.BLUE + f"\nProcessing {url}")

@@ -1,10 +1,11 @@
 import requests
-import click
 import re
+from colorama import Fore, Style
+from tqdm import tqdm
 from loguru import logger
 
 headers = {
-    'User-Agent': 'fichub_cli/0.3.5a',
+    'User-Agent': 'fichub_cli/0.3.5',
 }
 
 
@@ -14,7 +15,7 @@ class FicHub:
         self.automated = automated
         self.exit_status = exit_status
 
-    def get_fic_metadata(self, url: str, format_type: int, pbar):
+    def get_fic_metadata(self, url: str, format_type: int):
 
         params = {'q': url}
         if self.automated:  # for internal testing
@@ -62,14 +63,18 @@ class FicHub:
             self.file_name = self.file_name.replace(".epub", self.file_format)
             self.download_url = "https://fichub.net"+cache_url
 
+        # Error: 'epub_url'
+        # Reason: Unsupported URL
         except KeyError:
+
             self.exit_status = 1
             if self.debug:
                 logger.error(
-                    f"\n\nSkipping unsupported URL: {url}\nTo see the supported site list, fichub_cli -s")
+                    f"\nSkipping unsupported URL: {url}\nTo see the supported site list, fichub_cli -s")
             else:
-                click.echo(click.style(
-                    f"\n\nSkipping unsupported URL: {url}", fg='red') + "\nTo see the supported site list, fichub_cli -s")
+                tqdm.write(
+                    Fore.RED + f"\nSkipping unsupported URL: {url}" +
+                    Style.RESET_ALL + "\nTo see the supported site list, fichub_cli -s")
 
     def get_fic_data(self, download_url: str):
 
