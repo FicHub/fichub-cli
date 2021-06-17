@@ -2,7 +2,7 @@ import click
 import sys
 from loguru import logger
 from datetime import datetime
-from colorama import init, Fore
+from colorama import init, Fore, Style
 
 from .utils.processing import get_format_type
 from .utils.fetch_data import FetchData
@@ -68,27 +68,30 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
 
     if supported_sites:
         click.echo(Fore.GREEN + """
-    Supported Sites
+Supported Sites:""" + Style.RESET_ALL + """
 
-        - SpaceBattles, SufficientVelocity, QuestionableQuesting (XenForo)
-        - FanFiction.net, FictionPress
-        - Archive Of Our Own
-        - Royal Road
-        - Harry Potter Fanfic Archive
-        - Sink Into Your Eyes
-        - AdultFanfiction.org
-        - Worm, Ward
+    - SpaceBattles, SufficientVelocity, QuestionableQuesting (XenForo)
+    - FanFiction.net, FictionPress
+    - Archive Of Our Own
+    - Royal Road
+    - Harry Potter Fanfic Archive
+    - Sink Into Your Eyes
+    - AdultFanfiction.org
+    - Worm, Ward
+""" + Fore.GREEN + """
+Partial support (or not tested recently):""" + Style.RESET_ALL + """
 
-    Partial support (or not tested recently):
-
-        - XenForo based sites (Bulbagarden Forums, The Fanfiction Forum, Fanfic Paradise)
-        - Fiction Alley
-        - Fiction Hunt
-        - The Sugar Quill (largely untested)
-        - FanficAuthors (minimal)
-        - Harry Potter Fanfiction (archive from pre-revival)
-
-    To report issues upstream for these sites, visit https://fichub.net/#contact
+    - XenForo based sites
+        - Bulbagarden Forums
+        - The Fanfiction Forum
+        - Fanfic Paradise
+    - Fiction Alley
+    - Fiction Hunt
+    - The Sugar Quill(largely untested)
+    - FanficAuthors(minimal)
+    - Harry Potter Fanfiction(archive from pre-revival)
+""" + Fore.BLUE + """
+To report issues upstream for these sites, visit https://fichub.net/#contact
 """)
         sys.exit(0)
 

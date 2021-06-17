@@ -70,11 +70,12 @@ class FicHub:
             self.exit_status = 1
             if self.debug:
                 logger.error(
-                    f"\nSkipping unsupported URL: {url}\nTo see the supported site list, fichub_cli -s")
+                    f"Skipping unsupported URL: {url}")
             else:
                 tqdm.write(
-                    Fore.RED + f"\nSkipping unsupported URL: {url}" +
-                    Style.RESET_ALL + "\nTo see the supported site list, fichub_cli -s")
+                    Fore.RED + f"Skipping unsupported URL: {url}" +
+                    Style.RESET_ALL + Fore.CYAN +
+                    "\nTo see the supported site list, use -s flag")
 
     def get_fic_data(self, download_url: str):
 
