@@ -30,7 +30,7 @@ def get_format_type(_format: str = "epub") -> int:
     return format_type
 
 
-def check_url(pbar, url: str, debug: bool = False,
+def check_url(url: str, debug: bool = False,
               exit_status: int = 0) -> Tuple[bool, int]:
 
     if re.search(r"\barchiveofourown.org/series\b", url):
@@ -43,7 +43,6 @@ def check_url(pbar, url: str, debug: bool = False,
         unsupported_flag = False
 
     if unsupported_flag:
-        pbar.update(1)
         exit_status = 1
 
         if debug:

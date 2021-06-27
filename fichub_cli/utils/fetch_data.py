@@ -46,7 +46,7 @@ class FetchData:
 
                 download_processing_log(self.debug, url)
                 supported_url, self.exit_status = check_url(
-                    pbar, url, self.debug, self.exit_status)
+                    url, self.debug, self.exit_status)
                 if supported_url:
                     try:
                         fic = FicHub(self.debug, self.automated,
@@ -76,6 +76,7 @@ class FetchData:
                         pass  # skip the unsupported url
 
                 else:  # skip the unsupported url
+                    pbar.update(1)
                     continue
 
     def get_fic_with_list(self, list_url: str):
@@ -92,7 +93,7 @@ class FetchData:
             for url in urls:
                 download_processing_log(self.debug, url)
                 supported_url,  self.exit_status = check_url(
-                    pbar, url, self.debug, self.exit_status)
+                    url, self.debug, self.exit_status)
 
                 if supported_url:
                     try:
@@ -122,6 +123,7 @@ class FetchData:
                         pass  # skip the unsupported url
 
                 else:  # skip the unsupported url
+                    pbar.update(1)
                     continue
 
     def get_fic_with_url(self, url: str):
@@ -135,7 +137,7 @@ class FetchData:
 
             download_processing_log(self.debug, url)
             supported_url, self.exit_status = check_url(
-                pbar, url, self.debug, self.exit_status)
+                url, self.debug, self.exit_status)
 
             if supported_url:
                 try:
@@ -163,8 +165,8 @@ class FetchData:
                     self.exit_status = 1
                     pass  # skip the unsupported url
 
-            else:  # skip the unsupported url
-                pass
+            else:
+                pbar.update(1)
 
     def get_urls_from_page(self, get_urls: str):
 
@@ -221,3 +223,14 @@ class FetchData:
             if found_flag is False:
                 tqdm.write(Fore.RED + "\nFound 0 urls.")
                 self.exit_status = 1
+
+    def get_metadata(self, url: str):
+
+        with console.status("[bold green]Processing..."):
+            supported_url, self.exit_status = check_url(
+                url, self.debug, self.exit_status)
+
+            if supported_url:
+                fic = FicHub(self.debug, self.automated, self.exit_status)
+                fic.get_fic_extraMetadata(url)
+                console.print(fic.fic_extraMetadata)

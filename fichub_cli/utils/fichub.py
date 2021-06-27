@@ -3,6 +3,7 @@ import re
 from colorama import Fore, Style
 from tqdm import tqdm
 from loguru import logger
+import json
 
 headers = {
     'User-Agent': 'fichub_cli/0.3.6a',
@@ -89,3 +90,23 @@ class FicHub:
         if self.debug:
             logger.debug(
                 f"GET: {self.response_data.status_code}: {self.response_data.url}")
+
+    def get_fic_extraMetadata(self, url: str):
+
+        params = {'q': url}
+        if self.automated:  # for internal testing
+            params['automated'] = 'true'
+            if self.debug:
+                logger.debug(
+                    "--automated flag was passed. Internal Testing mode is on.")
+
+        response = requests.get(
+            "https://fichub.net/api/v0/epub", params=params,
+            allow_redirects=True, headers=headers
+        )
+
+        if self.debug:
+            logger.debug(f"GET: {response.status_code}: {response.url}")
+
+        response = response.json()
+        self.fic_extraMetadata = json.dumps(response['meta'], indent=4)
