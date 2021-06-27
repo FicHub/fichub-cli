@@ -3,9 +3,10 @@ import re
 from colorama import Fore, Style
 from tqdm import tqdm
 from loguru import logger
+import json
 
 headers = {
-    'User-Agent': 'fichub_cli/0.3.5',
+    'User-Agent': 'fichub_cli/0.3.6',
 }
 
 
@@ -70,11 +71,12 @@ class FicHub:
             self.exit_status = 1
             if self.debug:
                 logger.error(
-                    f"\nSkipping unsupported URL: {url}\nTo see the supported site list, fichub_cli -s")
+                    f"Skipping unsupported URL: {url}")
             else:
                 tqdm.write(
-                    Fore.RED + f"\nSkipping unsupported URL: {url}" +
-                    Style.RESET_ALL + "\nTo see the supported site list, fichub_cli -s")
+                    Fore.RED + f"Skipping unsupported URL: {url}" +
+                    Style.RESET_ALL + Fore.CYAN +
+                    "\nTo see the supported site list, use -s flag")
 
     def get_fic_data(self, download_url: str):
 
@@ -88,3 +90,23 @@ class FicHub:
         if self.debug:
             logger.debug(
                 f"GET: {self.response_data.status_code}: {self.response_data.url}")
+
+    def get_fic_extraMetadata(self, url: str):
+
+        params = {'q': url}
+        if self.automated:  # for internal testing
+            params['automated'] = 'true'
+            if self.debug:
+                logger.debug(
+                    "--automated flag was passed. Internal Testing mode is on.")
+
+        response = requests.get(
+            "https://fichub.net/api/v0/epub", params=params,
+            allow_redirects=True, headers=headers
+        )
+
+        if self.debug:
+            logger.debug(f"GET: {response.status_code}: {response.url}")
+
+        response = response.json()
+        self.fic_extraMetadata = json.dumps(response['meta'], indent=4)

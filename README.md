@@ -35,14 +35,21 @@ Usage: fichub_cli [OPTIONS]
   https://github.com/FicHub/fichub-cli/issues
 
 Options:
-  -u, --url TEXT         The url of the fanfiction enclosed within quotes
-  -i, --infile TEXT      Give a filename to read URLs from
-  -l, --list_url TEXT    Enter a comma separated list of urls to download, enclosed within quotes
-  -o, --out_dir TEXT     Absolute/Relative path to the Output directory for files (default: Current Directory)
-  -f, --format TEXT      Download Format: epub (default), mobi, pdf or html
-  --force                Force overwrite of an existing file
-  -s, --supported_sites  List of supported sites
-  -d, --debug            Debug mode
+  -u, --url TEXT         The url of the fanfiction enclosed within quotes.
+  -i, --infile TEXT      Give a filename to read URLs from.
+  -l, --list-url TEXT    Enter a comma separated list of urls to download,
+                         enclosed within quotes.
+  -o, --out-dir TEXT     Absolute path to the Output directory for files
+                         (default: Current Directory).
+  -f, --format TEXT      Download Format: epub (default), mobi, pdf or html.
+  --force                Force overwrite of an existing file.
+  --get-urls TEXT        Get all story urls found from a page. Currently
+                         supports archiveofourown.org only.
+  -s, --supported-sites  List of supported sites.
+  -d, --debug            Show the log in the console for debugging.
+  --meta-json TEXT       Fetch only the metadata for the fanfiction in json
+                         format.
+  --log                  Save the logfile for debugging.
   -v, --version          Display version & quit.
   --help                 Show this message and exit.
 ```
@@ -65,6 +72,18 @@ fichub_cli -i urls.txt
 
 ```
 fichub_cli -l "https://www.fanfiction.net/s/11191235/1/Harry-Potter-and-the-Prince-of-Slytherin,https://www.fanfiction.net/s/13720575/1/A-Cadmean-Victory-Remastered"
+```
+
+- To get all story urls found from a page. Currently supports archiveofourown.org only.
+
+```
+fichub_cli --get-urls https://archiveofourown.org/users/flamethrower/
+```
+
+- To fetch only the metadata for the fanfiction in json format.
+
+```
+fichub_cli --meta-json "https://www.fanfiction.net/s/12933896/1/Things-you-cannot-leave-behind"
 ```
 
 ### Default Configuration

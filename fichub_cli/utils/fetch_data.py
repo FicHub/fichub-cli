@@ -1,7 +1,7 @@
 import re
 import requests
 from tqdm import tqdm
-from colorama import Fore
+from colorama import Fore, Style
 from loguru import logger
 from bs4 import BeautifulSoup
 from rich.console import Console
@@ -25,6 +25,8 @@ class FetchData:
         self.exit_status = 0
 
     def get_fic_with_infile(self, infile: str):
+        if self.debug:
+            logger.debug("Calling get_fic_with_infile()")
 
         try:
             with open(infile, "r") as f:
@@ -37,19 +39,16 @@ class FetchData:
             exit(1)
 
         init_log(self.debug, self.force)
-        if self.debug:
-            logger.debug("Calling get_fic_with_infile()")
-
         with tqdm(total=len(urls), ascii=False,
                   unit="file", bar_format=bar_format) as pbar:
 
             for url in urls:
 
+                download_processing_log(self.debug, url)
                 supported_url, self.exit_status = check_url(
-                    pbar, url, self.debug, self.exit_status)
+                    url, self.debug, self.exit_status)
                 if supported_url:
                     try:
-                        download_processing_log(self.debug, url)
                         fic = FicHub(self.debug, self.automated,
                                      self.exit_status)
                         fic.get_fic_metadata(url, self.format_type)
@@ -77,27 +76,27 @@ class FetchData:
                         pass  # skip the unsupported url
 
                 else:  # skip the unsupported url
+                    pbar.update(1)
                     continue
 
     def get_fic_with_list(self, list_url: str):
 
-        urls = list_url.split(",")
-
-        init_log(self.debug, self.force)
         if self.debug:
             logger.debug("Calling get_fic_with_list()")
 
+        urls = list_url.split(",")
+
+        init_log(self.debug, self.force)
         with tqdm(total=len(urls), ascii=False,
                   unit="file", bar_format=bar_format) as pbar:
 
             for url in urls:
-
+                download_processing_log(self.debug, url)
                 supported_url,  self.exit_status = check_url(
-                    pbar, url, self.debug, self.exit_status)
+                    url, self.debug, self.exit_status)
 
                 if supported_url:
                     try:
-                        download_processing_log(self.debug, url)
                         fic = FicHub(self.debug, self.automated,
                                      self.exit_status)
                         fic.get_fic_metadata(url, self.format_type)
@@ -124,24 +123,24 @@ class FetchData:
                         pass  # skip the unsupported url
 
                 else:  # skip the unsupported url
+                    pbar.update(1)
                     continue
 
     def get_fic_with_url(self, url: str):
 
-        init_log(self.debug, self.force)
         if self.debug:
             logger.debug("Calling get_fic_with_url()")
 
+        init_log(self.debug, self.force)
         with tqdm(total=1, ascii=False,
                   unit="file", bar_format=bar_format) as pbar:
 
+            download_processing_log(self.debug, url)
             supported_url, self.exit_status = check_url(
-                pbar, url, self.debug, self.exit_status)
+                url, self.debug, self.exit_status)
 
             if supported_url:
                 try:
-                    download_processing_log(self.debug, url)
-
                     fic = FicHub(self.debug, self.automated, self.exit_status)
                     fic.get_fic_metadata(url, self.format_type)
 
@@ -166,8 +165,8 @@ class FetchData:
                     self.exit_status = 1
                     pass  # skip the unsupported url
 
-            else:  # skip the unsupported url
-                pass
+            else:
+                pbar.update(1)
 
     def get_urls_from_page(self, get_urls: str):
 
@@ -208,17 +207,30 @@ class FetchData:
                 if ao3_works_list:
                     found_flag = True
                     tqdm.write(Fore.GREEN +
-                               f"\nFound {len(ao3_works_list)} works urls.")
+                               f"\nFound {len(ao3_works_list)} works urls." +
+                               Style.RESET_ALL)
                     ao3_works_list = '\n'.join(ao3_works_list)
                     tqdm.write(ao3_works_list)
 
                 if ao3_series_list:
                     found_flag = True
                     tqdm.write(Fore.GREEN +
-                               f"\nFound {len(ao3_series_list)} series urls.")
+                               f"\nFound {len(ao3_series_list)} series urls." +
+                               Style.RESET_ALL)
                     ao3_series_list = '\n'.join(ao3_series_list)
                     tqdm.write(ao3_series_list)
 
             if found_flag is False:
                 tqdm.write(Fore.RED + "\nFound 0 urls.")
                 self.exit_status = 1
+
+    def get_metadata(self, url: str):
+
+        with console.status("[bold green]Processing..."):
+            supported_url, self.exit_status = check_url(
+                url, self.debug, self.exit_status)
+
+            if supported_url:
+                fic = FicHub(self.debug, self.automated, self.exit_status)
+                fic.get_fic_extraMetadata(url)
+                console.print(fic.fic_extraMetadata)

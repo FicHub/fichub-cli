@@ -30,7 +30,7 @@ def get_format_type(_format: str = "epub") -> int:
     return format_type
 
 
-def check_url(pbar, url: str, debug: bool = False,
+def check_url(url: str, debug: bool = False,
               exit_status: int = 0) -> Tuple[bool, int]:
 
     if re.search(r"\barchiveofourown.org/series\b", url):
@@ -43,16 +43,16 @@ def check_url(pbar, url: str, debug: bool = False,
         unsupported_flag = False
 
     if unsupported_flag:
-        pbar.update(1)
         exit_status = 1
 
         if debug:
             logger.error(
-                f"Skipping unsupported URL: {url}\nTo see the supported site list, fichub_cli -s")
+                f"Skipping unsupported URL: {url}")
         else:
             tqdm.write(
                 Fore.RED + f"Skipping unsupported URL: {url}" +
-                Style.RESET_ALL + "\nTo see the supported site list, fichub_cli -s")
+                Style.RESET_ALL + Fore.CYAN +
+                "\nTo see the supported site list, use -s flag")
 
         return False, exit_status
 
@@ -84,7 +84,8 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
         else:
             tqdm.write(
                 Fore.RED +
-                f"{out_dir+file_name} is already the latest version. Skipping download. Use --force flag to overwrite.")
+                f"{out_dir+file_name} is already the latest version. Skipping download." +
+                Style.RESET_ALL + Fore.CYAN + " Use --force flag to overwrite.")
 
     else:
         if force and debug:
