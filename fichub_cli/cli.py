@@ -69,7 +69,7 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         fic.get_metadata(meta_json)
 
     if version:
-        click.echo("Version: 0.3.6a")
+        click.echo("Version: 0.3.6")
         sys.exit(0)
 
     if supported_sites:
