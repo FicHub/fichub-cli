@@ -24,6 +24,6 @@ def downloaded_log(debug: bool, file_name: str):
 
 def download_processing_log(debug: bool, url: str):
     if debug:
-        logger.info(f"Processing {url}")
+        logger.info(f"Processing {url.strip()}")
     else:
-        tqdm.write(Fore.BLUE + f"\nProcessing {url}")
+        tqdm.write(Fore.BLUE + f"\nProcessing {url.strip()}")
