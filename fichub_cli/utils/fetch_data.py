@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from rich.console import Console
 
 from .fichub import FicHub
-from .logging import init_log, download_processing_log
+from .logging import init_log, download_processing_log, verbose_log
 from .processing import check_url, save_data
 
 bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
@@ -16,13 +16,14 @@ console = Console()
 
 class FetchData:
     def __init__(self, format_type="epub", out_dir="", force=False,
-                 debug=False, automated=False):
+                 debug=False, automated=False, verbose=False):
         self.format_type = format_type
         self.out_dir = out_dir
         self.force = force
         self.debug = debug
         self.automated = automated
         self.exit_status = 0
+        self.verbose = verbose
 
     def get_fic_with_infile(self, infile: str):
         if self.debug:
@@ -52,6 +53,9 @@ class FetchData:
                         fic = FicHub(self.debug, self.automated,
                                      self.exit_status)
                         fic.get_fic_metadata(url, self.format_type)
+
+                        if self.verbose:
+                            verbose_log(self.debug, fic)
 
                         # update the exit status
                         self.exit_status = fic.exit_status
@@ -101,6 +105,9 @@ class FetchData:
                                      self.exit_status)
                         fic.get_fic_metadata(url, self.format_type)
 
+                        if self.verbose:
+                            verbose_log(self.debug, fic)
+
                         # update the exit status
                         self.exit_status = fic.exit_status
 
@@ -143,6 +150,9 @@ class FetchData:
                 try:
                     fic = FicHub(self.debug, self.automated, self.exit_status)
                     fic.get_fic_metadata(url, self.format_type)
+
+                    if self.verbose:
+                        verbose_log(self.debug, fic)
 
                     # update the exit status
                     self.exit_status = fic.exit_status

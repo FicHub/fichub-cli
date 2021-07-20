@@ -33,34 +33,35 @@ class FicHub:
         if self.debug:
             logger.debug(f"GET: {response.status_code}: {response.url}")
 
-        response = response.json()
+        self.response = response.json()
 
         try:
             if format_type == 0:
-                cache_url = response['epub_url']
+                cache_url = self.response['epub_url']
                 self.cache_hash = (
-                    re.search(r"\?h=(.*)", response['epub_url'])).group(1)
+                    re.search(r"\?h=(.*)", self.response['epub_url'])).group(1)
                 self.file_format = ".epub"
 
             elif format_type == 1:
-                cache_url = response['mobi_url']
+                cache_url = self.response['mobi_url']
                 self.cache_hash = (
-                    re.search(r"\?h=(.*)", response['epub_url'])).group(1)
+                    re.search(r"\?h=(.*)", self.response['epub_url'])).group(1)
                 self.file_format = ".mobi"
 
             elif format_type == 2:
-                cache_url = response['pdf_url']
+                cache_url = self.response['pdf_url']
                 self.cache_hash = (
-                    re.search(r"\?h=(.*)", response['epub_url'])).group(1)
+                    re.search(r"\?h=(.*)", self.response['epub_url'])).group(1)
                 self.file_format = ".pdf"
 
             elif format_type == 3:
-                cache_url = response['html_url']
+                cache_url = self.response['html_url']
                 self.cache_hash = (
-                    re.search(r"\?h=(.*)", response['epub_url'])).group(1)
+                    re.search(r"\?h=(.*)", self.response['epub_url'])).group(1)
                 self.file_format = ".zip"
 
-            self.file_name = response['epub_url'].split("/")[4].split("?")[0]
+            self.file_name = self.response['epub_url'].split(
+                "/")[4].split("?")[0]
             self.file_name = self.file_name.replace(".epub", self.file_format)
             self.download_url = "https://fichub.net"+cache_url
 
@@ -108,5 +109,5 @@ class FicHub:
         if self.debug:
             logger.debug(f"GET: {response.status_code}: {response.url}")
 
-        response = response.json()
-        self.fic_extraMetadata = json.dumps(response['meta'], indent=4)
+        self.response = response.json()
+        self.fic_extraMetadata = json.dumps(self.response['meta'], indent=4)
