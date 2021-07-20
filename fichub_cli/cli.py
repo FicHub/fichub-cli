@@ -71,7 +71,6 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
 
     if version:
         click.echo("Version: 0.3.7a")
-        sys.exit(0)
 
     if supported_sites:
         click.echo(Fore.GREEN + """
@@ -100,6 +99,8 @@ Partial support (or not tested recently):""" + Style.RESET_ALL + """
 """ + Fore.BLUE + """
 To report issues upstream for these sites, visit https://fichub.net/#contact
 """)
-        sys.exit(0)
 
-    sys.exit(fic.exit_status)
+    try:
+        sys.exit(fic.exit_status)
+    except UnboundLocalError:
+        sys.exit(0)
