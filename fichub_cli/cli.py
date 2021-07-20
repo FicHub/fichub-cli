@@ -8,7 +8,7 @@ from .utils.processing import get_format_type
 from .utils.fetch_data import FetchData
 
 init(autoreset=True)  # colorama init
-time = datetime.now().strftime("%H_%M_%S")
+time = datetime.now().strftime("%Y-%m-%d - %H%M")
 
 
 # @logger.catch  # for internal debugging
@@ -16,6 +16,7 @@ time = datetime.now().strftime("%H_%M_%S")
 @click.option('-u', '--url', help='The url of the fanfiction enclosed within quotes.')
 @click.option('-i', '--infile', help='Give a filename to read URLs from.')
 @click.option('-l', '--list-url', 'list_url',  help='Enter a comma separated list of urls to download, enclosed within quotes.')
+@click.option('-v', '--verbose', default=False, help='Verbose progressbar', is_flag=True)
 @click.option('-o', '--out-dir', 'out_dir', default="", help='Absolute path to the Output directory for files (default: Current Directory).')
 @click.option('-f', '--format', '_format', default="epub", help='Download Format: epub (default), mobi, pdf or html.')
 @click.option('--force', default=False, help=' Force overwrite of an existing file.', is_flag=True)
@@ -25,11 +26,11 @@ time = datetime.now().strftime("%H_%M_%S")
 @click.option('--meta-json', 'meta_json', default=None, help='Fetch only the metadata for the fanfiction in json format.')
 @click.option('--log', default=False, help='Save the logfile for debugging.', is_flag=True)
 @click.option('-a', '--automated', default=False, help='For internal testing only.', is_flag=True, hidden=True)
-@click.option('-v', '--version', default=False, help='Display version & quit.', is_flag=True)
+@click.option('--version', default=False, help='Display version & quit.', is_flag=True)
 def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
             out_dir: str, debug: bool, version: bool, log: bool,
             supported_sites: bool, force: bool, automated: bool,
-            meta_json: str):
+            meta_json: str, verbose: bool):
     """
     A CLI for the fichub.net API
 
@@ -41,36 +42,35 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
     if log:
         debug = True
         click.echo(
-            Fore.GREEN + f"Creating fichub_cli_{time}.log in the current directory")
-        logger.add(f"fichub_cli_{time}.log")
+            Fore.GREEN + f"Creating fichub_cli - {time}.log in the current directory")
+        logger.add(f"fichub_cli - {time}.log")
 
     format_type = get_format_type(_format)
     if infile:
         fic = FetchData(format_type, out_dir, force,
-                        debug, automated)
+                        debug, automated, verbose)
         fic.get_fic_with_infile(infile)
 
     elif list_url:
         fic = FetchData(format_type, out_dir, force,
-                        debug, automated)
+                        debug, automated, verbose)
         fic.get_fic_with_list(list_url)
 
     elif url:
         fic = FetchData(format_type, out_dir, force,
-                        debug, automated)
+                        debug, automated, verbose)
         fic.get_fic_with_url(url)
 
     elif get_urls:
-        fic = FetchData(debug)
+        fic = FetchData(debug=debug)
         fic.get_urls_from_page(get_urls)
 
     elif meta_json:
-        fic = FetchData(debug)
+        fic = FetchData(debug=debug)
         fic.get_metadata(meta_json)
 
     if version:
-        click.echo("Version: 0.3.6")
-        sys.exit(0)
+        click.echo("Version: 0.3.7")
 
     if supported_sites:
         click.echo(Fore.GREEN + """
@@ -99,6 +99,8 @@ Partial support (or not tested recently):""" + Style.RESET_ALL + """
 """ + Fore.BLUE + """
 To report issues upstream for these sites, visit https://fichub.net/#contact
 """)
-        sys.exit(0)
 
-    sys.exit(fic.exit_status)
+    try:
+        sys.exit(fic.exit_status)
+    except UnboundLocalError:
+        sys.exit(0)

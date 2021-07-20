@@ -39,6 +39,7 @@ Options:
   -i, --infile TEXT      Give a filename to read URLs from.
   -l, --list-url TEXT    Enter a comma separated list of urls to download,
                          enclosed within quotes.
+  -v, --verbose          Verbose progressbar
   -o, --out-dir TEXT     Absolute path to the Output directory for files
                          (default: Current Directory).
   -f, --format TEXT      Download Format: epub (default), mobi, pdf or html.
@@ -50,7 +51,7 @@ Options:
   --meta-json TEXT       Fetch only the metadata for the fanfiction in json
                          format.
   --log                  Save the logfile for debugging.
-  -v, --version          Display version & quit.
+  --version              Display version & quit.
   --help                 Show this message and exit.
 ```
 

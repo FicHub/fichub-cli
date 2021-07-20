@@ -1,6 +1,7 @@
 from colorama import Fore
 from loguru import logger
 from tqdm import tqdm
+from datetime import datetime
 
 
 def init_log(debug: bool, force: bool):
@@ -24,6 +25,27 @@ def downloaded_log(debug: bool, file_name: str):
 
 def download_processing_log(debug: bool, url: str):
     if debug:
-        logger.info(f"Processing {url}")
+        logger.info(f"Processing {url.strip()}")
     else:
-        tqdm.write(Fore.BLUE + f"\nProcessing {url}")
+        tqdm.write(Fore.BLUE + f"\nProcessing {url.strip()}")
+
+
+def verbose_log(debug: bool, fic):
+    try:
+        if debug:
+            logger.info("Total Chapters: " +
+                        str(fic.response['meta']['chapters'])
+                        + " | Last Scrape: " + datetime
+                        .strptime(str(fic.response['meta']['updated']), "%Y-%m-%dT%H:%M:%S")
+                        .strftime("%d %b, %Y at %H:%M:%S"))
+        else:
+            tqdm.write(Fore.MAGENTA
+                       + "Total Chapters: " +
+                       str(fic.response['meta']['chapters'])
+                       + "\nLast Scrape: " + datetime
+                       .strptime(str(fic.response['meta']['updated']), "%Y-%m-%dT%H:%M:%S")
+                       .strftime("%d %b, %Y at %H:%M:%S"))
+    # Error: KeyError: 'meta'
+    # Reason: Unsupported url
+    except KeyError:
+        pass

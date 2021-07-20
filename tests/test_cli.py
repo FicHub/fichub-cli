@@ -43,8 +43,8 @@ def test_cli_infile():
 def test_cli_version():
     runner = CliRunner()
 
-    result = runner.invoke(run_cli, ['-v'])
+    result = runner.invoke(run_cli, ['--version'])
 
     assert not result.exception
     assert result.exit_code == 0
-    assert result.output.strip() == 'Version: 0.3.6'
+    assert result.output.strip() == 'Version: 0.3.7'
