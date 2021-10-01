@@ -43,6 +43,9 @@ def check_url(url: str, debug: bool = False,
         unsupported_flag = False
 
     if unsupported_flag:
+        with open("err.log", "a") as file:
+            file.write(url)
+
         exit_status = 1
 
         if debug:

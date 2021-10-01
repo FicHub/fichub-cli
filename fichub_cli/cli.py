@@ -70,7 +70,7 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         fic.get_metadata(meta_json)
 
     if version:
-        click.echo("Version: 0.3.7")
+        click.echo("Version: 0.3.8")
 
     if supported_sites:
         click.echo(Fore.GREEN + """
@@ -99,8 +99,10 @@ Partial support (or not tested recently):""" + Style.RESET_ALL + """
 """ + Fore.BLUE + """
 To report issues upstream for these sites, visit https://fichub.net/#contact
 """)
-
     try:
+        if fic.exit_status == 1:
+            click.echo(Fore.RED + """
+Unsupported URLs found! Check err.log in the current directory!""" + Style.RESET_ALL)
         sys.exit(fic.exit_status)
     except UnboundLocalError:
         sys.exit(0)

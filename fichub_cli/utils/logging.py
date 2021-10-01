@@ -42,7 +42,7 @@ def verbose_log(debug: bool, fic):
             tqdm.write(Fore.MAGENTA
                        + "Total Chapters: " +
                        str(fic.response['meta']['chapters'])
-                       + "\nLast Scrape: " + datetime
+                       + "\nLast Updated: " + datetime
                        .strptime(str(fic.response['meta']['updated']), "%Y-%m-%dT%H:%M:%S")
                        .strftime("%d %b, %Y at %H:%M:%S"))
     # Error: KeyError: 'meta'

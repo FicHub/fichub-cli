@@ -75,11 +75,15 @@ class FetchData:
                     # Error: 'FicHub' object has no attribute 'file_name'
                     # Reason: Unsupported URL
                     except AttributeError:
+                        with open("err.log", "a") as file:
+                            file.write(url+"\n")
                         pbar.update(1)
                         self.exit_status = 1
                         pass  # skip the unsupported url
 
                 else:  # skip the unsupported url
+                    with open("err.log", "a") as file:
+                        file.write(url+"\n")
                     pbar.update(1)
                     continue
 
@@ -125,11 +129,15 @@ class FetchData:
                     # Error: 'FicHub' object has no attribute 'file_name'
                     # Reason: Unsupported URL
                     except AttributeError:
+                        with open("err.log", "a") as file:
+                            file.write(url)
                         pbar.update(1)
                         self.exit_status = 1
                         pass  # skip the unsupported url
 
                 else:  # skip the unsupported url
+                    with open("err.log", "a") as file:
+                        file.write(url)
                     pbar.update(1)
                     continue
 
@@ -171,11 +179,15 @@ class FetchData:
                 # Error: 'FicHub' object has no attribute 'file_name'
                 # Reason: Unsupported URL
                 except AttributeError:
+                    with open("err.log", "a") as file:
+                        file.write(url)
                     pbar.update(1)
                     self.exit_status = 1
                     pass  # skip the unsupported url
 
-            else:
+            else:  # skip the unsupported url
+                with open("err.log", "a") as file:
+                    file.write(url)
                 pbar.update(1)
 
     def get_urls_from_page(self, get_urls: str):
