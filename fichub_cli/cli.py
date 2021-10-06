@@ -26,18 +26,24 @@ time = datetime.now().strftime("%Y-%m-%d - %H%M")
 @click.option('--meta-json', 'meta_json', default=None, help='Fetch only the metadata for the fanfiction in json format.')
 @click.option('--log', default=False, help='Save the logfile for debugging.', is_flag=True)
 @click.option('-a', '--automated', default=False, help='For internal testing only.', is_flag=True, hidden=True)
+@click.option('--pytest', default=False, help='To run pytest on the CLI for internal testing', is_flag=True, hidden=True)
 @click.option('--version', default=False, help='Display version & quit.', is_flag=True)
 def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
             out_dir: str, debug: bool, version: bool, log: bool,
             supported_sites: bool, force: bool, automated: bool,
-            meta_json: str, verbose: bool):
+            meta_json: str, verbose: bool, pytest: bool):
     """
     A CLI for the fichub.net API
 
     To report issues upstream for supported sites, visit https://fichub.net/#contact
 
     To report issues for the CLI, open an issue at https://github.com/FicHub/fichub-cli/issues
+
+    Failed downloads will be saved in the `err.log` file in the current directory.
     """
+    if pytest:  # for internal testing
+        import pytest
+        pytest.main(['-v'])
 
     if log:
         debug = True

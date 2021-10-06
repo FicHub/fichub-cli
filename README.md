@@ -91,6 +91,7 @@ fichub_cli --meta-json "https://www.fanfiction.net/s/12933896/1/Things-you-canno
 
 - The fanfiction will be downloaded in epub format. To change it, use `-f` followed by the format.
 - The fanfiction will be downloaded in the current directory. To change it, use `-o` followed by the path to the directory.
+- Failed downloads will be saved in the `err.log` file in the current directory.
 
 Check `fichub_cli --help` for more info.
 
