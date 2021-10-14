@@ -6,7 +6,7 @@ from loguru import logger
 import json
 
 headers = {
-    'User-Agent': 'fichub_cli/0.3.8',
+    'User-Agent': 'fichub_cli/0.3.9',
 }
 
 
