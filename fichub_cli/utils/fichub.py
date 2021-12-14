@@ -109,5 +109,15 @@ class FicHub:
         if self.debug:
             logger.debug(f"GET: {response.status_code}: {response.url}")
 
-        self.response = response.json()
-        self.fic_extraMetadata = json.dumps(self.response['meta'], indent=4)
+        try:
+            self.response = response.json()
+            self.fic_extraMetadata = json.dumps(
+                self.response['meta'], indent=4)
+
+        # if metadata not found
+        except KeyError:
+            self.fic_extraMetadata = ""
+            tqdm.write(
+                Fore.RED + f"Skipping unsupported URL: {url}" +
+                Style.RESET_ALL + Fore.CYAN +
+                "\nReport the error if the URL is supported!")
