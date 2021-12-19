@@ -85,7 +85,6 @@ Supported Sites:""" + Style.RESET_ALL + """
     - SpaceBattles, SufficientVelocity, QuestionableQuesting (XenForo)
     - FanFiction.net, FictionPress
     - Archive Of Our Own
-    - Royal Road
     - Harry Potter Fanfic Archive
     - Sink Into Your Eyes
     - AdultFanfiction.org
