@@ -1,4 +1,6 @@
 import re
+import os
+import json
 import requests
 from tqdm import tqdm
 from colorama import Fore, Style
@@ -246,13 +248,52 @@ class FetchData:
                 tqdm.write(Fore.RED + "\nFound 0 urls.")
                 self.exit_status = 1
 
-    def get_metadata(self, url: str):
+    def get_metadata(self, _input: str):
 
-        with console.status("[bold green]Processing..."):
-            supported_url, self.exit_status = check_url(
-                url, self.debug, self.exit_status)
+        meta_list = []
+        file_name = "metadata"
+        supported_url = None
+
+        # check if the input is a file
+        if os.path.isfile(_input):
+            # get the tail
+            _, file_name = os.path.split(_input)
+            file_name = os.path.splitext(file_name)[0]
+            with open(_input, "r") as f:
+                urls = f.read().splitlines()
+
+        else:
+            urls = [_input]
+
+        with tqdm(total=len(urls), ascii=False,
+                  unit="url", bar_format=bar_format) as pbar:
+
+            for url in urls:
+                pbar.update(1)
+                supported_url, self.exit_status = check_url(
+                    url, self.debug, self.exit_status)
+
+                if supported_url:
+                    fic = FicHub(self.debug, self.automated,
+                                 self.exit_status)
+                    fic.get_fic_extraMetadata(url)
+
+                    if fic.fic_extraMetadata:
+                        meta_list.append(fic.fic_extraMetadata)
+                    else:
+                        supported_url = None
+
+            meta_data = "{\"meta\": ["+", ".join(meta_list)+"]}"
 
             if supported_url:
-                fic = FicHub(self.debug, self.automated, self.exit_status)
-                fic.get_fic_extraMetadata(url)
-                console.print(fic.fic_extraMetadata)
+                if file_name == "metadata":
+                    with open(f"{file_name}.json", "w") as outfile:
+                        outfile.write(meta_data)
+                else:
+                    with open(f"{file_name}.json", "w") as outfile:
+                        outfile.write(meta_data)
+
+                tqdm.write(Fore.GREEN +
+                           "\nMetadata saved as " + Fore.BLUE +
+                           f"{file_name}.json"+Style.RESET_ALL + Fore.GREEN + " in the current directory!" +
+                           Style.RESET_ALL)

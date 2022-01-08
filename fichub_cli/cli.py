@@ -68,15 +68,15 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         fic.get_fic_with_url(url)
 
     elif get_urls:
-        fic = FetchData(debug=debug)
+        fic = FetchData(debug=debug, automated=automated)
         fic.get_urls_from_page(get_urls)
 
     elif meta_json:
-        fic = FetchData(debug=debug)
+        fic = FetchData(debug=debug, automated=automated)
         fic.get_metadata(meta_json)
 
     if version:
-        click.echo("Version: 0.3.9")
+        click.echo("Version: 0.3.10a")
 
     if supported_sites:
         click.echo(Fore.GREEN + """
