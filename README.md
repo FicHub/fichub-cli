@@ -14,7 +14,7 @@ To report issues for the CLI, open an issue at https://github.com/FicHub/fichub-
 pip install -U fichub-cli
 ```
 
-## From Source (Might have bugs, for development use)
+## From Source (Might have bugs, for testing only)
 
 ```
 pip install git+https://github.com/FicHub/fichub-cli@main
@@ -35,25 +35,30 @@ Usage: fichub_cli [OPTIONS]
   https://github.com/FicHub/fichub-cli/issues
 
 Options:
-  -u, --url TEXT         The url of the fanfiction enclosed within quotes.
-  -i, --infile TEXT      Give a filename to read URLs from.
-  -l, --list-url TEXT    Enter a comma separated list of urls to download,
-                         enclosed within quotes.
+  -u, --url TEXT         The url of the fanfiction enclosed within quotes
+  -i, --infile TEXT      Give a filename to read URLs from
+  -l, --list-url TEXT    Enter a comma separated list of urls to download, enclosed within quotes
   -v, --verbose          Verbose progressbar
-  -o, --out-dir TEXT     Absolute path to the Output directory for files
-                         (default: Current Directory).
-  -f, --format TEXT      Download Format: epub (default), mobi, pdf or html.
-  --force                Force overwrite of an existing file.
-  --get-urls TEXT        Get all story urls found from a page. Currently
-                         supports archiveofourown.org only.
-  -s, --supported-sites  List of supported sites.
-  -d, --debug            Show the log in the console for debugging.
-  --meta-json TEXT       Fetch only the metadata for the fanfiction in json
-                         format.
-  --log                  Save the logfile for debugging.
-  --version              Display version & quit.
-  --help                 Show this message and exit.
+  -o, --out-dir TEXT     Absolute path to the Output directory for files (default: Current Directory)
+  -f, --format TEXT      Download Format: epub (default), mobi, pdf or html
+  --force                Force overwrite of an existing file
+  --get-urls TEXT        Get all story urls found from a page.Currently supports archiveofourown.org only
+  -s, --supported-sites  List of supported sites
+  -d, --debug            Show the log in the console for debugging
+  --meta-json TEXT       Fetch only the metadata for the fanfiction in json format
+  --log                  Save the logfile for debugging
+  --version              Display version & quit
+  --help                 Show this message and exit
 ```
+
+### Default Configuration
+
+- The fanfiction will be downloaded in epub format. To change it, use `-f` followed by the format.
+- The fanfiction will be downloaded in the current directory. To change it, use `-o` followed by the path to the directory.
+- Failed downloads will be saved in the `err.log` file in the current directory.
+- `--meta-json` takes either URL or a file containing a list of URLs.
+
+Check `fichub_cli --help` for more info.
 
 ## Example
 
@@ -86,14 +91,6 @@ fichub_cli --get-urls https://archiveofourown.org/users/flamethrower/
 ```
 fichub_cli --meta-json "https://www.fanfiction.net/s/12933896/1/Things-you-cannot-leave-behind"
 ```
-
-### Default Configuration
-
-- The fanfiction will be downloaded in epub format. To change it, use `-f` followed by the format.
-- The fanfiction will be downloaded in the current directory. To change it, use `-o` followed by the path to the directory.
-- Failed downloads will be saved in the `err.log` file in the current directory.
-
-Check `fichub_cli --help` for more info.
 
 # Links
 

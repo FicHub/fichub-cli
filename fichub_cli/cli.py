@@ -13,21 +13,21 @@ time = datetime.now().strftime("%Y-%m-%d - %H%M")
 
 # @logger.catch  # for internal debugging
 @click.command(no_args_is_help=True)
-@click.option('-u', '--url', help='The url of the fanfiction enclosed within quotes.')
-@click.option('-i', '--infile', help='Give a filename to read URLs from.')
-@click.option('-l', '--list-url', 'list_url',  help='Enter a comma separated list of urls to download, enclosed within quotes.')
+@click.option('-u', '--url', help='The url of the fanfiction enclosed within quotes')
+@click.option('-i', '--infile', help='Give a filename to read URLs from')
+@click.option('-l', '--list-url', 'list_url',  help='Enter a comma separated list of urls to download, enclosed within quotes')
 @click.option('-v', '--verbose', default=False, help='Verbose progressbar', is_flag=True)
-@click.option('-o', '--out-dir', 'out_dir', default="", help='Absolute path to the Output directory for files (default: Current Directory).')
-@click.option('-f', '--format', '_format', default="epub", help='Download Format: epub (default), mobi, pdf or html.')
-@click.option('--force', default=False, help=' Force overwrite of an existing file.', is_flag=True)
-@click.option('--get-urls', 'get_urls', default=None, help='Get all story urls found from a page. Currently supports archiveofourown.org only.')
-@click.option('-s', '--supported-sites', 'supported_sites', default=False, help='List of supported sites.', is_flag=True)
-@click.option('-d', '--debug', default=False, help='Show the log in the console for debugging.', is_flag=True)
-@click.option('--meta-json', 'meta_json', default=None, help='Fetch only the metadata for the fanfiction in json format.')
-@click.option('--log', default=False, help='Save the logfile for debugging.', is_flag=True)
-@click.option('-a', '--automated', default=False, help='For internal testing only.', is_flag=True, hidden=True)
+@click.option('-o', '--out-dir', 'out_dir', default="", help='Absolute path to the Output directory for files (default: Current Directory)')
+@click.option('-f', '--format', '_format', default="epub", help='Download Format: epub (default), mobi, pdf or html')
+@click.option('--force', default=False, help=' Force overwrite of an existing file', is_flag=True)
+@click.option('--get-urls', 'get_urls', default=None, help='Get all story urls found from a page. Currently supports archiveofourown.org only')
+@click.option('-s', '--supported-sites', 'supported_sites', default=False, help='List of supported sites', is_flag=True)
+@click.option('-d', '--debug', default=False, help='Show the log in the console for debugging', is_flag=True)
+@click.option('--meta-json', 'meta_json', default=None, help='Fetch only the metadata for the fanfiction in json format')
+@click.option('--log', default=False, help='Save the logfile for debugging', is_flag=True)
+@click.option('-a', '--automated', default=False, help='For internal testing only', is_flag=True, hidden=True)
 @click.option('--pytest', default=False, help='To run pytest on the CLI for internal testing', is_flag=True, hidden=True)
-@click.option('--version', default=False, help='Display version & quit.', is_flag=True)
+@click.option('--version', default=False, help='Display version & quit', is_flag=True)
 def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
             out_dir: str, debug: bool, version: bool, log: bool,
             supported_sites: bool, force: bool, automated: bool,
@@ -76,7 +76,7 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         fic.get_metadata(meta_json)
 
     if version:
-        click.echo("Version: 0.3.10a")
+        click.echo("Version: 0.4.0")
 
     if supported_sites:
         click.echo(Fore.GREEN + """
