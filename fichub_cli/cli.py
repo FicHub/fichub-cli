@@ -8,7 +8,7 @@ from .utils.processing import get_format_type
 from .utils.fetch_data import FetchData
 
 init(autoreset=True)  # colorama init
-time = datetime.now().strftime("%Y-%m-%d - %H%M")
+timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
 
 
 # @logger.catch  # for internal debugging
@@ -48,8 +48,8 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
     if log:
         debug = True
         click.echo(
-            Fore.GREEN + f"Creating fichub_cli - {time}.log in the current directory")
-        logger.add(f"fichub_cli - {time}.log")
+            Fore.GREEN + f"Creating fichub_cli - {timestamp}.log in the current directory")
+        logger.add(f"fichub_cli - {timestamp}.log")
 
     format_type = get_format_type(_format)
     if infile:
@@ -76,7 +76,7 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         fic.get_metadata(meta_json)
 
     if version:
-        click.echo("Version: 0.4.0")
+        click.echo("Version: 0.4.1")
 
     if supported_sites:
         click.echo(Fore.GREEN + """

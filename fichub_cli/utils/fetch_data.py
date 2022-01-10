@@ -1,6 +1,6 @@
 import re
 import os
-import json
+from datetime import datetime
 import requests
 from tqdm import tqdm
 from colorama import Fore, Style
@@ -286,12 +286,9 @@ class FetchData:
             meta_data = "{\"meta\": ["+", ".join(meta_list)+"]}"
 
             if supported_url:
-                if file_name == "metadata":
-                    with open(f"{file_name}.json", "w") as outfile:
-                        outfile.write(meta_data)
-                else:
-                    with open(f"{file_name}.json", "w") as outfile:
-                        outfile.write(meta_data)
+                timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
+                with open(f"{file_name} - {timestamp}.json", "w") as outfile:
+                    outfile.write(meta_data)
 
                 tqdm.write(Fore.GREEN +
                            "\nMetadata saved as " + Fore.BLUE +
