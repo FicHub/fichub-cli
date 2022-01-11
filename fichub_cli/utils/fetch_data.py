@@ -9,7 +9,8 @@ from bs4 import BeautifulSoup
 from rich.console import Console
 
 from .fichub import FicHub
-from .logging import init_log, download_processing_log, verbose_log
+from .logging import init_log, download_processing_log, \
+    verbose_log, meta_fetched_log
 from .processing import check_url, save_data
 
 bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
@@ -269,6 +270,7 @@ class FetchData:
                   unit="url", bar_format=bar_format) as pbar:
 
             for url in urls:
+                download_processing_log(self.debug, url)
                 pbar.update(1)
                 supported_url, self.exit_status = check_url(
                     url, self.debug, self.exit_status)
@@ -280,6 +282,7 @@ class FetchData:
 
                     if fic.fic_extraMetadata:
                         meta_list.append(fic.fic_extraMetadata)
+                        meta_fetched_log(self.debug, url)
                     else:
                         supported_url = None
 
