@@ -72,11 +72,12 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         fic.get_urls_from_page(get_urls)
 
     elif meta_json:
-        fic = FetchData(debug=debug, automated=automated)
+        fic = FetchData(debug=debug, automated=automated,
+                        out_dir=out_dir)
         fic.get_metadata(meta_json)
 
     if version:
-        click.echo("Version: 0.4.1")
+        click.echo("Version: 0.4.2")
 
     if supported_sites:
         click.echo(Fore.GREEN + """

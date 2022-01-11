@@ -284,13 +284,15 @@ class FetchData:
                         supported_url = None
 
             meta_data = "{\"meta\": ["+", ".join(meta_list)+"]}"
+            timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
+            json_file = os.path.join(
+                self.out_dir, file_name) + f" - {timestamp}.json"
 
             if supported_url:
-                timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
-                with open(f"{file_name} - {timestamp}.json", "w") as outfile:
+                with open(json_file, "w") as outfile:
                     outfile.write(meta_data)
 
                 tqdm.write(Fore.GREEN +
                            "\nMetadata saved as " + Fore.BLUE +
-                           f"{file_name}.json"+Style.RESET_ALL + Fore.GREEN + " in the current directory!" +
+                           f"{os.path.abspath(json_file)}"+Style.RESET_ALL +
                            Style.RESET_ALL)

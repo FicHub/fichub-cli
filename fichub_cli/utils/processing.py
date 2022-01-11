@@ -67,14 +67,14 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
               debug: bool, force: bool, cache_hash: str,
               exit_status: int, automated: bool) -> int:
 
-    ebook_file = out_dir+file_name
+    ebook_file = os.path.join(out_dir, file_name)
     try:
         hash_flag = check_hash(ebook_file, cache_hash)
 
     except FileNotFoundError:
         hash_flag = False
 
-    if os.path.exists(out_dir+file_name) and force is False and hash_flag is True:
+    if os.path.exists(ebook_file) and force is False and hash_flag is True:
 
         exit_status = 1
         if debug:
@@ -82,18 +82,18 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
                 "The hash of the local file & the remote file is the same.")
 
             logger.error(
-                f"{out_dir+file_name} is already the latest version. Skipping download. Use --force flag to overwrite.")
+                f"{ebook_file} is already the latest version. Skipping download. Use --force flag to overwrite.")
 
         else:
             tqdm.write(
                 Fore.RED +
-                f"{out_dir+file_name} is already the latest version. Skipping download." +
+                f"{ebook_file} is already the latest version. Skipping download." +
                 Style.RESET_ALL + Fore.CYAN + " Use --force flag to overwrite.")
 
     else:
         if force and debug:
             logger.warning(
-                f"--force flag was passed. Overwriting {out_dir+file_name}")
+                f"--force flag was passed. Overwriting {ebook_file}")
 
         fic = FicHub(debug, automated, exit_status)
         fic.get_fic_data(download_url)

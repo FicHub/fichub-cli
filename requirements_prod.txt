@@ -1,12 +1,8 @@
-beautifulsoup4==4.9.3
-certifi==2020.12.5
-chardet==4.0.0
-click==7.1.2
-rich==10.3.0
+beautifulsoup4==4.10.0
+click==8.0.3
+click-plugins==1.1.1
+rich==11.0.0
 colorama==0.4.4
-idna==2.10
 loguru==0.5.3
-requests==2.25.1
-soupsieve==2.2.1
+requests==2.27.1
 tqdm==4.60.0
-urllib3==1.26.5

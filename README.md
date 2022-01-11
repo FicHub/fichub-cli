@@ -51,16 +51,16 @@ Options:
   --help                 Show this message and exit
 ```
 
-### Default Configuration
+# Default Configuration
 
 - The fanfiction will be downloaded in epub format. To change it, use `-f` followed by the format.
 - The fanfiction will be downloaded in the current directory. To change it, use `-o` followed by the path to the directory.
 - Failed downloads will be saved in the `err.log` file in the current directory.
-- `--meta-json` takes either URL or a file containing a list of URLs.
+- `--meta-json` takes either URL or a file containing a list of URLs. `--out-dir` can be used to select an output directory.
 
 Check `fichub_cli --help` for more info.
 
-## Example
+# Example
 
 - To download using a URL
 
@@ -80,6 +80,13 @@ fichub_cli -i urls.txt
 fichub_cli -l "https://www.fanfiction.net/s/11191235/1/Harry-Potter-and-the-Prince-of-Slytherin,https://www.fanfiction.net/s/13720575/1/A-Cadmean-Victory-Remastered"
 ```
 
+---
+
+**NOTE**
+`--out-dir` can be used in all the above commands to select an output directory.
+
+---
+
 - To get all story urls found from a page. Currently supports archiveofourown.org only.
 
 ```
@@ -90,6 +97,14 @@ fichub_cli --get-urls https://archiveofourown.org/users/flamethrower/
 
 ```
 fichub_cli --meta-json "https://www.fanfiction.net/s/12933896/1/Things-you-cannot-leave-behind"
+```
+
+```
+fichub_cli --meta-json urls.txt
+```
+
+```
+fichub_cli --meta-json urls.txt --out-dir "~/Desktop/books"
 ```
 
 # Links
