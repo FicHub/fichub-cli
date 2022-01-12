@@ -205,7 +205,7 @@ class FetchData:
             logger.debug("--get-urls flag used!")
 
         with console.status("[bold green]Processing..."):
-            response = requests.get(get_urls)
+            response = requests.get(get_urls, timeout=(5, 300))
 
             if self.debug:
                 logger.debug(f"GET: {response.status_code}: {response.url}")
@@ -304,7 +304,7 @@ class FetchData:
             json_file = os.path.join(
                 self.out_dir, file_name) + f" - {timestamp}.json"
 
-            if supported_url:
+            if meta_list:
                 with open(json_file, "w") as outfile:
                     if self.debug:
                         logger.info(f"Saving {json_file}")

@@ -9,7 +9,7 @@ from loguru import logger
 import json
 
 headers = {
-    'User-Agent': 'fichub_cli/0.4.4',
+    'User-Agent': 'fichub_cli/0.4.5',
 }
 
 retry_strategy = Retry(
@@ -40,7 +40,7 @@ class FicHub:
 
         response = self.http.get(
             "https://fichub.net/api/v0/epub", params=params,
-            allow_redirects=True, headers=headers, timeout=5
+            allow_redirects=True, headers=headers, timeout=(6.1, 300)
         )
 
         if self.debug:
@@ -100,7 +100,7 @@ class FicHub:
 
         self.response_data = self.http.get(
             download_url, allow_redirects=True, headers=headers,
-            params=params, timeout=5)
+            params=params, timeout=(6.1, 300))
 
         if self.debug:
             logger.debug(
@@ -117,7 +117,7 @@ class FicHub:
 
         response = self.http.get(
             "https://fichub.net/api/v0/epub", params=params,
-            allow_redirects=True, headers=headers, timeout=5
+            allow_redirects=True, headers=headers, timeout=(6.1, 300)
         )
 
         if self.debug:
