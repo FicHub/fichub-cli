@@ -1,4 +1,7 @@
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+
 import re
 from colorama import Fore, Style
 from tqdm import tqdm
@@ -6,8 +9,14 @@ from loguru import logger
 import json
 
 headers = {
-    'User-Agent': 'fichub_cli/0.4.4a',
+    'User-Agent': 'fichub_cli/0.4.4',
 }
+
+retry_strategy = Retry(
+    total=3,
+    backoff_factor=1,
+    status_forcelist=[429, 500, 502, 503, 504]
+)
 
 
 class FicHub:
@@ -15,6 +24,10 @@ class FicHub:
         self.debug = debug
         self.automated = automated
         self.exit_status = exit_status
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        self.http = requests.Session()
+        self.http.mount("https://", adapter)
+        self.http.mount("http://", adapter)
 
     def get_fic_metadata(self, url: str, format_type: int):
 
@@ -25,9 +38,9 @@ class FicHub:
                 logger.debug(
                     "--automated flag was passed. Internal Testing mode is on.")
 
-        response = requests.get(
+        response = self.http.get(
             "https://fichub.net/api/v0/epub", params=params,
-            allow_redirects=True, headers=headers
+            allow_redirects=True, headers=headers, timeout=5
         )
 
         if self.debug:
@@ -85,8 +98,9 @@ class FicHub:
         if self.automated:  # for internal testing
             params['automated'] = 'true'
 
-        self.response_data = requests.get(
-            download_url, allow_redirects=True, headers=headers, params=params)
+        self.response_data = self.http.get(
+            download_url, allow_redirects=True, headers=headers,
+            params=params, timeout=5)
 
         if self.debug:
             logger.debug(
@@ -101,9 +115,9 @@ class FicHub:
                 logger.debug(
                     "--automated flag was passed. Internal Testing mode is on.")
 
-        response = requests.get(
+        response = self.http.get(
             "https://fichub.net/api/v0/epub", params=params,
-            allow_redirects=True, headers=headers
+            allow_redirects=True, headers=headers, timeout=5
         )
 
         if self.debug:
