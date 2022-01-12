@@ -101,6 +101,9 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
         downloaded_log(debug, file_name)
 
         with open(ebook_file, "wb") as f:
+            if debug:
+                logger.info(
+                    f"Saving {ebook_file}")
             f.write(fic.response_data.content)
 
     return exit_status

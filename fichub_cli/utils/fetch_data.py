@@ -30,13 +30,19 @@ class FetchData:
 
     def get_fic_with_infile(self, infile: str):
         if self.debug:
-            logger.debug("Calling get_fic_with_infile()")
+            logger.debug("-i flag used!")
+            logger.debug(f"Input file: {infile}")
 
         try:
             with open(infile, "r") as f:
                 urls = f.read().splitlines()
 
         except FileNotFoundError:
+
+            if self.debug:
+                logger.error(
+                    f"FileNotFoundError: {infile} file could not be found. Please enter a valid file path.")
+
             tqdm.write(
                 Fore.RED +
                 f"{infile} file could not be found. Please enter a valid file path.")
@@ -93,7 +99,7 @@ class FetchData:
     def get_fic_with_list(self, list_url: str):
 
         if self.debug:
-            logger.debug("Calling get_fic_with_list()")
+            logger.debug("-l flag used!")
 
         urls = list_url.split(",")
 
@@ -147,7 +153,7 @@ class FetchData:
     def get_fic_with_url(self, url: str):
 
         if self.debug:
-            logger.debug("Calling get_fic_with_url()")
+            logger.debug("-u flag used!")
 
         init_log(self.debug, self.force)
         with tqdm(total=1, ascii=False,
@@ -194,6 +200,9 @@ class FetchData:
                 pbar.update(1)
 
     def get_urls_from_page(self, get_urls: str):
+
+        if self.debug:
+            logger.debug("--get-urls flag used!")
 
         with console.status("[bold green]Processing..."):
             response = requests.get(get_urls)
@@ -257,6 +266,8 @@ class FetchData:
 
         # check if the input is a file
         if os.path.isfile(_input):
+            if self.debug:
+                logger.info(f"Input file: {_input}")
             # get the tail
             _, file_name = os.path.split(_input)
             file_name = os.path.splitext(file_name)[0]
@@ -264,6 +275,8 @@ class FetchData:
                 urls = f.read().splitlines()
 
         else:
+            if self.debug:
+                logger.info("Input is an URL")
             urls = [_input]
 
         with tqdm(total=len(urls), ascii=False,
@@ -293,6 +306,8 @@ class FetchData:
 
             if supported_url:
                 with open(json_file, "w") as outfile:
+                    if self.debug:
+                        logger.info(f"Saving {json_file}")
                     outfile.write(meta_data)
 
                 tqdm.write(Fore.GREEN +
