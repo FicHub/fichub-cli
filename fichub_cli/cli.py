@@ -1,4 +1,4 @@
-import click
+import typer
 import sys
 from loguru import logger
 from datetime import datetime
@@ -10,28 +10,52 @@ from .utils.fetch_data import FetchData
 init(autoreset=True)  # colorama init
 timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
 
+app = typer.Typer(add_completion=False)
+
 
 # @logger.catch  # for internal debugging
-@click.command(no_args_is_help=True)
-@click.option('-u', '--url', help='The url of the fanfiction enclosed within quotes')
-@click.option('-i', '--infile', help='Give a filename to read URLs from')
-@click.option('-l', '--list-url', 'list_url',  help='Enter a comma separated list of urls to download, enclosed within quotes')
-@click.option('-v', '--verbose', default=False, help='Verbose progressbar', is_flag=True)
-@click.option('-o', '--out-dir', 'out_dir', default="", help='Absolute path to the Output directory for files (default: Current Directory)')
-@click.option('-f', '--format', '_format', default="epub", help='Download Format: epub (default), mobi, pdf or html')
-@click.option('--force', default=False, help=' Force overwrite of an existing file', is_flag=True)
-@click.option('--get-urls', 'get_urls', default=None, help='Get all story urls found from a page. Currently supports archiveofourown.org only')
-@click.option('-s', '--supported-sites', 'supported_sites', default=False, help='List of supported sites', is_flag=True)
-@click.option('-d', '--debug', default=False, help='Show the log in the console for debugging', is_flag=True)
-@click.option('--meta-json', 'meta_json', default=None, help='Fetch only the metadata for the fanfiction in json format')
-@click.option('--log', default=False, help='Save the logfile for debugging', is_flag=True)
-@click.option('-a', '--automated', default=False, help='For internal testing only', is_flag=True, hidden=True)
-@click.option('--pytest', default=False, help='To run pytest on the CLI for internal testing', is_flag=True, hidden=True)
-@click.option('--version', default=False, help='Display version & quit', is_flag=True)
-def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
-            out_dir: str, debug: bool, version: bool, log: bool,
-            supported_sites: bool, force: bool, automated: bool,
-            meta_json: str, verbose: bool, pytest: bool):
+@app.command(no_args_is_help=True)
+# @app.callback(invoke_without_command=True)
+def main(
+    url: str = typer.Option(
+        "", "-u", "--url", help="The url of the fanfiction enclosed within quotes"),
+
+    infile: str = typer.Option(
+        "", "-i", "--infile", help="Path to a file to read URLs from"),
+
+    list_url: str = typer.Option(
+        "", "-l", "--list-url", help="Enter a comma separated list of urls to download, enclosed within quotes"),
+
+    verbose: bool = typer.Option(
+        False, "-v", "--verbose", help="Verbose", is_flag=True),
+
+    out_dir: str = typer.Option(
+        "", "-o", " --out-dir", help="Path to the Output directory for files (default: Current Directory)"),
+
+    format: str = typer.Option(
+        "epub", help="Download Format: epub (default), mobi, pdf or html"),
+
+    force: bool = typer.Option(
+        False, help="Force overwrite of an existing file", is_flag=True),
+
+    get_urls: str = typer.Option(
+        "", help="Get all story urls found from a page. Currently supports archiveofourown.org only"),
+
+    supported_sites: bool = typer.Option(
+        False, "-ss", "--supported-sites", help="List of supported sites", is_flag=True),
+
+    debug: bool = typer.Option(
+        False, "-d", " --debug", help="Show the log in the console for debugging", is_flag=True),
+
+    log: bool = typer.Option(
+        False, help="Save the logfile for debugging", is_flag=True),
+
+    automated: bool = typer.Option(
+        False, "-a", "--automated", help="For internal testing only", is_flag=True, hidden=True),
+
+    version: bool = typer.Option(
+        False, help="Display version & quit", is_flag=True)
+):
     """
     A CLI for the fichub.net API
 
@@ -41,17 +65,13 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
 
     Failed downloads will be saved in the `err.log` file in the current directory.
     """
-    if pytest:  # for internal testing
-        import pytest
-        pytest.main(['-v'])
-
     if log:
         debug = True
-        click.echo(
+        typer.echo(
             Fore.GREEN + f"Creating fichub_cli - {timestamp}.log in the current directory")
         logger.add(f"fichub_cli - {timestamp}.log")
 
-    format_type = get_format_type(_format)
+    format_type = get_format_type(format)
     if infile:
         fic = FetchData(format_type, out_dir, force,
                         debug, automated, verbose)
@@ -71,16 +91,11 @@ def run_cli(infile: str, url: str, list_url: str, _format: str, get_urls: str,
         fic = FetchData(debug=debug, automated=automated)
         fic.get_urls_from_page(get_urls)
 
-    elif meta_json:
-        fic = FetchData(debug=debug, automated=automated,
-                        out_dir=out_dir)
-        fic.get_metadata(meta_json)
-
     if version:
-        click.echo("Version: 0.4.5")
+        typer.echo("Version: 0.5.0")
 
     if supported_sites:
-        click.echo(Fore.GREEN + """
+        typer.echo(Fore.GREEN + """
 Supported Sites:""" + Style.RESET_ALL + """
 
     - SpaceBattles, SufficientVelocity, QuestionableQuesting (XenForo)
@@ -107,7 +122,7 @@ To report issues upstream for these sites, visit https://fichub.net/#contact
 """)
     try:
         if fic.exit_status == 1:
-            click.echo(Fore.RED + """
+            typer.echo(Fore.RED + """
 Unsupported URLs found! Check err.log in the current directory!""" + Style.RESET_ALL)
         sys.exit(fic.exit_status)
     except UnboundLocalError:
