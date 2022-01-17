@@ -92,7 +92,7 @@ def main(
         fic.get_urls_from_page(get_urls)
 
     if version:
-        typer.echo("Version: 0.5.0")
+        typer.echo("Version: 0.5.0a")
 
     if supported_sites:
         typer.echo(Fore.GREEN + """

@@ -43,7 +43,7 @@ Options:
   -f, --format TEXT      Download Format: epub (default), mobi, pdf or html
   --force                Force overwrite of an existing file
   --get-urls TEXT        Get all story urls found from a page.Currently supports archiveofourown.org only
-  -s, --supported-sites  List of supported sites
+  -ss, --supported-sites  List of supported sites
   -d, --debug            Show the log in the console for debugging
   --meta-json TEXT       Fetch only the metadata for the fanfiction in json format
   --log                  Save the logfile for debugging

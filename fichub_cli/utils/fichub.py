@@ -9,7 +9,7 @@ from loguru import logger
 import json
 
 headers = {
-    'User-Agent': 'fichub_cli/0.5.0',
+    'User-Agent': 'fichub_cli/0.5.0a',
 }
 
 retry_strategy = Retry(
