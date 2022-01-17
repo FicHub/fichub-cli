@@ -47,4 +47,4 @@ def test_cli_version():
 
     assert not result.exception
     assert result.exit_code == 0
-    assert result.output.strip() == 'fichub-cli: v0.5.0a'
+    assert result.output.strip() == 'fichub-cli: v0.5.0'

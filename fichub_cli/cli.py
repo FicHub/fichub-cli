@@ -112,7 +112,7 @@ def default(
         fic.get_urls_from_page(get_urls)
 
     if version:
-        typer.echo("fichub-cli: v0.5.0a")
+        typer.echo("fichub-cli: v0.5.0")
 
     if supported_sites:
         typer.echo(Fore.GREEN + """

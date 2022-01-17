@@ -8,7 +8,7 @@ from tqdm import tqdm
 from loguru import logger
 
 headers = {
-    'User-Agent': 'fichub_cli/0.5.0a',
+    'User-Agent': 'fichub_cli/0.5.0',
 }
 
 retry_strategy = Retry(
