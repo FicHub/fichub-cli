@@ -49,10 +49,3 @@ def verbose_log(debug: bool, fic):
     # Reason: Unsupported url
     except KeyError:
         pass
-
-
-def meta_fetched_log(debug: bool, url: str):
-    if debug:
-        logger.info(f"Metadata fetched for {url}")
-    else:
-        tqdm.write(Fore.GREEN + f"Metadata fetched for {url}")

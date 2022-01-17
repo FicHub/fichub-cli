@@ -4,19 +4,33 @@ from loguru import logger
 from datetime import datetime
 from colorama import init, Fore, Style
 
-from .utils.processing import get_format_type
+import importlib
+import pkgutil
+
 from .utils.fetch_data import FetchData
+from .utils.processing import get_format_type
+
 
 init(autoreset=True)  # colorama init
 timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
 
 app = typer.Typer(add_completion=False)
 
+discovered_plugins = {
+    name: importlib.import_module(name)
+    for finder, name, ispkg
+    in pkgutil.iter_modules()
+    if name.startswith('fichub_cli_')
+}
+
+for plugin in discovered_plugins.values():
+    app.add_typer(plugin.app)
+
 
 # @logger.catch  # for internal debugging
-@app.command(no_args_is_help=True)
-# @app.callback(invoke_without_command=True)
-def main(
+@app.callback(no_args_is_help=True, invoke_without_command=True)
+def default(
+    ctx: typer.Context,
     url: str = typer.Option(
         "", "-u", "--url", help="The url of the fanfiction enclosed within quotes"),
 
@@ -65,6 +79,12 @@ def main(
 
     Failed downloads will be saved in the `err.log` file in the current directory.
     """
+    if ctx.invoked_subcommand is not None:
+        if debug:
+            typer.echo(
+                Fore.BLUE + "Skipping default command to run sub-command.")
+        return
+
     if log:
         debug = True
         typer.echo(
@@ -92,7 +112,7 @@ def main(
         fic.get_urls_from_page(get_urls)
 
     if version:
-        typer.echo("Version: 0.5.0a")
+        typer.echo("fichub-cli: v0.5.0a")
 
     if supported_sites:
         typer.echo(Fore.GREEN + """
