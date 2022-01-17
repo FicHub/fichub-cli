@@ -6,3 +6,4 @@ colorama==0.4.4
 loguru==0.5.3
 requests==2.27.1
 tqdm==4.60.0
+typer==0.4.0
