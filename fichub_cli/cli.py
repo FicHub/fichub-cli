@@ -77,7 +77,7 @@ def default(
 
     To report issues for the CLI, open an issue at https://github.com/FicHub/fichub-cli/issues
 
-    Failed downloads will be saved in the `err.log` file in the current directory.
+    Failed downloads will be saved in the `err.log` file in the current directory
     """
     if ctx.invoked_subcommand is not None:
         if debug:

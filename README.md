@@ -63,7 +63,7 @@ Check `fichub_cli --help` for more info.
 
 # Example
 
-- To download using a URL
+- To download using an URL
 
 ```
 fichub_cli -u https://archiveofourown.org/works/10916730/chapters/24276864
@@ -94,11 +94,12 @@ fichub_cli -l "https://www.fanfiction.net/s/11191235/1/Harry-Potter-and-the-Prin
 fichub_cli --get-urls https://archiveofourown.org/users/flamethrower/
 ```
 
-# Plugins
+# Plugins Support
 
-- [fichub-cli-metadata](https://github.com/fichub-cli-contrib/fichub-cli-metadata): A metadata plugin to fetch Metadata from the Fichub API
+Read the [wiki](https://github.com/FicHub/fichub-cli/wiki/Plugins) for more info.
 
 # Links
 
-- [Plugins](https://github.com/fichub-cli-contrib/)
+- [Github Wiki](https://github.com/FicHub/fichub-cli/wiki/)
+- [Github Plugins Repo](https://github.com/fichub-cli-contrib/)
 - [Official Discord Server](https://discord.gg/sByBAhX)
