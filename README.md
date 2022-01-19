@@ -94,7 +94,7 @@ fichub_cli -l "https://www.fanfiction.net/s/11191235/1/Harry-Potter-and-the-Prin
 fichub_cli --get-urls https://archiveofourown.org/users/flamethrower/
 ```
 
-# Plugins Support
+# Plugin Support
 
 Read the [wiki](https://github.com/FicHub/fichub-cli/wiki/Plugins) for more info.
 

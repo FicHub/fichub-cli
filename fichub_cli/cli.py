@@ -86,9 +86,11 @@ def default(
         return
 
     if log:
-        debug = True
+        # debug = True
         typer.echo(
-            Fore.GREEN + f"Creating fichub_cli - {timestamp}.log in the current directory")
+            Fore.GREEN + "Creating " + Style.RESET_ALL + Fore.YELLOW +
+            f"fichub_cli - {timestamp}.log" + Style.RESET_ALL +
+            Fore.GREEN + " in the current directory!" + Style.RESET_ALL)
         logger.add(f"fichub_cli - {timestamp}.log")
 
     format_type = get_format_type(format)
@@ -112,7 +114,7 @@ def default(
         fic.get_urls_from_page(get_urls)
 
     if version:
-        typer.echo("fichub-cli: v0.5.0")
+        typer.echo("fichub-cli: v0.5.1")
 
     if supported_sites:
         typer.echo(Fore.GREEN + """
@@ -142,8 +144,11 @@ To report issues upstream for these sites, visit https://fichub.net/#contact
 """)
     try:
         if fic.exit_status == 1:
-            typer.echo(Fore.RED + """
-Unsupported URLs found! Check err.log in the current directory!""" + Style.RESET_ALL)
+            typer.echo(
+                Fore.RED +
+                "\nDownload failed for one or more URLs! Check " + Style.RESET_ALL +
+                Fore.YELLOW + "err.log" + Style.RESET_ALL + Fore.RED +
+                " in the current directory!" + Style.RESET_ALL)
         sys.exit(fic.exit_status)
     except UnboundLocalError:
         sys.exit(0)

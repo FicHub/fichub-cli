@@ -3,12 +3,13 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
 import re
+import time
 from colorama import Fore, Style
 from tqdm import tqdm
 from loguru import logger
 
 headers = {
-    'User-Agent': 'fichub_cli/0.5.0',
+    'User-Agent': 'fichub_cli/0.5.1',
 }
 
 retry_strategy = Retry(
@@ -37,17 +38,27 @@ class FicHub:
                 logger.debug(
                     "--automated flag was passed. Internal Testing mode is on.")
 
-        response = self.http.get(
-            "https://fichub.net/api/v0/epub", params=params,
-            allow_redirects=True, headers=headers, timeout=(6.1, 300)
-        )
-
-        if self.debug:
-            logger.debug(f"GET: {response.status_code}: {response.url}")
-
-        self.response = response.json()
+        for _ in range(2):
+            try:
+                response = self.http.get(
+                    "https://fichub.net/api/v0/epub", params=params,
+                    allow_redirects=True, headers=headers, timeout=(6.1, 300)
+                )
+                if self.debug:
+                    logger.debug(
+                        f"GET: {response.status_code}: {response.url}")
+                break
+            except (ConnectionError, TimeoutError, Exception) as e:
+                if self.debug:
+                    logger.error(str(e))
+                tqdm.write("\n" + Fore.RED + str(e) + Style.RESET_ALL +
+                           Fore.GREEN + "\nWill retry in 3s!" +
+                           Style.RESET_ALL)
+                time.sleep(3)
 
         try:
+            self.response = response.json()
+
             if format_type == 0:
                 cache_url = self.response['epub_url']
                 self.cache_hash = (
@@ -79,7 +90,9 @@ class FicHub:
 
         # Error: 'epub_url'
         # Reason: Unsupported URL
-        except KeyError:
+        except (KeyError, UnboundLocalError) as e:
+            if self.debug:
+                logger.error(str(e))
 
             self.exit_status = 1
             if self.debug:
@@ -87,9 +100,11 @@ class FicHub:
                     f"Skipping unsupported URL: {url}")
             else:
                 tqdm.write(
-                    Fore.RED + f"Skipping unsupported URL: {url}" +
+                    Fore.RED + f"\nSkipping unsupported URL: {url}" +
                     Style.RESET_ALL + Fore.CYAN +
-                    "\nTo see the supported site list, use -s flag")
+                    "\nTo see the supported site list, use " + Fore.YELLOW +
+                    "fichub_cli -ss" + Style.RESET_ALL + Fore.CYAN +
+                    "\nReport the error if the URL is supported!\n")
 
     def get_fic_data(self, download_url: str):
 
@@ -97,10 +112,19 @@ class FicHub:
         if self.automated:  # for internal testing
             params['automated'] = 'true'
 
-        self.response_data = self.http.get(
-            download_url, allow_redirects=True, headers=headers,
-            params=params, timeout=(6.1, 300))
-
-        if self.debug:
-            logger.debug(
-                f"GET: {self.response_data.status_code}: {self.response_data.url}")
+        for _ in range(2):
+            try:
+                self.response_data = self.http.get(
+                    download_url, allow_redirects=True, headers=headers,
+                    params=params, timeout=(6.1, 300))
+                if self.debug:
+                    logger.debug(
+                        f"GET: {self.response_data.status_code}: {self.response_data.url}")
+                break
+            except (ConnectionError, TimeoutError, Exception) as e:
+                if self.debug:
+                    logger.error(str(e))
+                tqdm.write("\n" + Fore.RED + str(e) + Style.RESET_ALL +
+                           Fore.GREEN + "\nWill retry in 3s!" +
+                           Style.RESET_ALL)
+                time.sleep(3)

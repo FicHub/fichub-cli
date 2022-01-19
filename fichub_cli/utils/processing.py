@@ -53,9 +53,11 @@ def check_url(url: str, debug: bool = False,
                 f"Skipping unsupported URL: {url}")
         else:
             tqdm.write(
-                Fore.RED + f"Skipping unsupported URL: {url}" +
+                Fore.RED + f"\nSkipping unsupported URL: {url}" +
                 Style.RESET_ALL + Fore.CYAN +
-                "\nTo see the supported site list, use -s flag")
+                "\nTo see the supported site list, use " + Fore.YELLOW +
+                "fichub_cli -ss" + Style.RESET_ALL + Fore.CYAN +
+                "\nReport the error if the URL is supported!\n")
 
         return False, exit_status
 
