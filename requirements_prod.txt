@@ -3,7 +3,7 @@ click==8.0.3
 click-plugins==1.1.1
 rich==11.0.0
 colorama==0.4.4
-loguru==0.5.3
+loguru==0.6.0
 requests==2.27.1
 tqdm==4.60.0
 typer==0.4.0
