@@ -25,7 +25,7 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        fichub_cli=fichub_cli.cli:app
+        fichub_cli=fichub_cli.cli:main
     ''',
     classifiers=[
         "Programming Language :: Python :: 3",

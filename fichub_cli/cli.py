@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import typer
+import argparse
 import sys
 from loguru import logger
 from datetime import datetime
@@ -28,110 +28,113 @@ from .utils.processing import get_format_type
 init(autoreset=True)  # colorama init
 timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
 
-app = typer.Typer(add_completion=False)
-
-discovered_plugins = {
-    name: importlib.import_module(name)
-    for finder, name, ispkg
-    in pkgutil.iter_modules()
-    if name.startswith('fichub_cli_')
-}
-
-for plugin in discovered_plugins.values():
-    app.add_typer(plugin.app)
-
 
 # @logger.catch  # for internal debugging
-@app.callback(no_args_is_help=True, invoke_without_command=True)
-def default(
-    ctx: typer.Context,
-    url: str = typer.Option(
-        "", "-u", "--url", help="The url of the fanfiction enclosed within quotes"),
+def create_parser():
+    cli_parser = argparse.ArgumentParser(prog='fichub-cli',
+                                         description="""
+A CLI for the fichub.net API
 
-    infile: str = typer.Option(
-        "", "-i", "--infile", help="Path to a file to read URLs from"),
+To report issues upstream for supported sites, visit https://fichub.net/#contact
 
-    list_url: str = typer.Option(
-        "", "-l", "--list-url", help="Enter a comma separated list of urls to download, enclosed within quotes"),
+To report issues for the CLI, open an issue at https://github.com/FicHub/fichub-cli/issues
 
-    verbose: bool = typer.Option(
-        False, "-v", "--verbose", help="Verbose", is_flag=True),
+Failed downloads will be saved in the `err.log` file in the current directory
+        """, formatter_class=argparse.RawTextHelpFormatter)
 
-    out_dir: str = typer.Option(
-        "", "-o", " --out-dir", help="Path to the Output directory for files (default: Current Directory)"),
+    cli_parser.add_argument("-u", "--url", type=str, default="",
+                            help="The url of the fanfiction enclosed within quotes")
 
-    format: str = typer.Option(
-        "epub", help="Download Format: epub (default), mobi, pdf or html"),
+    cli_parser.add_argument("-i", "--infile", type=str, default="",
+                            help="Path to a file to read URLs from")
 
-    force: bool = typer.Option(
-        False, help="Force overwrite of an existing file", is_flag=True),
+    cli_parser.add_argument("-l", "--list-url", type=str, default="",
+                            help="Enter a comma separated list of urls to download, enclosed within quotes")
 
-    get_urls: str = typer.Option(
-        "", help="Get all story urls found from a page. Currently supports archiveofourown.org only"),
+    cli_parser.add_argument("-v", "--verbose", type=bool, default=False,
+                            help="Verbose")
 
-    supported_sites: bool = typer.Option(
-        False, "-ss", "--supported-sites", help="List of supported sites", is_flag=True),
+    cli_parser.add_argument("-o", "--out-dir", type=str, default="",
+                            help="Path to the Output directory for files (default: Current Directory)")
 
-    debug: bool = typer.Option(
-        False, "-d", " --debug", help="Show the log in the console for debugging", is_flag=True),
+    cli_parser.add_argument("--format", type=str, default="epub",
+                            help="Download Format: epub (default), mobi, pdf or html")
 
-    log: bool = typer.Option(
-        False, help="Save the logfile for debugging", is_flag=True),
+    cli_parser.add_argument('--force', action='store_true',
+                            help="Force overwrite of an existing file")
 
-    automated: bool = typer.Option(
-        False, "-a", "--automated", help="For internal testing only", is_flag=True, hidden=True),
+    cli_parser.add_argument("--get-urls", action='store_true',
+                            help="Get all story urls found from a page. Currently supports archiveofourown.org only")
 
-    version: bool = typer.Option(
-        False, help="Display version & quit", is_flag=True)
-):
-    """
-    A CLI for the fichub.net API
+    cli_parser.add_argument("-ss", "--supported-sites", action='store_true',
+                            help="List of supported sites")
 
-    To report issues upstream for supported sites, visit https://fichub.net/#contact
+    cli_parser.add_argument("-d", "--debug", action='store_true',
+                            help="Show the log in the console for debugging")
 
-    To report issues for the CLI, open an issue at https://github.com/FicHub/fichub-cli/issues
+    cli_parser.add_argument("--log", action='store_true',
+                            help="Save the logfile for debugging")
 
-    Failed downloads will be saved in the `err.log` file in the current directory
-    """
-    if ctx.invoked_subcommand is not None:
-        if debug:
-            typer.echo(
-                Fore.BLUE + "Skipping default command to run sub-command.")
-        return
+    cli_parser.add_argument("-a", "--automated", action='store_true',
+                            help=argparse.SUPPRESS)
 
-    if log:
+    cli_parser.add_argument("--version", action='store_true',
+                            help="Display version & quit")
+
+    # discovered_plugins = {
+    #     name: importlib.import_module(name)
+    #     for finder, name, ispkg
+    #     in pkgutil.iter_modules()
+    #     if name.startswith('fichub_cli_')
+    # }
+
+    # for plugin in discovered_plugins.values():
+    #     app.add_typer(plugin.app)
+
+    return cli_parser
+
+
+def main():
+    parser = create_parser()
+    # if no args is given, invoke help
+    if len(sys.argv) == 1:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+    args = parser.parse_args()
+
+    if args.log:
         # debug = True
-        typer.echo(
+        print(
             Fore.GREEN + "Creating " + Style.RESET_ALL + Fore.YELLOW +
             f"fichub_cli - {timestamp}.log" + Style.RESET_ALL +
             Fore.GREEN + " in the current directory!" + Style.RESET_ALL)
         logger.add(f"fichub_cli - {timestamp}.log")
 
-    format_type = get_format_type(format)
-    if infile:
-        fic = FetchData(format_type, out_dir, force,
-                        debug, automated, verbose)
-        fic.get_fic_with_infile(infile)
+    format_type = get_format_type(args.format)
+    if args.infile:
+        fic = FetchData(format_type, args.out_dir, args.force,
+                        args.debug, args.automated, args.verbose)
+        fic.get_fic_with_infile(args.infile)
 
-    elif list_url:
-        fic = FetchData(format_type, out_dir, force,
-                        debug, automated, verbose)
-        fic.get_fic_with_list(list_url)
+    elif args.list_url:
+        fic = FetchData(format_type, args.out_dir, args.force,
+                        args.debug, args.automated, args.verbose)
+        fic.get_fic_with_list(args.list_url)
 
-    elif url:
-        fic = FetchData(format_type, out_dir, force,
-                        debug, automated, verbose)
-        fic.get_fic_with_url(url)
+    elif args.url:
+        fic = FetchData(format_type, args.out_dir, args.force,
+                        args.debug, args.automated, args.verbose)
+        fic.get_fic_with_url(args.url)
 
-    elif get_urls:
-        fic = FetchData(debug=debug, automated=automated)
-        fic.get_urls_from_page(get_urls)
+    elif args.get_urls:
+        fic = FetchData(debug=args.debug, automated=args.automated)
+        fic.get_urls_from_page(args.get_urls)
 
-    if version:
-        typer.echo("fichub-cli: v0.5.2")
+    if args.version:
+        print("fichub-cli: v0.5.2")
 
-    if supported_sites:
-        typer.echo(Fore.GREEN + """
+    if args.supported_sites:
+        print(Fore.GREEN + """
 Supported Sites:""" + Style.RESET_ALL + """
 
     - SpaceBattles, SufficientVelocity, QuestionableQuesting (XenForo)
@@ -158,7 +161,7 @@ To report issues upstream for these sites, visit https://fichub.net/#contact
 """)
     try:
         if fic.exit_status == 1:
-            typer.echo(
+            print(
                 Fore.RED +
                 "\nDownload failed for one or more URLs! Check " + Style.RESET_ALL +
                 Fore.YELLOW + "err.log" + Style.RESET_ALL + Fore.RED +
