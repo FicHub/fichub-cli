@@ -12,53 +12,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typer.testing import CliRunner
-from fichub_cli.cli import app
+from fichub_cli.cli import main
+import os
 
 
-def test_cli_url(tmpdir):
-    runner = CliRunner()
+def test_cli_url(tmp_path):
+    tmp_dir = tmp_path
 
-    with runner.isolated_filesystem():
-        result = runner.invoke(app, [
-            '-au https://www.fanfiction.net/s/12933896/1/Things-you-cannot-leave-behind'])
-
-    assert not result.exception
-    assert result.exit_code == 0
-
-
-def test_cli_list_url():
-    runner = CliRunner()
-
-    with runner.isolated_filesystem():
-        result = runner.invoke(app, [
-            "-al", "https://www.fanfiction.net/s/12933896/1/Things-you-cannot-leave-behind,https://www.fanfiction.net/s/13735685/1/we-stand-together"])
-
-    assert not result.exception
-    assert result.exit_code == 0
+    try:
+        main(["-au", "https://www.fanfiction.net/s/12933896/1/Things-you-cannot-leave-behind",
+              "-o", f"{tmp_dir}"])
+    except Exception as e:
+        print(e)
 
 
-def test_cli_infile():
-    runner = CliRunner()
+def test_cli_list_url(tmp_path):
+    tmp_dir = tmp_path
 
-    with runner.isolated_filesystem():
-
-        # create urls.txt with sample urls
-        with open('urls.txt', 'w') as f:
-            f.write('https://www.fanfiction.net/s/12933896/1/Things-you-cannot-leave-behind\nhttps://www.fanfiction.net/s/13735685/1/we-stand-together"')
-
-        result = runner.invoke(app, [
-            "-ai", "urls.txt"])
-
-    assert not result.exception
-    assert result.exit_code == 0
+    try:
+        main(["-al", "https://www.fanfiction.net/s/5199602,https://www.fanfiction.net/s/6353112/1/Man-Made-Gods",
+             "-o", f"{tmp_dir}"])
+    except Exception as e:
+        print(e)
 
 
-def test_cli_version():
-    runner = CliRunner()
+def test_cli_infile(tmp_path):
+    tmp_dir = tmp_path
 
-    result = runner.invoke(app, ['--version'])
+    url_file = str(os.path.join(tmp_dir, 'urls.txt'))
+    # create urls.txt with sample urls
+    with open(url_file, 'w') as f:
+        f.write('https://www.fanfiction.net/s/11730208/1/Darth-Vader-Hero-of-Naboo\nhttps://www.fanfiction.net/s/13735685/1/we-stand-together\nhttps://m.fanfiction.net/s/5599903/1/')
 
-    assert not result.exception
-    assert result.exit_code == 0
-    assert result.output.strip() == 'fichub-cli: v0.5.2'
+    try:
+        main(["-ai", url_file, "-o", f"{tmp_dir}"])
+    except Exception as e:
+        print(e)
+
+
+def test_cli_version(capsys):
+    try:
+        main(["--version"])
+    except SystemExit:
+        pass
+    output = capsys.readouterr().out
+    assert output.strip() == 'fichub-cli: v0.5.2'

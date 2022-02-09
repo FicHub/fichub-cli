@@ -94,13 +94,18 @@ Failed downloads will be saved in the `err.log` file in the current directory
     return cli_parser
 
 
-def main():
+def main(argv=None):
+
+    if argv is None:
+        argv = sys.argv[1:]
+
     parser = create_parser()
+    args = parser.parse_args(argv)
+
     # if no args is given, invoke help
-    if len(sys.argv) == 1:
+    if len(argv) == 0:
         parser.print_help(sys.stderr)
         sys.exit(1)
-    args = parser.parse_args()
 
     if args.log:
         # debug = True
@@ -166,6 +171,6 @@ To report issues upstream for these sites, visit https://fichub.net/#contact
                 "\nDownload failed for one or more URLs! Check " + Style.RESET_ALL +
                 Fore.YELLOW + "err.log" + Style.RESET_ALL + Fore.RED +
                 " in the current directory!" + Style.RESET_ALL)
-        sys.exit(fic.exit_status)
+            sys.exit(fic.exit_status)
     except UnboundLocalError:
         sys.exit(0)
