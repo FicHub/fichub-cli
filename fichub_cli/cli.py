@@ -22,7 +22,7 @@ import importlib
 import pkgutil
 
 from .utils.fetch_data import FetchData
-from .utils.processing import get_format_type
+from .utils.processing import get_format_type, out_dir_exists_check
 
 
 init(autoreset=True)  # colorama init
@@ -93,6 +93,10 @@ def default(
 
     Failed downloads will be saved in the `err.log` file in the current directory
     """
+    # Check if the output directory exists if input is given
+    if not out_dir == "":
+        out_dir_exists_check(out_dir)
+
     if ctx.invoked_subcommand is not None:
         if debug:
             typer.echo(
@@ -128,7 +132,7 @@ def default(
         fic.get_urls_from_page(get_urls)
 
     if version:
-        typer.echo("fichub-cli: v0.5.2")
+        typer.echo("fichub-cli: v0.5.3")
 
     if supported_sites:
         typer.echo(Fore.GREEN + """
