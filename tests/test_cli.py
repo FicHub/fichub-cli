@@ -56,4 +56,4 @@ def test_cli_version(capsys):
     except SystemExit:
         pass
     output = capsys.readouterr().out
-    assert output.strip() == 'fichub-cli: v0.5.2'
+    assert output.strip() == 'fichub-cli: v0.5.3'

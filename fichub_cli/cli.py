@@ -22,7 +22,7 @@ import importlib
 import pkgutil
 
 from .utils.fetch_data import FetchData
-from .utils.processing import get_format_type
+from .utils.processing import get_format_type, out_dir_exists_check
 
 
 init(autoreset=True)  # colorama init
@@ -107,6 +107,10 @@ def main(argv=None):
         parser.print_help(sys.stderr)
         sys.exit(1)
 
+    # Check if the output directory exists if input is given
+    if not args.out_dir == "":
+        out_dir_exists_check(args.out_dir)
+
     if args.log:
         # debug = True
         print(
@@ -136,7 +140,7 @@ def main(argv=None):
         fic.get_urls_from_page(args.get_urls)
 
     if args.version:
-        print("fichub-cli: v0.5.2")
+        print("fichub-cli: v0.5.3")
 
     if args.supported_sites:
         print(Fore.GREEN + """

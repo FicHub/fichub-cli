@@ -15,11 +15,13 @@
 from typing import Tuple
 import re
 import os
+import sys
 import hashlib
 
 from colorama import Fore, Style
 from tqdm import tqdm
 from loguru import logger
+import typer
 
 from .fichub import FicHub
 from .logging import downloaded_log
@@ -114,13 +116,16 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
         fic = FicHub(debug, automated, exit_status)
         fic.get_fic_data(download_url)
 
-        downloaded_log(debug, file_name)
-
-        with open(ebook_file, "wb") as f:
-            if debug:
-                logger.info(
-                    f"Saving {ebook_file}")
-            f.write(fic.response_data.content)
+        try:
+            with open(ebook_file, "wb") as f:
+                if debug:
+                    logger.info(
+                        f"Saving {ebook_file}")
+                f.write(fic.response_data.content)
+            downloaded_log(debug, file_name)
+        except FileNotFoundError:
+            tqdm.write(Fore.RED + "Output directory doesn't exist. Exiting!")
+            sys.exit(1)
 
     return exit_status
 
@@ -138,3 +143,13 @@ def check_hash(ebook_file: str, cache_hash: str) -> bool:
         hash_flag = False
 
     return hash_flag
+
+
+def out_dir_exists_check(out_dir):
+    """Check if the output directory exists"""
+    if not os.path.isdir(out_dir):
+        mkdir_prompt = typer.prompt(
+            Fore.RED+"Output directory doesn't exist!" + Style.RESET_ALL +
+            Fore.BLUE + f"\nShould the CLI create {out_dir}?(y/n)")
+        if mkdir_prompt == 'y':
+            os.mkdir(out_dir)
