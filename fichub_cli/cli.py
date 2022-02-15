@@ -80,15 +80,15 @@ Failed downloads will be saved in the `err.log` file in the current directory
     cli_parser.add_argument("--version", action='store_true',
                             help="Display version & quit")
 
-    # discovered_plugins = {
-    #     name: importlib.import_module(name)
-    #     for finder, name, ispkg
-    #     in pkgutil.iter_modules()
-    #     if name.startswith('fichub_cli_')
-    # }
+    discovered_plugins = {
+        name: importlib.import_module(name)
+        for finder, name, ispkg
+        in pkgutil.iter_modules()
+        if name.startswith('fichub_cli_')
+    }
 
-    # for plugin in discovered_plugins.values():
-    #     app.add_typer(plugin.app)
+    for plugin in discovered_plugins.values():
+        cli_parser.add_subparsers(dest=plugin.__file__)
 
     return cli_parser
 
@@ -101,7 +101,6 @@ def main(argv=None):
 
     parser = create_parser()
     args = parser.parse_args(argv)
-
     # if no args is given, invoke help
     if len(argv) == 0:
         parser.print_help(sys.stderr)
