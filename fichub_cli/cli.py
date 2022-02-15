@@ -29,7 +29,6 @@ init(autoreset=True)  # colorama init
 timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
 
 
-# @logger.catch  # for internal debugging
 def create_parser():
     cli_parser = argparse.ArgumentParser(prog='fichub-cli',
                                          description="""
@@ -94,6 +93,7 @@ Failed downloads will be saved in the `err.log` file in the current directory
     return cli_parser
 
 
+# @logger.catch  # for internal debugging
 def main(argv=None):
 
     if argv is None:
