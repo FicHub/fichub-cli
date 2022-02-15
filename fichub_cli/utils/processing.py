@@ -21,7 +21,6 @@ import hashlib
 from colorama import Fore, Style
 from tqdm import tqdm
 from loguru import logger
-import typer
 
 from .fichub import FicHub
 from .logging import downloaded_log
@@ -148,8 +147,8 @@ def check_hash(ebook_file: str, cache_hash: str) -> bool:
 def out_dir_exists_check(out_dir):
     """Check if the output directory exists"""
     if not os.path.isdir(out_dir):
-        mkdir_prompt = typer.prompt(
+        mkdir_prompt = input(
             Fore.RED+"Output directory doesn't exist!" + Style.RESET_ALL +
-            Fore.BLUE + f"\nShould the CLI create {out_dir}?(y/n)")
+            Fore.BLUE + f"\nShould the CLI create {out_dir}(y/n)?")
         if mkdir_prompt == 'y':
             os.mkdir(out_dir)

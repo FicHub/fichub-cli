@@ -50,8 +50,8 @@ Failed downloads will be saved in the `err.log` file in the current directory
     cli_parser.add_argument("-l", "--list-url", type=str, default="",
                             help="Enter a comma separated list of urls to download, enclosed within quotes")
 
-    cli_parser.add_argument("-v", "--verbose", type=bool, default=False,
-                            help="Verbose")
+    cli_parser.add_argument("-v", "--verbose", action='store_true',
+                            help="Show information about the fic")
 
     cli_parser.add_argument("-o", "--out-dir", type=str, default="",
                             help="Path to the Output directory for files (default: Current Directory)")
