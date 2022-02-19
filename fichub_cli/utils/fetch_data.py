@@ -30,7 +30,7 @@ console = Console()
 
 
 class FetchData:
-    def __init__(self, format_type="epub", out_dir="", force=False,
+    def __init__(self, format_type=0, out_dir="", force=False,
                  debug=False, automated=False, verbose=False):
         self.format_type = format_type
         self.out_dir = out_dir

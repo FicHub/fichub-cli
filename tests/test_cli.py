@@ -21,7 +21,7 @@ def test_cli_url(tmpdir):
 
     with runner.isolated_filesystem():
         result = runner.invoke(app, [
-            '-au https://www.fanfiction.net/s/12933896/1/Things-you-cannot-leave-behind'])
+            '-au', 'https://www.fanfiction.net/s/12933896/1/Things-you-cannot-leave-behind'])
 
     assert not result.exception
     assert result.exit_code == 0
@@ -61,4 +61,4 @@ def test_cli_version():
 
     assert not result.exception
     assert result.exit_code == 0
-    assert result.output.strip() == 'fichub-cli: v0.5.3'
+    assert result.output.strip() == 'fichub-cli: v0.5.4'

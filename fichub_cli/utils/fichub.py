@@ -23,7 +23,7 @@ from tqdm import tqdm
 from loguru import logger
 
 headers = {
-    'User-Agent': 'fichub_cli/0.5.3',
+    'User-Agent': 'fichub_cli/0.5.4',
 }
 
 retry_strategy = Retry(
@@ -44,7 +44,9 @@ class FicHub:
         self.http.mount("http://", adapter)
 
     def get_fic_metadata(self, url: str, format_type: int):
-
+        """
+        Sends GET request to Fichub API to fetch the metadata
+        """
         params = {'q': url}
         if self.automated:  # for internal testing
             params['automated'] = 'true'
@@ -121,6 +123,9 @@ class FicHub:
                     "\nReport the error if the URL is supported!\n")
 
     def get_fic_data(self, download_url: str):
+        """
+        Sends GET request to Fichub API to fetch the cache for the ebook
+        """
 
         params = {}
         if self.automated:  # for internal testing

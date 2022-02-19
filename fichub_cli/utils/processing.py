@@ -148,8 +148,8 @@ def check_hash(ebook_file: str, cache_hash: str) -> bool:
 def out_dir_exists_check(out_dir):
     """Check if the output directory exists"""
     if not os.path.isdir(out_dir):
-        mkdir_prompt = typer.prompt(
+        mkdir_prompt = typer.confirm(
             Fore.RED+"Output directory doesn't exist!" + Style.RESET_ALL +
-            Fore.BLUE + f"\nShould the CLI create {out_dir}?(y/n)")
-        if mkdir_prompt == 'y':
+            Fore.BLUE + f"\nShould the CLI create {out_dir}?", abort=True, show_default=True)
+        if mkdir_prompt is True:
             os.mkdir(out_dir)
