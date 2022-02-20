@@ -45,7 +45,6 @@ Options:
   -o,  --out-dir TEXT       Path to the Output directory for files (default: Current Directory)
   --format TEXT             Download Format: epub (default), mobi, pdf or html [default: epub]
   --force / --no-force      Force overwrite of an existing file  [default: no-force]
-  --get-urls TEXT           Get all story urls found from a page. Currently supports archiveofourown.org only
   -ss, --supported-sites    List of supported sites
   -d,  --debug              Show the log in the console for debugging
   --log / --no-log          Save the logfile for debugging  [default: no-log]
@@ -87,12 +86,6 @@ fichub_cli -l "https://www.fanfiction.net/s/11191235/1/Harry-Potter-and-the-Prin
 `--out-dir` or `-o` can be used in all the above commands to select an output directory.
 
 ---
-
-- To get all story urls found from a page. Currently supports archiveofourown.org only.
-
-```
-fichub_cli --get-urls https://archiveofourown.org/users/flamethrower/
-```
 
 # Plugin Support
 

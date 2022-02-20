@@ -32,9 +32,9 @@ def init_log(debug: bool, force: bool):
 
 def downloaded_log(debug: bool, file_name: str):
     if debug:
-        logger.info(f"Downloaded {file_name}")
+        logger.info(f"Downloaded '{file_name}'")
     else:
-        tqdm.write(Fore.GREEN + f"Downloaded {file_name}")
+        tqdm.write(Fore.GREEN + f"Downloaded '{file_name}'")
 
 
 def download_processing_log(debug: bool, url: str):

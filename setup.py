@@ -17,7 +17,6 @@ setup(
     include_package_data=True,
     install_requires=[
         'typer>=0.4.0',
-        'rich>=10.3.0',
         'requests>=2.25.1',
         'loguru>=0.6.0',
         'tqdm>=4.60.0',

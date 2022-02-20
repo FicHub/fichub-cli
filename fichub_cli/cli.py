@@ -66,9 +66,6 @@ def default(
     force: bool = typer.Option(
         False, help="Force overwrite of an existing file", is_flag=True),
 
-    get_urls: str = typer.Option(
-        "", help="Get all story urls found from a page. Currently supports archiveofourown.org only"),
-
     supported_sites: bool = typer.Option(
         False, "-ss", "--supported-sites", help="List of supported sites", is_flag=True),
 
@@ -126,10 +123,6 @@ def default(
         fic = FetchData(format_type, out_dir, force,
                         debug, automated, verbose)
         fic.get_fic_with_url(url)
-
-    elif get_urls:
-        fic = FetchData(debug=debug, automated=automated)
-        fic.get_urls_from_page(get_urls)
 
     if version:
         typer.echo("fichub-cli: v0.5.4")
