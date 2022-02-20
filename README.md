@@ -91,6 +91,10 @@ fichub_cli -l "https://www.fanfiction.net/s/11191235/1/Harry-Potter-and-the-Prin
 
 Read the [wiki](https://github.com/FicHub/fichub-cli/wiki/Plugins) for more info.
 
+# Helper Scripts
+
+Helper scripts can be found [here](https://github.com/fichub-cli-contrib/helper-scripts/). They can add small functionalities to the CLI without needing to create full-fledged plugins.
+
 # Links
 
 - [Github Wiki](https://github.com/FicHub/fichub-cli/wiki/)
