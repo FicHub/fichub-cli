@@ -155,15 +155,16 @@ def out_dir_exists_check(out_dir):
             os.mkdir(out_dir)
 
 
-def list_diff(li1, li2):
+def list_diff(urls_input, urls_output):
     """ Make a list containing the difference between
         two lists
     """
-    return list(set(li1) - set(li2)) + list(set(li2) - set(li1))
+    return list(set(urls_input) - set(urls_output))
 
 
-def check_output_log(urls_input):
-    logger.info("Checking output.log")
+def check_output_log(urls_input, debug):
+    if debug:
+        logger.info("Checking output.log")
     try:
         urls_output = []
         if os.path.exists("output.log"):

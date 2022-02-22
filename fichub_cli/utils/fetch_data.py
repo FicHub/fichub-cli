@@ -57,7 +57,7 @@ class FetchData:
                 f"{infile} file could not be found. Please enter a valid file path.")
             exit(1)
 
-        urls = check_output_log(urls_input)
+        urls = check_output_log(urls_input, self.debug)
 
         if urls:
             init_log(self.debug, self.force)
@@ -120,7 +120,7 @@ class FetchData:
             logger.debug("-l flag used!")
 
         urls_input = list_url.split(",")
-        urls = check_output_log(urls_input)
+        urls = check_output_log(urls_input, self.debug)
 
         if urls:
             init_log(self.debug, self.force)
@@ -180,7 +180,7 @@ class FetchData:
         if self.debug:
             logger.debug("-u flag used!")
 
-        url = check_output_log([url_input])
+        url = check_output_log([url_input], self.debug)
 
         if url:
             init_log(self.debug, self.force)
