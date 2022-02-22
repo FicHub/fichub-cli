@@ -64,6 +64,9 @@ class FicHub:
                 if self.debug:
                     logger.debug(
                         f"GET: {response.status_code}: {response.url}")
+                    if self.automated:
+                        logger.debug(
+                            f"Headers: {response.request.headers}")
                 break
             except (ConnectionError, TimeoutError, Exception) as e:
                 if self.debug:

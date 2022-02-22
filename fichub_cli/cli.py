@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import typer
 import sys
 from loguru import logger
@@ -154,6 +155,7 @@ Partial support (or not tested recently):""" + Style.RESET_ALL + """
 """ + Fore.BLUE + """
 To report issues upstream for these sites, visit https://fichub.net/#contact
 """)
+
     try:
         if fic.exit_status == 1:
             typer.echo(
@@ -161,6 +163,16 @@ To report issues upstream for these sites, visit https://fichub.net/#contact
                 "\nDownload failed for one or more URLs! Check " + Style.RESET_ALL +
                 Fore.YELLOW + "err.log" + Style.RESET_ALL + Fore.RED +
                 " in the current directory!" + Style.RESET_ALL)
+
+        if os.path.exists("output.log"):
+            rm_output_log = typer.confirm(
+                Fore.BLUE+"Delete the output.log?", abort=False, show_default=True)
+            if rm_output_log is True:
+                os.remove("output.log")
+
         sys.exit(fic.exit_status)
-    except UnboundLocalError:
+
+    # FileNotFoundError: output.log doesnt exist, when run 1st time
+    # UnboundLocalError: 'fic' is not assigned value for --version flag
+    except (FileNotFoundError, UnboundLocalError):
         sys.exit(0)

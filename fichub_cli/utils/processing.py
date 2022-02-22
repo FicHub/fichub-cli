@@ -150,6 +150,30 @@ def out_dir_exists_check(out_dir):
     if not os.path.isdir(out_dir):
         mkdir_prompt = typer.confirm(
             Fore.RED+"Output directory doesn't exist!" + Style.RESET_ALL +
-            Fore.BLUE + f"\nShould the CLI create {out_dir}?", abort=True, show_default=True)
+            Fore.BLUE + f"\nShould the CLI create {out_dir}?", abort=False, show_default=True)
         if mkdir_prompt is True:
             os.mkdir(out_dir)
+
+
+def list_diff(li1, li2):
+    """ Make a list containing the difference between
+        two lists
+    """
+    return list(set(li1) - set(li2)) + list(set(li2) - set(li1))
+
+
+def check_output_log(urls_input):
+    logger.info("Checking output.log")
+    try:
+        urls_output = []
+        if os.path.exists("output.log"):
+            with open("output.log", "r") as f:
+                urls_output = f.read().splitlines()
+
+        urls = list_diff(urls_input, urls_output)
+
+    # if output.log doesnt exist, when run 1st time
+    except FileNotFoundError:
+        urls = urls_input
+
+    return urls
