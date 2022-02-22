@@ -14,6 +14,7 @@
 
 from typer.testing import CliRunner
 from fichub_cli.cli import app
+from fichub_cli import __version__
 
 
 def test_cli_url(tmpdir):
@@ -58,7 +59,6 @@ def test_cli_version():
     runner = CliRunner()
 
     result = runner.invoke(app, ['--version'])
-
     assert not result.exception
     assert result.exit_code == 0
     assert result.output.strip() == 'fichub-cli: v0.5.4'

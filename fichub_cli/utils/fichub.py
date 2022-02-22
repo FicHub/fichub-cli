@@ -21,9 +21,10 @@ import time
 from colorama import Fore, Style
 from tqdm import tqdm
 from loguru import logger
+from fichub_cli import __version__
 
 headers = {
-    'User-Agent': 'fichub_cli/0.5.4',
+    'User-Agent': f'fichub_cli/{__version__}',
 }
 
 retry_strategy = Retry(
