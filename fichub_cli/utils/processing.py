@@ -67,13 +67,12 @@ def check_url(url: str, debug: bool = False,
         if debug:
             logger.error(
                 f"Skipping unsupported URL: {url}")
-        else:
-            tqdm.write(
-                Fore.RED + f"\nSkipping unsupported URL: {url}" +
-                Style.RESET_ALL + Fore.CYAN +
-                "\nTo see the supported site list, use " + Fore.YELLOW +
-                "fichub_cli -ss" + Style.RESET_ALL + Fore.CYAN +
-                "\nReport the error if the URL is supported!\n")
+        tqdm.write(
+            Fore.RED + f"\nSkipping unsupported URL: {url}" +
+            Style.RESET_ALL + Fore.CYAN +
+            "\nTo see the supported site list, use " + Fore.YELLOW +
+            "fichub_cli -ss" + Style.RESET_ALL + Fore.CYAN +
+            "\nReport the error if the URL is supported!\n")
 
         return False, exit_status
 
@@ -102,11 +101,10 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
             logger.error(
                 f"{ebook_file} is already the latest version. Skipping download. Use --force flag to overwrite.")
 
-        else:
-            tqdm.write(
-                Fore.RED +
-                f"{ebook_file} is already the latest version. Skipping download." +
-                Style.RESET_ALL + Fore.CYAN + " Use --force flag to overwrite.")
+        tqdm.write(
+            Fore.RED +
+            f"{ebook_file} is already the latest version. Skipping download." +
+            Style.RESET_ALL + Fore.CYAN + " Use --force flag to overwrite.")
 
     else:
         if force and debug:

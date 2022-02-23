@@ -102,12 +102,13 @@ def default(
         return
 
     if log:
-        # debug = True
+        logger.remove()  # remove all existing handlers
+        logger.add(f"fichub_cli - {timestamp}.log")
+        debug = True
         typer.echo(
             Fore.GREEN + "Creating " + Style.RESET_ALL + Fore.YELLOW +
             f"fichub_cli - {timestamp}.log" + Style.RESET_ALL +
             Fore.GREEN + " in the current directory!" + Style.RESET_ALL)
-        logger.add(f"fichub_cli - {timestamp}.log")
 
     format_type = get_format_type(format)
     if infile:

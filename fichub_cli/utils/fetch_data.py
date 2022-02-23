@@ -39,8 +39,8 @@ class FetchData:
 
     def get_fic_with_infile(self, infile: str):
         if self.debug:
-            logger.debug("-i flag used!")
-            logger.debug(f"Input file: {infile}")
+            logger.info("-i flag used!")
+            logger.info(f"Input file: {infile}")
 
         try:
             with open(infile, "r") as f:
@@ -117,7 +117,7 @@ class FetchData:
     def get_fic_with_list(self, list_url: str):
 
         if self.debug:
-            logger.debug("-l flag used!")
+            logger.info("-l flag used!")
 
         urls_input = list_url.split(",")
         urls = check_output_log(urls_input, self.debug)
@@ -178,7 +178,7 @@ class FetchData:
     def get_fic_with_url(self, url_input: str):
 
         if self.debug:
-            logger.debug("-u flag used!")
+            logger.info("-u flag used!")
 
         url = check_output_log([url_input], self.debug)
 
