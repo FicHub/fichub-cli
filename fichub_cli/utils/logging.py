@@ -44,13 +44,17 @@ def download_processing_log(debug: bool, url: str):
 def verbose_log(debug: bool, fic):
     try:
         if debug:
-            logger.info("Total Chapters: " +
+            logger.info(" Title: " +
+                        str(fic.response['meta']['title'])
+                        + " | Total Chapters: " +
                         str(fic.response['meta']['chapters'])
                         + " | Last Scrape: " + datetime
                         .strptime(str(fic.response['meta']['updated']), "%Y-%m-%dT%H:%M:%S")
                         .strftime("%d %b, %Y at %H:%M:%S"))
         tqdm.write(Fore.MAGENTA
-                   + "Total Chapters: " +
+                   + "Title: " +
+                   str(fic.response['meta']['title'])
+                   + "\nTotal Chapters: " +
                    str(fic.response['meta']['chapters'])
                    + "\nLast Updated: " + datetime
                    .strptime(str(fic.response['meta']['updated']), "%Y-%m-%dT%H:%M:%S")

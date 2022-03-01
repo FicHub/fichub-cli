@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import typer
-import os
 from tqdm import tqdm
 from colorama import Fore
 from loguru import logger

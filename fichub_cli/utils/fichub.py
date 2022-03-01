@@ -24,7 +24,7 @@ from loguru import logger
 from fichub_cli import __version__
 
 headers = {
-    'User-Agent': f'fichub_cli/{__version__}',
+    'User-Agent': f'fichub_cli/{__version__}'
 }
 
 retry_strategy = Retry(

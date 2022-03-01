@@ -56,7 +56,7 @@ def default(
         "", "-l", "--list-url", help="Enter a comma separated list of urls to download, enclosed within quotes"),
 
     verbose: bool = typer.Option(
-        False, "-v", "--verbose", help="Verbose", is_flag=True),
+        False, "-v", "--verbose", help="Show fic stats", is_flag=True),
 
     out_dir: str = typer.Option(
         "", "-o", " --out-dir", help="Path to the Output directory for files (default: Current Directory)"),
