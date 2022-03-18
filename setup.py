@@ -21,7 +21,8 @@ setup(
         'loguru>=0.6.0',
         'tqdm>=4.60.0',
         'BeautifulSoup4>=4.9.3',
-        'colorama>=0.4.4'
+        'colorama>=0.4.4',
+        'appdirs>=1.4.4'
     ],
     entry_points='''
         [console_scripts]
