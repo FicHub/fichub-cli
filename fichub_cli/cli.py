@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+from appdirs import AppDirs
 import typer
 import sys
 from loguru import logger
@@ -23,13 +24,15 @@ import importlib
 import pkgutil
 
 from .utils.fetch_data import FetchData
-from .utils.processing import get_format_type, out_dir_exists_check
+from .utils.processing import get_format_type, out_dir_exists_check, \
+    appdir_exists_check
 
 
 init(autoreset=True)  # colorama init
 timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
 
 app = typer.Typer(add_completion=False)
+app_dirs = AppDirs("fichub_cli", "fichub")
 
 discovered_plugins = {
     name: importlib.import_module(name)
@@ -56,7 +59,7 @@ def default(
         "", "-l", "--list-url", help="Enter a comma separated list of urls to download, enclosed within quotes"),
 
     verbose: bool = typer.Option(
-        False, "-v", "--verbose", help="Verbose", is_flag=True),
+        False, "-v", "--verbose", help="Show fic stats", is_flag=True),
 
     out_dir: str = typer.Option(
         "", "-o", " --out-dir", help="Path to the Output directory for files (default: Current Directory)"),
@@ -91,6 +94,9 @@ def default(
 
     Failed downloads will be saved in the `err.log` file in the current directory
     """
+    # check if app directory exists, if not, create it
+    appdir_exists_check(app_dirs, debug)
+
     # Check if the output directory exists if input is given
     if not out_dir == "":
         out_dir_exists_check(out_dir)

@@ -8,13 +8,13 @@ To report issues for the CLI, open an issue at https://github.com/FicHub/fichub-
 
 # Installation
 
-## Using pip (Recommended)
+## From pip (Recommended)
 
 ```
 pip install -U fichub-cli
 ```
 
-## From Source (Might have bugs, for testing only)
+## From Github Source (Pre-release, for testing new features by Beta testers)
 
 ```
 pip install git+https://github.com/FicHub/fichub-cli@main

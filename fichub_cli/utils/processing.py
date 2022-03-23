@@ -153,6 +153,15 @@ def out_dir_exists_check(out_dir):
             os.mkdir(out_dir)
 
 
+def appdir_exists_check(app_dirs, debug):
+    """Check if the app directory exists, if not, create it."""
+    if not os.path.isdir(app_dirs.user_data_dir):
+        if debug:
+            logger.info(
+                f"App directory: {app_dirs.user_data_dir} does not exist. Running mkdir.")
+        os.mkdir(app_dirs.user_data_dir)
+
+
 def list_diff(urls_input, urls_output):
     """ Make a list containing the difference between
         two lists
