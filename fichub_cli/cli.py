@@ -25,8 +25,8 @@ import pkgutil
 
 from .utils.fetch_data import FetchData
 from .utils.processing import get_format_type, out_dir_exists_check, \
-    appdir_exists_check
-
+    appdir_exists_check, check_cli_outdated
+from fichub_cli import __version__
 
 init(autoreset=True)  # colorama init
 timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
@@ -43,6 +43,11 @@ discovered_plugins = {
 
 for plugin in discovered_plugins.values():
     app.add_typer(plugin.app)
+
+# check if app directory exists, if not, create it
+appdir_exists_check(app_dirs)
+# check if the cli is outdated
+check_cli_outdated("fichub-cli", __version__)
 
 
 # @logger.catch  # for internal debugging
@@ -94,8 +99,6 @@ def default(
 
     Failed downloads will be saved in the `err.log` file in the current directory
     """
-    # check if app directory exists, if not, create it
-    appdir_exists_check(app_dirs, debug)
 
     # Check if the output directory exists if input is given
     if not out_dir == "":

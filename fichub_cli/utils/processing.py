@@ -17,6 +17,8 @@ import re
 import os
 import sys
 import hashlib
+import requests
+from bs4 import BeautifulSoup
 
 from colorama import Fore, Style
 from tqdm import tqdm
@@ -153,12 +155,11 @@ def out_dir_exists_check(out_dir):
             os.mkdir(out_dir)
 
 
-def appdir_exists_check(app_dirs, debug):
+def appdir_exists_check(app_dirs):
     """Check if the app directory exists, if not, create it."""
     if not os.path.isdir(app_dirs.user_data_dir):
-        if debug:
-            logger.info(
-                f"App directory: {app_dirs.user_data_dir} does not exist. Running mkdir.")
+        tqdm.write(
+            f"App directory: {app_dirs.user_data_dir} does not exist. Running mkdir.")
         os.mkdir(app_dirs.user_data_dir)
 
 
@@ -185,3 +186,26 @@ def check_output_log(urls_input, debug):
         urls = urls_input
 
     return urls
+
+
+def versiontuple(v):
+    return tuple(map(int, (v.split("."))))
+
+
+def check_cli_outdated(package: str, current_ver: str):
+    res_html = requests.get(f"https://pypi.org/simple/{package}/")
+    html_soup = BeautifulSoup(res_html.content, 'html.parser')
+
+    latest_package = html_soup.find_all('a')[-1].get_text()
+    latest_ver = re.search(
+        r"(?:(\d+\.[.\d]*\d+))", latest_package, re.I).group(0)
+
+    if versiontuple(current_ver) < versiontuple(latest_ver):
+        tqdm.write(
+            Fore.RED +
+            f"The currently installed {package} v{current_ver} is outdated.\n"
+            + Style.RESET_ALL + Fore.GREEN +
+            f"Latest version is {latest_ver}\n"
+            + Style.RESET_ALL + Fore.CYAN +
+            f"Update using: pip install -U {package}\n"
+        )
