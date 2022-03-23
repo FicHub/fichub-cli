@@ -56,6 +56,7 @@ class FetchData:
                 f"{infile} file could not be found. Please enter a valid file path.")
             exit(1)
 
+        urls_input = list(set(urls_input))
         urls = check_output_log(urls_input, self.debug)
 
         if urls:
@@ -119,6 +120,7 @@ class FetchData:
             logger.info("-l flag used!")
 
         urls_input = list_url.split(",")
+        urls_input = list(set([x.strip() for x in urls_input]))
         urls = check_output_log(urls_input, self.debug)
 
         if urls:
