@@ -152,15 +152,15 @@ def out_dir_exists_check(out_dir):
             Fore.RED+"Output directory doesn't exist!" + Style.RESET_ALL +
             Fore.BLUE + f"\nShould the CLI create {out_dir}?", abort=False, show_default=True)
         if mkdir_prompt is True:
-            os.mkdir(out_dir)
+            os.makedirs(out_dir)
 
 
 def appdir_exists_check(app_dirs):
     """Check if the app directory exists, if not, create it."""
     if not os.path.isdir(app_dirs.user_data_dir):
         tqdm.write(
-            f"App directory: {app_dirs.user_data_dir} does not exist. Running mkdir.")
-        os.mkdir(app_dirs.user_data_dir)
+            f"App directory: {app_dirs.user_data_dir} does not exist. Running makedirs.")
+        os.makedirs(app_dirs.user_data_dir)
 
 
 def list_diff(urls_input, urls_output):

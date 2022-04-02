@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import os
-from appdirs import AppDirs
+from platformdirs import PlatformDirs
 import typer
 import sys
 from loguru import logger
@@ -32,7 +32,7 @@ init(autoreset=True)  # colorama init
 timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
 
 app = typer.Typer(add_completion=False)
-app_dirs = AppDirs("fichub_cli", "fichub")
+app_dirs = PlatformDirs("fichub_cli", "fichub")
 
 discovered_plugins = {
     name: importlib.import_module(name)
