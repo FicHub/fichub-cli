@@ -245,7 +245,7 @@ def build_changelog(urls_input, urls_input_dedup, urls, downloaded_urls,
 Total URLs given as input: {len(urls_input)}
 Total URLs after removing duplicates: {len(urls_input_dedup)}
 Total URLs after comparing with the output.log: {len(urls)}
-Total files downloaded: {len(downloaded_urls)}
+Total URLs/Files downloaded: {len(downloaded_urls)}
 Total URLs causing Download Errors: {len(err_urls)}
 Total URLs without any updates: {len(no_updates_urls)}
 """)
@@ -266,7 +266,7 @@ Total URLs without any updates: {len(no_updates_urls)}
                 file.write(f"\n{url}")
 
         if downloaded_urls:
-            file.write("\n\n## Files Downloaded")
+            file.write("\n\n## URLs/Files Downloaded")
             for url in downloaded_urls:
                 file.write(f"\n{url}")
 

@@ -232,11 +232,10 @@ class FetchData:
                             self.exit_status = 1
 
                         else:
-                            self.exit_status = save_data(
+                            self.exit_status, _ = save_data(
                                 self.out_dir, fic.file_name,
                                 fic.download_url, self.debug, self.force,
                                 fic.cache_hash, self.exit_status, self.automated)
-
                             with open("output.log", "a") as file:
                                 file.write(f"{url[0]}\n")
                         pbar.update(1)
