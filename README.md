@@ -35,21 +35,25 @@ Usage: fichub_cli [OPTIONS] COMMAND [ARGS]...
   https://github.com/FicHub/fichub-cli/issues
 
   Failed downloads will be saved in the `err.log` file in the current
-  directory.
+  directory
 
 Options:
-  -u, --url TEXT            The url of the fanfiction enclosed within quotes
-  -i, --infile TEXT         Path to a file to read URLs from
-  -l, --list-url TEXT       Enter a comma separated list of urls to download, enclosed within quotes
-  -v, --verbose             Verbose
-  -o,  --out-dir TEXT       Path to the Output directory for files (default: Current Directory)
-  --format TEXT             Download Format: epub (default), mobi, pdf or html [default: epub]
-  --force / --no-force      Force overwrite of an existing file  [default: no-force]
-  -ss, --supported-sites    List of supported sites
-  -d,  --debug              Show the log in the console for debugging
-  --log / --no-log          Save the logfile for debugging  [default: no-log]
-  --version / --no-version  Display version & quit  [default: no-version]
-  --help                    Show this message and exit.
+  -u, --url TEXT          The url of the fanfiction enclosed within quotes
+  -i, --infile TEXT       Path to a file to read URLs from
+  -l, --list-url TEXT     Enter a comma separated list of urls to download,
+                          enclosed within quotes
+  -v, --verbose           Show fic stats
+  -o,  --out-dir TEXT     Path to the Output directory for files (default:
+                          Current Directory)
+  --format TEXT           Download Format: epub (default), mobi, pdf or html
+                          [default: epub]
+  --force                 Force overwrite of an existing file
+  -ss, --supported-sites  List of supported sites
+  -d,  --debug            Show the log in the console for debugging
+  --changelog             Save the changelog file
+  --debug-log             Save the logfile for debugging
+  --version               Display version & quit
+  --help                  Show this message and exit.
 ```
 
 # Default Configuration
@@ -78,6 +82,12 @@ fichub_cli -i urls.txt
 
 ```
 fichub_cli -l "https://www.fanfiction.net/s/11191235/1/Harry-Potter-and-the-Prince-of-Slytherin,https://www.fanfiction.net/s/13720575/1/A-Cadmean-Victory-Remastered"
+```
+
+- To generate a changelog of the download
+
+```
+fichub_cli -i urls.txt --changelog
 ```
 
 ---

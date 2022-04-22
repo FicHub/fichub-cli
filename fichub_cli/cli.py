@@ -73,7 +73,7 @@ def default(
         "epub", help="Download Format: epub (default), mobi, pdf or html"),
 
     force: bool = typer.Option(
-        False, help="Force overwrite of an existing file", is_flag=True),
+        False, "--force", help="Force overwrite of an existing file", is_flag=True),
 
     supported_sites: bool = typer.Option(
         False, "-ss", "--supported-sites", help="List of supported sites", is_flag=True),
@@ -81,14 +81,17 @@ def default(
     debug: bool = typer.Option(
         False, "-d", " --debug", help="Show the log in the console for debugging", is_flag=True),
 
-    log: bool = typer.Option(
-        False, help="Save the logfile for debugging", is_flag=True),
+    changelog: bool = typer.Option(
+        False, "--changelog", help="Save the changelog file", is_flag=True),
+
+    debug_log: bool = typer.Option(
+        False, "--debug-log", help="Save the logfile for debugging", is_flag=True),
 
     automated: bool = typer.Option(
         False, "-a", "--automated", help="For internal testing only", is_flag=True, hidden=True),
 
     version: bool = typer.Option(
-        False, help="Display version & quit", is_flag=True)
+        False, "--version", help="Display version & quit", is_flag=True)
 ):
     """
     A CLI for the fichub.net API
@@ -110,7 +113,7 @@ def default(
                 Fore.BLUE + "Skipping default command to run sub-command.")
         return
 
-    if log:
+    if debug_log:
         logger.remove()  # remove all existing handlers
         logger.add(f"fichub_cli - {timestamp}.log")
         debug = True
@@ -121,13 +124,13 @@ def default(
 
     format_type = get_format_type(format)
     if infile:
-        fic = FetchData(format_type, out_dir, force,
-                        debug, automated, verbose)
+        fic = FetchData(format_type, out_dir, force, debug, changelog,
+                        automated, verbose)
         fic.get_fic_with_infile(infile)
 
     elif list_url:
-        fic = FetchData(format_type, out_dir, force,
-                        debug, automated, verbose)
+        fic = FetchData(format_type, out_dir, force, debug, changelog,
+                        automated, verbose)
         fic.get_fic_with_list(list_url)
 
     elif url:
