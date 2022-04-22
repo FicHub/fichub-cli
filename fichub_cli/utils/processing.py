@@ -167,7 +167,8 @@ def list_diff(urls_input, urls_output):
     """ Make a list containing the difference between
         two lists
     """
-    return list(set(urls_input) - set(urls_output))
+    urls_output = set(urls_output)
+    return [item for item in urls_input if item not in urls_output]
 
 
 def check_output_log(urls_input, debug):
@@ -185,6 +186,10 @@ def check_output_log(urls_input, debug):
     except FileNotFoundError:
         urls = urls_input
 
+    tqdm.write(
+        Fore.BLUE + f"After comparing with output.log, total URLs: {len(urls)}")
+    if debug:
+        logger.info(f"After comparing with output.log, total URLs: {len(urls)}")
     return urls
 
 
@@ -209,3 +214,25 @@ def check_cli_outdated(package: str, current_ver: str):
             + Style.RESET_ALL + Fore.CYAN +
             f"Update using: pip install -U {package}\n"
         )
+
+
+def urls_preprocessing(urls_input, debug):
+
+    tqdm.write(Fore.BLUE + f"URLs found: {len(urls_input)}")
+    urls_input_dedup = list(dict.fromkeys(urls_input))
+    tqdm.write(
+        Fore.BLUE + f"After Deduplication, total URLs: {len(urls_input_dedup)}")
+
+    if debug:
+        logger.info(f"URLs found: {len(urls_input)}")
+        logger.info(
+            f"After Deduplication, total URLs: {len(urls_input_dedup)}")
+
+    try:
+        urls = check_output_log(urls_input_dedup, debug)
+
+    # if output.log doesnt exist, when run 1st time
+    except FileNotFoundError:
+        urls = urls_input_dedup
+
+    return urls

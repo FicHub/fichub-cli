@@ -20,7 +20,8 @@ from loguru import logger
 from .fichub import FicHub
 from .logging import init_log, download_processing_log, \
     verbose_log
-from .processing import check_url, save_data, check_output_log
+from .processing import check_url, save_data, \
+    urls_preprocessing, check_output_log
 
 bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
 
@@ -56,8 +57,7 @@ class FetchData:
                 f"{infile} file could not be found. Please enter a valid file path.")
             exit(1)
 
-        urls_input = list(set(urls_input))
-        urls = check_output_log(urls_input, self.debug)
+        urls = urls_preprocessing(urls_input, self.debug)
 
         if urls:
             init_log(self.debug, self.force)
@@ -120,8 +120,7 @@ class FetchData:
             logger.info("-l flag used!")
 
         urls_input = list_url.split(",")
-        urls_input = list(set([x.strip() for x in urls_input]))
-        urls = check_output_log(urls_input, self.debug)
+        urls = urls_preprocessing(urls_input, self.debug)
 
         if urls:
             init_log(self.debug, self.force)
