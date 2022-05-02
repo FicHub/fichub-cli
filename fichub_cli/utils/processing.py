@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from datetime import datetime
 from typing import Tuple
 import re
 import os
@@ -87,18 +88,20 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
               exit_status: int, automated: bool) -> int:
 
     ebook_file = os.path.join(out_dir, file_name)
+
     try:
         hash_flag = check_hash(ebook_file, cache_hash)
 
     except FileNotFoundError:
         hash_flag = False
 
+    url_exit_status = 0
     if os.path.exists(ebook_file) and force is False and hash_flag is True:
 
-        exit_status = 1
+        exit_status = url_exit_status = 1
         if debug:
             logger.warning(
-                "The hash of the local file & the remote file is the same.")
+                "The md5 hash of the local file & the remote file are the same.")
 
             logger.error(
                 f"{ebook_file} is already the latest version. Skipping download. Use --force flag to overwrite.")
@@ -127,7 +130,7 @@ def save_data(out_dir: str, file_name:  str, download_url: str,
             tqdm.write(Fore.RED + "Output directory doesn't exist. Exiting!")
             sys.exit(1)
 
-    return exit_status
+    return exit_status, url_exit_status
 
 
 def check_hash(ebook_file: str, cache_hash: str) -> bool:
@@ -137,12 +140,7 @@ def check_hash(ebook_file: str, cache_hash: str) -> bool:
 
     ebook_hash = hashlib.md5(data).hexdigest()
 
-    if ebook_hash.strip() == cache_hash.strip():
-        hash_flag = True
-    else:
-        hash_flag = False
-
-    return hash_flag
+    return ebook_hash.strip() == cache_hash.strip()
 
 
 def out_dir_exists_check(out_dir):
@@ -189,7 +187,8 @@ def check_output_log(urls_input, debug):
     tqdm.write(
         Fore.BLUE + f"After comparing with output.log, total URLs: {len(urls)}")
     if debug:
-        logger.info(f"After comparing with output.log, total URLs: {len(urls)}")
+        logger.info(
+            f"After comparing with output.log, total URLs: {len(urls)}")
     return urls
 
 
@@ -221,7 +220,7 @@ def urls_preprocessing(urls_input, debug):
     tqdm.write(Fore.BLUE + f"URLs found: {len(urls_input)}")
     urls_input_dedup = list(dict.fromkeys(urls_input))
     tqdm.write(
-        Fore.BLUE + f"After Deduplication, total URLs: {len(urls_input_dedup)}")
+        Fore.BLUE + f"After removing duplicates, total URLs: {len(urls_input_dedup)}")
 
     if debug:
         logger.info(f"URLs found: {len(urls_input)}")
@@ -235,4 +234,48 @@ def urls_preprocessing(urls_input, debug):
     except FileNotFoundError:
         urls = urls_input_dedup
 
-    return urls
+    return urls, urls_input_dedup
+
+
+def build_changelog(urls_input, urls_input_dedup, urls, downloaded_urls,
+                    err_urls, no_updates_urls, out_dir):
+    timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
+    with open(os.path.join(out_dir, f"CHANGELOG - {timestamp}.txt"), 'w') as file:
+        file.write(f"""# Changelog
+Total URLs given as input: {len(urls_input)}
+Total URLs after removing duplicates: {len(urls_input_dedup)}
+Total URLs after comparing with the output.log: {len(urls)}
+Total URLs/Files downloaded: {len(downloaded_urls)}
+Total URLs causing Download Errors: {len(err_urls)}
+Total URLs without any updates: {len(no_updates_urls)}
+""")
+
+        if urls_input:
+            file.write("\n\n## URLs given as Input")
+            for url in urls_input:
+                file.write(f"\n{url}")
+
+        if urls_input_dedup:
+            file.write("\n\n## URLs after removing duplicates")
+            for url in urls_input_dedup:
+                file.write(f"\n{url}")
+
+        if urls:
+            file.write("\n\n## URLs after comparing with the output.log")
+            for url in urls:
+                file.write(f"\n{url}")
+
+        if downloaded_urls:
+            file.write("\n\n## URLs/Files Downloaded")
+            for url in downloaded_urls:
+                file.write(f"\n{url}")
+
+        if err_urls:
+            file.write("\n\n## URLs causing Download Errors")
+            for url in err_urls:
+                file.write(f"\n{url}")
+
+        if no_updates_urls:
+            file.write("\n\n## URLs without any updates")
+            for url in no_updates_urls:
+                file.write(f"\n{url}")
