@@ -112,12 +112,11 @@ class FicHub:
         # Reason: Unsupported URL
         except (KeyError, UnboundLocalError) as e:
             if self.debug:
-                logger.error(str(e))
-
-            self.exit_status = 1
-            if self.debug:
+                logger.error(f"Error: {str(e)} not found!")
                 logger.error(
                     f"Skipping unsupported URL: {url}")
+
+            self.exit_status = 1
             tqdm.write(
                 Fore.RED + f"\nSkipping unsupported URL: {url}" +
                 Style.RESET_ALL + Fore.CYAN +

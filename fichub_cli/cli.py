@@ -173,7 +173,7 @@ To report issues upstream for these sites, visit https://fichub.net/#contact
         if fic.exit_status == 1:
             typer.echo(
                 Fore.RED +
-                "\nDownload failed for one or more URLs! Check " + Style.RESET_ALL +
+                "\nThe CLI ran into some errors! Check " + Style.RESET_ALL +
                 Fore.YELLOW + "err.log" + Style.RESET_ALL + Fore.RED +
                 " in the current directory!" + Style.RESET_ALL)
 
