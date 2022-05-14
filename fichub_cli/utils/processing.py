@@ -171,14 +171,18 @@ def list_diff(urls_input, urls_output):
 
 def check_output_log(urls_input, debug):
     if debug:
-        logger.info("Checking output.log")
+        logger.info("Checking output.log and err.log")
     try:
-        urls_output = []
+        urls_list = []
         if os.path.exists("output.log"):
             with open("output.log", "r") as f:
-                urls_output = f.read().splitlines()
+                urls_list = f.read().splitlines()
 
-        urls = list_diff(urls_input, urls_output)
+        if os.path.exists("err.log"):
+            with open("err.log", "r") as f:
+                urls_list.extend(f.read().splitlines())
+
+        urls = list_diff(urls_input, urls_list)
 
     # if output.log doesnt exist, when run 1st time
     except FileNotFoundError:
