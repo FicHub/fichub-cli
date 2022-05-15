@@ -60,71 +60,77 @@ class FetchData:
 
         urls, urls_input_dedup = urls_preprocessing(urls_input, self.debug)
         downloaded_urls, no_updates_urls, err_urls = [], [], []
-        if urls:
-            init_log(self.debug, self.force)
-            with tqdm(total=len(urls), ascii=False,
-                      unit="file", bar_format=bar_format) as pbar:
 
-                for url in urls:
-                    url_exit_status = 0
-                    download_processing_log(self.debug, url)
-                    supported_url, self.exit_status = check_url(
-                        url, self.debug, self.exit_status)
-                    if supported_url:
-                        try:
-                            fic = FicHub(self.debug, self.automated,
-                                         self.exit_status)
-                            fic.get_fic_metadata(url, self.format_type)
+        try:
+            if urls:
+                init_log(self.debug, self.force)
+                with tqdm(total=len(urls), ascii=False,
+                          unit="file", bar_format=bar_format) as pbar:
 
-                            if self.verbose:
-                                verbose_log(self.debug, fic)
+                    for url in urls:
+                        url_exit_status = 0
+                        download_processing_log(self.debug, url)
+                        supported_url, self.exit_status = check_url(
+                            url, self.debug, self.exit_status)
+                        if supported_url:
+                            try:
+                                fic = FicHub(self.debug, self.automated,
+                                             self.exit_status)
+                                fic.get_fic_metadata(url, self.format_type)
 
-                            # update the exit status
-                            self.exit_status = fic.exit_status
+                                if self.verbose:
+                                    verbose_log(self.debug, fic)
 
-                            if fic.file_name is None:
-                                self.exit_status = 1
+                                # update the exit status
+                                self.exit_status = fic.exit_status
 
-                            else:
-                                self.exit_status, url_exit_status = save_data(
-                                    self.out_dir, fic.file_name,
-                                    fic.download_url, self.debug, self.force,
-                                    fic.cache_hash, self.exit_status,
-                                    self.automated)
+                                if fic.file_name is None:
+                                    self.exit_status = 1
 
-                                with open("output.log", "a") as file:
-                                    file.write(f"{url}\n")
-
-                                if url_exit_status == 0:
-                                    downloaded_urls.append(url)
                                 else:
-                                    no_updates_urls.append(url)
-                            pbar.update(1)
+                                    self.exit_status, url_exit_status = save_data(
+                                        self.out_dir, fic.file_name,
+                                        fic.download_url, self.debug, self.force,
+                                        fic.cache_hash, self.exit_status,
+                                        self.automated)
 
-                        # Error: 'FicHub' object has no attribute 'file_name'
-                        # Reason: Unsupported URL
-                        except AttributeError:
+                                    with open("output.log", "a") as file:
+                                        file.write(f"{url}\n")
+
+                                    if url_exit_status == 0:
+                                        downloaded_urls.append(url)
+                                    else:
+                                        no_updates_urls.append(url)
+                                pbar.update(1)
+
+                            # Error: 'FicHub' object has no attribute 'file_name'
+                            # Reason: Unsupported URL
+                            except AttributeError:
+                                with open("err.log", "a") as file:
+                                    file.write(url.strip()+"\n")
+                                err_urls.append(url)
+                                pbar.update(1)
+                                self.exit_status = 1
+                                pass  # skip the unsupported url
+
+                        else:  # skip the unsupported url
                             with open("err.log", "a") as file:
                                 file.write(url.strip()+"\n")
                             err_urls.append(url)
                             pbar.update(1)
-                            self.exit_status = 1
-                            pass  # skip the unsupported url
+                            continue
 
-                    else:  # skip the unsupported url
-                        with open("err.log", "a") as file:
-                            file.write(url.strip()+"\n")
-                        err_urls.append(url)
-                        pbar.update(1)
-                        continue
+            else:
+                typer.echo(Fore.RED +
+                           "No new urls found! If output.log exists, please clear it.")
 
-        else:
-            typer.echo(Fore.RED +
-                       "No new urls found! If output.log exists, please clear it.")
+        except KeyboardInterrupt:
+            pass
 
-        if self.changelog:
-            build_changelog(urls_input, urls_input_dedup, urls,
-                            downloaded_urls, err_urls, no_updates_urls, self.out_dir)
+        finally:
+            if self.changelog:
+                build_changelog(urls_input, urls_input_dedup, urls,
+                                downloaded_urls, err_urls, no_updates_urls, self.out_dir)
 
     def get_fic_with_list(self, list_url: str):
 
@@ -134,71 +140,77 @@ class FetchData:
         urls_input = list_url.split(",")
         urls, urls_input_dedup = urls_preprocessing(urls_input, self.debug)
         downloaded_urls, no_updates_urls, err_urls = [], [], []
-        if urls:
-            init_log(self.debug, self.force)
-            with tqdm(total=len(urls), ascii=False,
-                      unit="file", bar_format=bar_format) as pbar:
 
-                for url in urls:
-                    url_exit_status = 0
-                    download_processing_log(self.debug, url)
-                    supported_url,  self.exit_status = check_url(
-                        url, self.debug, self.exit_status)
+        try:
+            if urls:
+                init_log(self.debug, self.force)
+                with tqdm(total=len(urls), ascii=False,
+                          unit="file", bar_format=bar_format) as pbar:
 
-                    if supported_url:
-                        try:
-                            fic = FicHub(self.debug, self.automated,
-                                         self.exit_status)
-                            fic.get_fic_metadata(url, self.format_type)
+                    for url in urls:
+                        url_exit_status = 0
+                        download_processing_log(self.debug, url)
+                        supported_url,  self.exit_status = check_url(
+                            url, self.debug, self.exit_status)
 
-                            if self.verbose:
-                                verbose_log(self.debug, fic)
+                        if supported_url:
+                            try:
+                                fic = FicHub(self.debug, self.automated,
+                                             self.exit_status)
+                                fic.get_fic_metadata(url, self.format_type)
 
-                            # update the exit status
-                            self.exit_status = fic.exit_status
+                                if self.verbose:
+                                    verbose_log(self.debug, fic)
 
-                            if fic.file_name is None:
-                                self.exit_status = 1
+                                # update the exit status
+                                self.exit_status = fic.exit_status
 
-                            else:
-                                self.exit_status, url_exit_status = save_data(
-                                    self.out_dir, fic.file_name,
-                                    fic.download_url, self.debug, self.force,
-                                    fic.cache_hash, self.exit_status, self.automated)
+                                if fic.file_name is None:
+                                    self.exit_status = 1
 
-                                with open("output.log", "a") as file:
-                                    file.write(f"{url}\n")
-
-                                if url_exit_status == 0:
-                                    downloaded_urls.append(url)
                                 else:
-                                    no_updates_urls.append(url)
+                                    self.exit_status, url_exit_status = save_data(
+                                        self.out_dir, fic.file_name,
+                                        fic.download_url, self.debug, self.force,
+                                        fic.cache_hash, self.exit_status, self.automated)
 
-                            pbar.update(1)
+                                    with open("output.log", "a") as file:
+                                        file.write(f"{url}\n")
 
-                        # Error: 'FicHub' object has no attribute 'file_name'
-                        # Reason: Unsupported URL
-                        except AttributeError:
+                                    if url_exit_status == 0:
+                                        downloaded_urls.append(url)
+                                    else:
+                                        no_updates_urls.append(url)
+
+                                pbar.update(1)
+
+                            # Error: 'FicHub' object has no attribute 'file_name'
+                            # Reason: Unsupported URL
+                            except AttributeError:
+                                with open("err.log", "a") as file:
+                                    file.write(url.strip()+"\n")
+                                err_urls.append(url)
+                                pbar.update(1)
+                                self.exit_status = 1
+                                pass  # skip the unsupported url
+
+                        else:  # skip the unsupported url
                             with open("err.log", "a") as file:
                                 file.write(url.strip()+"\n")
                             err_urls.append(url)
                             pbar.update(1)
-                            self.exit_status = 1
-                            pass  # skip the unsupported url
+                            continue
+            else:
+                typer.echo(Fore.RED +
+                           "No new urls found! If output.log exists, please clear it.")
 
-                    else:  # skip the unsupported url
-                        with open("err.log", "a") as file:
-                            file.write(url.strip()+"\n")
-                        err_urls.append(url)
-                        pbar.update(1)
-                        continue
-        else:
-            typer.echo(Fore.RED +
-                       "No new urls found! If output.log exists, please clear it.")
+        except KeyboardInterrupt:
+            pass
 
-        if self.changelog:
-            build_changelog(urls_input, urls_input_dedup, urls,
-                            downloaded_urls, err_urls, no_updates_urls, self.out_dir)
+        finally:
+            if self.changelog:
+                build_changelog(urls_input, urls_input_dedup, urls,
+                                downloaded_urls, err_urls, no_updates_urls, self.out_dir)
 
     def get_fic_with_url(self, url_input: str):
 
