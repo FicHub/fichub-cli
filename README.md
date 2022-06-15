@@ -52,6 +52,8 @@ Options:
   -d,  --debug            Show the log in the console for debugging
   --changelog             Save the changelog file
   --debug-log             Save the logfile for debugging
+  --config-init           Initialize the CLI config files
+  --config-info           Show the CLI config info
   --version               Display version & quit
   --help                  Show this message and exit.
 ```
@@ -93,7 +95,12 @@ fichub_cli -i urls.txt --changelog
 ---
 
 **NOTE**
-`--out-dir` or `-o` can be used in all the above commands to select an output directory.
+
+- `--out-dir` or `-o` can be used in all the above commands to select an output directory.
+
+- Using the `--config-init` flag, users can re-initialize/overwrite the config files to default.
+
+- Using the `--config-info` flag, users can get all the info about the config file and its settings.
 
 ---
 

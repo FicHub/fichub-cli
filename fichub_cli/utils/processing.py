@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 from datetime import datetime
 from typing import Tuple
 import re
@@ -153,12 +154,36 @@ def out_dir_exists_check(out_dir):
             os.makedirs(out_dir)
 
 
+def appdir_builder(app_dirs):
+    tqdm.write(
+        f"Creating App directory: {app_dirs.user_data_dir}")
+    os.makedirs(app_dirs.user_data_dir, exist_ok=True)
+
+    tqdm.write(
+        f"Building the config file: {os.path.join(app_dirs.user_data_dir, 'config.json')}")
+    config = {'db_up_time_format': r'%Y-%m-%dT%H:%M:%S%z',
+              'fic_up_time_format':  r'%Y-%m-%dT%H:%M:%S'}
+    with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'w') as f:
+        json.dump(config, f)
+
+
 def appdir_exists_check(app_dirs):
     """Check if the app directory exists, if not, create it."""
     if not os.path.isdir(app_dirs.user_data_dir):
-        tqdm.write(
-            f"App directory: {app_dirs.user_data_dir} does not exist. Running makedirs.")
-        os.makedirs(app_dirs.user_data_dir)
+        appdir_builder(app_dirs)
+
+
+def appdir_config_info(app_dirs):
+    tqdm.write(f"App directory: {app_dirs.user_data_dir}")
+    tqdm.write(
+        f"CLI Config file: {os.path.join(app_dirs.user_data_dir, 'config.json')}")
+
+    tqdm.write("\nConfig settings:")
+    with open(os.path.join(app_dirs.user_data_dir, 'config.json'), "r") as f:
+        config = json.load(f)
+
+    for key, value in config.items():
+        tqdm.write(f"{key}: {value}")
 
 
 def list_diff(urls_input, urls_output):
@@ -171,14 +196,18 @@ def list_diff(urls_input, urls_output):
 
 def check_output_log(urls_input, debug):
     if debug:
-        logger.info("Checking output.log")
+        logger.info("Checking output.log and err.log")
     try:
-        urls_output = []
+        urls_list = []
         if os.path.exists("output.log"):
             with open("output.log", "r") as f:
-                urls_output = f.read().splitlines()
+                urls_list = f.read().splitlines()
 
-        urls = list_diff(urls_input, urls_output)
+        if os.path.exists("err.log"):
+            with open("err.log", "r") as f:
+                urls_list.extend(f.read().splitlines())
+
+        urls = list_diff(urls_input, urls_list)
 
     # if output.log doesnt exist, when run 1st time
     except FileNotFoundError:
