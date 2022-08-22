@@ -104,6 +104,20 @@ fichub_cli -i urls.txt --changelog
 
 ---
 
+# Configuration
+
+- Users can configure centain things like `db_up_time_format`, `fic_up_time_format` & `delete_output_log` etc by editing the `config.json` file in the app directory.
+- To locate the config file, run `fichub_cli --config-info` and open the `config.json` file in an editor and make the necessary changes.
+
+## Notes
+
+- For `db_up_time_format` & `fic_up_time_format`:
+  - Only use valid datetime formats
+- For `delete_output_log`:
+  - Default is blank so it will always prompt for confirmation
+  - Set it to `"false"` to always keep the file
+  - Set it to `"true"` to always delete the file
+
 # Plugin Support
 
 Read the [wiki](https://github.com/FicHub/fichub-cli/wiki/Plugins) for more info.
