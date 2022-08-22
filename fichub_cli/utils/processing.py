@@ -154,17 +154,39 @@ def out_dir_exists_check(out_dir):
             os.makedirs(out_dir)
 
 
-def appdir_builder(app_dirs):
-    tqdm.write(
-        f"Creating App directory: {app_dirs.user_data_dir}")
+def appdir_builder(app_dirs, show_output = False):
+
+    if show_output:
+        tqdm.write(
+            f"Creating App directory: {app_dirs.user_data_dir}")
     os.makedirs(app_dirs.user_data_dir, exist_ok=True)
 
-    tqdm.write(
-        f"Building the config file: {os.path.join(app_dirs.user_data_dir, 'config.json')}")
-    config = {'db_up_time_format': r'%Y-%m-%dT%H:%M:%S%z',
-              'fic_up_time_format':  r'%Y-%m-%dT%H:%M:%S'}
-    with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'w') as f:
-        json.dump(config, f)
+    config_file = os.path.join(app_dirs.user_data_dir, 'config.json')
+    base_config= {'db_up_time_format': r'%Y-%m-%dT%H:%M:%S%z',
+                'fic_up_time_format':  r'%Y-%m-%dT%H:%M:%S',
+                'delete_output_log': ''}
+
+    if os.path.exists(config_file):
+        if show_output:
+            tqdm.write(
+                f"Existing config file found: {config_file}. Updating with new config if its outdated!")
+        with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'r') as f:
+            existing_config = json.load(f)
+            for key, value in base_config.items():
+                if key not in existing_config:
+                    existing_config[key]=value
+        
+        # Update the existing config file
+        with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'w') as f:
+            json.dump(existing_config, f)
+
+    else: 
+        if show_output:
+            tqdm.write(
+                f"Building the config file: {config_file}")
+        
+        with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'w') as f:
+            json.dump(base_config, f)
 
 
 def appdir_exists_check(app_dirs):

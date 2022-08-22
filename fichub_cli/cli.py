@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import json
 from platformdirs import PlatformDirs
 import typer
 import sys
@@ -25,7 +26,7 @@ import pkgutil
 
 from .utils.fetch_data import FetchData
 from .utils.processing import get_format_type, out_dir_exists_check, \
-    appdir_exists_check, appdir_builder, appdir_config_info, check_cli_outdated
+     appdir_builder, appdir_config_info, check_cli_outdated
 from fichub_cli import __version__
 
 init(autoreset=True)  # colorama init
@@ -44,8 +45,8 @@ discovered_plugins = {
 for plugin in discovered_plugins.values():
     app.add_typer(plugin.app)
 
-# check if app directory exists, if not, create it
-appdir_exists_check(app_dirs)
+# build/update the app directory & the config file
+appdir_builder(app_dirs)
 
 # check if the cli is outdated
 check_cli_outdated("fichub-cli", __version__)
@@ -112,10 +113,10 @@ def default(
 
     if config_init:
         # initialize/overwrite the config files
-        appdir_builder(app_dirs)
+        appdir_builder(app_dirs, True)
 
     if config_info:
-        # overwrite the config files
+        # show the config files and info
         appdir_config_info(app_dirs)
 
     # Check if the output directory exists if input is given
@@ -195,10 +196,19 @@ To report issues upstream for these sites, visit https://fichub.net/#contact
                 " in the current directory!" + Style.RESET_ALL)
 
         if os.path.exists("output.log"):
-            rm_output_log = typer.confirm(
-                Fore.BLUE+"Delete the output.log?", abort=False, show_default=True)
-            if rm_output_log is True:
+            with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'r') as f:
+                config = json.load(f)
+            
+            if config["delete_output_log"] == "":
+                rm_output_log = typer.confirm(
+                    Fore.BLUE+"Delete the output.log?", abort=False, show_default=True)
+                if rm_output_log is True:
+                    os.remove("output.log")
+            elif config["delete_output_log"] == "true":
                 os.remove("output.log")
+            elif config["delete_output_log"] == "false":
+                pass
+
 
         sys.exit(fic.exit_status)
 
