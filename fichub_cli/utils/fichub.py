@@ -44,7 +44,7 @@ class FicHub:
         self.http.mount("https://", adapter)
         self.http.mount("http://", adapter)
 
-    def get_fic_metadata(self, url: str, format_type: int):
+    def get_fic_metadata(self, url: str, format_type: list):
         """
         Sends GET request to Fichub API to fetch the metadata
         """
@@ -78,35 +78,37 @@ class FicHub:
 
         try:
             self.response = response.json()
+            self.file_format =[]
+            cache_urls =[]
 
-            if format_type == 0:
-                cache_url = self.response['epub_url']
-                self.cache_hash = (
-                    re.search(r"\?h=(.*)", self.response['epub_url'])).group(1)
-                self.file_format = ".epub"
+            for format in format_type:
+                if format == 0:
+                    cache_urls.append(self.response['urls']['epub'])
+                    self.cache_hash = self.response['hashes']['epub']
+                    self.file_format.append(".epub")
 
-            elif format_type == 1:
-                cache_url = self.response['mobi_url']
-                self.cache_hash = (
-                    re.search(r"\?h=(.*)", self.response['epub_url'])).group(1)
-                self.file_format = ".mobi"
+                elif format == 1:
+                    cache_urls.append(self.response['urls']['mobi'])
+                    self.cache_hash = self.response['hashes']['epub']
+                    self.file_format.append(".mobi")
 
-            elif format_type == 2:
-                cache_url = self.response['pdf_url']
-                self.cache_hash = (
-                    re.search(r"\?h=(.*)", self.response['epub_url'])).group(1)
-                self.file_format = ".pdf"
+                elif format == 2:
+                    cache_urls.append(self.response['urls']['pdf'])
+                    self.cache_hash = self.response['hashes']['epub']
+                    self.file_format.append(".pdf")
 
-            elif format_type == 3:
-                cache_url = self.response['html_url']
-                self.cache_hash = (
-                    re.search(r"\?h=(.*)", self.response['epub_url'])).group(1)
-                self.file_format = ".zip"
-
-            self.file_name = self.response['epub_url'].split(
-                "/")[4].split("?")[0]
-            self.file_name = self.file_name.replace(".epub", self.file_format)
-            self.download_url = "https://fichub.net"+cache_url
+                elif format == 3:
+                    cache_urls.append(self.response['urls']['html'])
+                    self.cache_hash = self.response['hashes']['epub']
+                    self.file_format.append(".zip")
+            
+            self.file_name = []
+            for file_format in self.file_format:
+                self.file_name .append(self.response['urls']['epub'].split(
+                "/")[4].split("?")[0].replace(".epub", file_format))
+            self.download_url = []
+            for cache_url in cache_urls:
+                self.download_url.append("https://fichub.net"+cache_url)
 
         # Error: 'epub_url'
         # Reason: Unsupported URL

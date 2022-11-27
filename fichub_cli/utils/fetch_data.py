@@ -27,7 +27,7 @@ bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {rema
 
 
 class FetchData:
-    def __init__(self, format_type=0, out_dir="", force=False,
+    def __init__(self, format_type=[0], out_dir="", force=False,
                  debug=False, changelog=False, automated=False, verbose=False):
         self.format_type = format_type
         self.out_dir = out_dir
@@ -84,7 +84,7 @@ class FetchData:
                                 # update the exit status
                                 self.exit_status = fic.exit_status
 
-                                if fic.file_name is None:
+                                if not fic.file_name:
                                     self.exit_status = 1
 
                                 else:
@@ -165,7 +165,7 @@ class FetchData:
                                 # update the exit status
                                 self.exit_status = fic.exit_status
 
-                                if fic.file_name is None:
+                                if not fic.file_name:
                                     self.exit_status = 1
 
                                 else:
@@ -240,7 +240,7 @@ class FetchData:
                         # update the exit status
                         self.exit_status = fic.exit_status
 
-                        if fic.file_name is None:
+                        if not fic.file_name:
                             self.exit_status = 1
 
                         else:

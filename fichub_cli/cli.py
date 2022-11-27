@@ -72,7 +72,7 @@ def default(
         "", "-o", " --out-dir", help="Path to the Output directory for files (default: Current Directory)"),
 
     format: str = typer.Option(
-        "epub", help="Download Format: epub (default), mobi, pdf or html"),
+        "epub", help="Download Formats, comma separated if multiple: epub (default), mobi, pdf or html"),
 
     force: bool = typer.Option(
         False, "--force", help="Force overwrite of an existing file", is_flag=True),

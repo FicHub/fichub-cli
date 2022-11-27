@@ -32,20 +32,23 @@ from .logging import downloaded_log
 
 
 def get_format_type(_format: str = "epub") -> int:
-    if re.search(r"\bepub\b", _format, re.I):
-        format_type = 0
+    _format_list = _format.split(",")
+    format_type = []
+    for format in _format_list:
+        if re.search(r"\bepub\b", format, re.I):
+            format_type.append(0)
 
-    elif re.search(r"\bmobi\b", _format, re.I):
-        format_type = 1
+        elif re.search(r"\bmobi\b", format, re.I):
+            format_type.append(1)
 
-    elif re.search(r"\bpdf\b", _format, re.I):
-        format_type = 2
+        elif re.search(r"\bpdf\b", format, re.I):
+            format_type.append(2)
 
-    elif re.search(r"\bhtml\b", _format, re.I):
-        format_type = 3
+        elif re.search(r"\bhtml\b", format, re.I):
+            format_type.append(3)
 
-    else:  # default epub format
-        format_type = 0
+        else:  # default epub format
+            format_type.append(0)
 
     return format_type
 
@@ -84,52 +87,52 @@ def check_url(url: str, debug: bool = False,
         return True, exit_status
 
 
-def save_data(out_dir: str, file_name:  str, download_url: str,
-              debug: bool, force: bool, cache_hash: str,
+def save_data(out_dir: str, file_name: list, download_url: list,
+              debug: bool, force: bool, cache_hash: list,
               exit_status: int, automated: bool) -> int:
 
-    ebook_file = os.path.join(out_dir, file_name)
-
-    try:
-        hash_flag = check_hash(ebook_file, cache_hash)
-
-    except FileNotFoundError:
-        hash_flag = False
-
-    url_exit_status = 0
-    if os.path.exists(ebook_file) and force is False and hash_flag is True:
-
-        exit_status = url_exit_status = 1
-        if debug:
-            logger.warning(
-                "The md5 hash of the local file & the remote file are the same.")
-
-            logger.error(
-                f"{ebook_file} is already the latest version. Skipping download. Use --force flag to overwrite.")
-
-        tqdm.write(
-            Fore.RED +
-            f"{ebook_file} is already the latest version. Skipping download." +
-            Style.RESET_ALL + Fore.CYAN + " Use --force flag to overwrite.")
-
-    else:
-        if force and debug:
-            logger.warning(
-                f"--force flag was passed. Overwriting {ebook_file}")
-
-        fic = FicHub(debug, automated, exit_status)
-        fic.get_fic_data(download_url)
+    exit_status = url_exit_status = 0
+    for i in range(len(file_name)):
+        ebook_file = os.path.join(out_dir, file_name[i])
 
         try:
-            with open(ebook_file, "wb") as f:
-                if debug:
-                    logger.info(
-                        f"Saving {ebook_file}")
-                f.write(fic.response_data.content)
-            downloaded_log(debug, file_name)
+            hash_flag = check_hash(ebook_file, cache_hash[i])
+
         except FileNotFoundError:
-            tqdm.write(Fore.RED + "Output directory doesn't exist. Exiting!")
-            sys.exit(1)
+            hash_flag = False
+
+        if os.path.exists(ebook_file) and force is False and hash_flag is True:
+            exit_status = url_exit_status = 1
+            if debug:
+                logger.warning(
+                    "The md5 hash of the local file & the remote file are the same.")
+
+                logger.error(
+                    f"{ebook_file} is already the latest version. Skipping download. Use --force flag to overwrite.")
+
+            tqdm.write(
+                Fore.RED +
+                f"{ebook_file} is already the latest version. Skipping download." +
+                Style.RESET_ALL + Fore.CYAN + " Use --force flag to overwrite.")
+
+        else:
+            if force and debug:
+                logger.warning(
+                    f"--force flag was passed. Overwriting {ebook_file}")
+
+            fic = FicHub(debug, automated, exit_status)
+            fic.get_fic_data(download_url[i])
+
+            try:
+                with open(ebook_file, "wb") as f:
+                    if debug:
+                        logger.info(
+                            f"Saving {ebook_file}")
+                    f.write(fic.response_data.content)
+                downloaded_log(debug, file_name[i])
+            except FileNotFoundError:
+                tqdm.write(Fore.RED + "Output directory doesn't exist. Exiting!")
+                sys.exit(1)
 
     return exit_status, url_exit_status
 

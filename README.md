@@ -45,8 +45,7 @@ Options:
   -v, --verbose           Show fic stats
   -o,  --out-dir TEXT     Path to the Output directory for files (default:
                           Current Directory)
-  --format TEXT           Download Format: epub (default), mobi, pdf or html
-                          [default: epub]
+  --format TEXT           Download Formats, comma separated if multiple: epub (default), mobi, pdf or html
   --force                 Force overwrite of an existing file
   -ss, --supported-sites  List of supported sites
   -d,  --debug            Show the log in the console for debugging
@@ -60,7 +59,7 @@ Options:
 
 # Default Configuration
 
-- The fanfiction will be downloaded in epub format. To change it, use `-f` followed by the format.
+- The fanfiction will be downloaded in epub format. To change it, use `--format` followed by the format. Multiple formats can be selected by separating them by commas.
 - The fanfiction will be downloaded in the current directory. To change it, use `-o` followed by the path to the directory.
 - Failed downloads will be saved in the `err.log` file in the current directory.
 
@@ -84,6 +83,12 @@ fichub_cli -i urls.txt
 
 ```
 fichub_cli -l "https://www.fanfiction.net/s/11191235/1/Harry-Potter-and-the-Prince-of-Slytherin,https://www.fanfiction.net/s/13720575/1/A-Cadmean-Victory-Remastered"
+```
+
+- To download multiple formats
+
+```
+fichub_cli -u "https://www.fanfiction.net/s/13720575/1/A-Cadmean-Victory-Remastered" --format epub,mobi
 ```
 
 - To generate a changelog of the download
