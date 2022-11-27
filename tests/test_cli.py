@@ -21,7 +21,7 @@ def test_cli_url(tmpdir):
     runner = CliRunner()
     with runner.isolated_filesystem():
         result = runner.invoke(app, [
-            '-au', 'https://www.fanfiction.net/s/12933896/1/Things-you-cannot-leave-behind', '-d'])
+            '-au', 'https://www.fanfiction.net/s/11783284/1/Doppelgängland', '-d'])
 
     assert not result.exception
     assert result.exit_code == 0

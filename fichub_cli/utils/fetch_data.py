@@ -217,9 +217,9 @@ class FetchData:
         if self.debug:
             logger.info("-u flag used!")
 
-        url = check_output_log([url_input], self.debug)
+        url, _ = urls_preprocessing([url_input], self.debug)
 
-        if url:
+        if url[0]:
             init_log(self.debug, self.force)
             with tqdm(total=1, ascii=False,
                       unit="file", bar_format=bar_format) as pbar:

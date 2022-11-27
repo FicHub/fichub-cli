@@ -288,6 +288,9 @@ def urls_preprocessing(urls_input, debug):
     except FileNotFoundError:
         urls = urls_input_dedup
 
+    urls = [str(url.encode('ascii','ignore'),"utf-8") for url in urls]
+    urls_input_dedup = [str(url.encode('ascii','ignore'),"utf-8") for url in urls_input_dedup]
+
     return urls, urls_input_dedup
 
 
