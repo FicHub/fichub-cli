@@ -34,16 +34,15 @@ timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
 
 app = typer.Typer(add_completion=False)
 app_dirs = PlatformDirs("fichub_cli", "fichub")
-
 discovered_plugins = {
     name: importlib.import_module(name)
     for finder, name, ispkg
     in pkgutil.iter_modules()
     if name.startswith('fichub_cli_')
 }
-
 for plugin in discovered_plugins.values():
-    app.add_typer(plugin.app)
+    if not plugin.__name__.endswith("-script"):
+        app.add_typer(plugin.app)
 
 # build/update the app directory & the config file
 appdir_builder(app_dirs)

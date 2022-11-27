@@ -24,10 +24,11 @@ setup(
         'colorama>=0.4.4',
         'platformdirs>=2.5.1'
     ],
-    entry_points='''
-        [console_scripts]
-        fichub_cli=fichub_cli.cli:app
-    ''',
+    entry_points= {
+        'console_scripts': [
+            'fichub_cli=fichub_cli.cli:app'
+        ]
+        },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
