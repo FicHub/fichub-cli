@@ -104,13 +104,13 @@ class FicHub:
                     self.file_format.append(".zip")
             
             self.files = {}
+            self.files["meta"] = self.response['meta']
             for file_format in self.file_format:
                 self.files[self.response['urls']['epub'].split(
                 "/")[4].split("?")[0].replace(".epub", file_format)] = {
-                "hash":self.cache_hash[file_format.replace(".","")],
+                "hash": self.cache_hash[file_format.replace(".","")],
                 "download_url": "https://fichub.net"+cache_urls[file_format.replace(".","")]
                 }
-
         # Error: 'epub_url'
         # Reason: Unsupported URL
         except (KeyError, UnboundLocalError) as e:

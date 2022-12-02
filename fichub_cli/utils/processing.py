@@ -93,47 +93,48 @@ def save_data(out_dir: str, files: dict,
 
     exit_status = url_exit_status = 0
     for file_name, file_data in files.items():
-        ebook_file = os.path.join(out_dir, file_name)
-
-        try:
-            hash_flag = check_hash(ebook_file,file_data["hash"])
-
-        except FileNotFoundError:
-            hash_flag = False
-
-
-        if os.path.exists(ebook_file) and force is False and hash_flag is True:
-            exit_status = url_exit_status = 1
-            if debug:
-                logger.warning(
-                    "The md5 hash of the local file & the remote file are the same.")
-
-                logger.error(
-                    f"{ebook_file} is already the latest version. Skipping download. Use --force flag to overwrite.")
-
-            tqdm.write(
-                Fore.RED +
-                f"{ebook_file} is already the latest version. Skipping download." +
-                Style.RESET_ALL + Fore.CYAN + " Use --force flag to overwrite.")
-
-        else:
-            if force and debug:
-                logger.warning(
-                    f"--force flag was passed. Overwriting {ebook_file}")
-
-            fic = FicHub(debug, automated, exit_status)
-            fic.get_fic_data(file_data["download_url"])
+        if file_name != "meta":
+            ebook_file = os.path.join(out_dir, file_name)
 
             try:
-                with open(ebook_file, "wb") as f:
-                    if debug:
-                        logger.info(
-                            f"Saving {ebook_file}")
-                    f.write(fic.response_data.content)
-                downloaded_log(debug, file_name)
+                hash_flag = check_hash(ebook_file,file_data["hash"])
+
             except FileNotFoundError:
-                tqdm.write(Fore.RED + "Output directory doesn't exist. Exiting!")
-                sys.exit(1)
+                hash_flag = False
+
+
+            if os.path.exists(ebook_file) and force is False and hash_flag is True:
+                exit_status = url_exit_status = 1
+                if debug:
+                    logger.warning(
+                        "The md5 hash of the local file & the remote file are the same.")
+
+                    logger.error(
+                        f"{ebook_file} is already the latest version. Skipping download. Use --force flag to overwrite.")
+
+                tqdm.write(
+                    Fore.RED +
+                    f"{ebook_file} is already the latest version. Skipping download." +
+                    Style.RESET_ALL + Fore.CYAN + " Use --force flag to overwrite.")
+
+            else:
+                if force and debug:
+                    logger.warning(
+                        f"--force flag was passed. Overwriting {ebook_file}")
+
+                fic = FicHub(debug, automated, exit_status)
+                fic.get_fic_data(file_data["download_url"])
+
+                try:
+                    with open(ebook_file, "wb") as f:
+                        if debug:
+                            logger.info(
+                                f"Saving {ebook_file}")
+                        f.write(fic.response_data.content)
+                    downloaded_log(debug, file_name)
+                except FileNotFoundError:
+                    tqdm.write(Fore.RED + "Output directory doesn't exist. Exiting!")
+                    sys.exit(1)
 
     return exit_status, url_exit_status
 
