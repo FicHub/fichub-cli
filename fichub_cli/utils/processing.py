@@ -19,6 +19,7 @@ import re
 import os
 import sys
 import hashlib
+import pathlib
 import requests
 from bs4 import BeautifulSoup
 
@@ -26,6 +27,7 @@ from colorama import Fore, Style
 from tqdm import tqdm
 from loguru import logger
 import typer
+from platformdirs import PlatformDirs
 
 from .fichub import FicHub
 from .logging import downloaded_log
@@ -94,7 +96,13 @@ def save_data(out_dir: str, files: dict,
     exit_status = url_exit_status = 0
     for file_name, file_data in files.items():
         if file_name != "meta":
-            ebook_file = os.path.join(out_dir, file_name)
+            app_dirs = PlatformDirs("fichub_cli", "fichub")
+            with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'r') as f:
+                app_config = json.load(f)
+            if app_config["filename_format"] == "":
+                ebook_file = os.path.join(out_dir, file_name)
+            else:
+                ebook_file = os.path.join(out_dir, construct_filename(file_name, files['meta'],app_config["filename_format"]))
 
             try:
                 hash_flag = check_hash(ebook_file,file_data["hash"])
@@ -131,7 +139,7 @@ def save_data(out_dir: str, files: dict,
                             logger.info(
                                 f"Saving {ebook_file}")
                         f.write(fic.response_data.content)
-                    downloaded_log(debug, file_name)
+                    downloaded_log(debug, ebook_file)
                 except FileNotFoundError:
                     tqdm.write(Fore.RED + "Output directory doesn't exist. Exiting!")
                     sys.exit(1)
@@ -169,7 +177,8 @@ def appdir_builder(app_dirs, show_output = False):
     config_file = os.path.join(app_dirs.user_data_dir, 'config.json')
     base_config= {'db_up_time_format': r'%Y-%m-%dT%H:%M:%S%z',
                 'fic_up_time_format':  r'%Y-%m-%dT%H:%M:%S',
-                'delete_output_log': ''}
+                'delete_output_log': '',
+                "filename_format":''}
 
     if os.path.exists(config_file):
         if show_output:
@@ -338,3 +347,17 @@ Total URLs without any updates: {len(no_updates_urls)}
             file.write("\n\n## URLs without any updates")
             for url in no_updates_urls:
                 file.write(f"\n{url}")
+
+def construct_filename(file_name: str, file_meta: dict, filename_format: str):
+    for key, value in recursive_items(file_meta):
+        if f'[{key}]' in filename_format:
+            filename_format = filename_format.replace(f'[{key}]',value)
+
+    return filename_format+pathlib.Path(file_name ).suffix
+
+def recursive_items(dictionary):
+    for key, value in dictionary.items():
+        if type(value) is dict:
+            yield from recursive_items(value)
+        else:
+            yield (key, value)
