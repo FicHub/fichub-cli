@@ -21,7 +21,7 @@ from .fichub import FicHub
 from .logging import init_log, download_processing_log, \
     verbose_log
 from .processing import check_url, save_data, \
-    urls_preprocessing, check_output_log, build_changelog
+    urls_preprocessing, build_changelog
 
 bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
 
@@ -84,14 +84,14 @@ class FetchData:
                                 # update the exit status
                                 self.exit_status = fic.exit_status
 
-                                if not fic.file_name:
+                                if not fic.files:
                                     self.exit_status = 1
 
                                 else:
                                     self.exit_status, url_exit_status = save_data(
-                                        self.out_dir, fic.file_name,
-                                        fic.download_url, self.debug, self.force,
-                                        fic.cache_hash, self.exit_status,
+                                        self.out_dir, fic.files,
+                                        self.debug, self.force,
+                                         self.exit_status,
                                         self.automated)
 
                                     with open("output.log", "a") as file:
@@ -103,7 +103,7 @@ class FetchData:
                                         no_updates_urls.append(url)
                                 pbar.update(1)
 
-                            # Error: 'FicHub' object has no attribute 'file_name'
+                            # Error: 'FicHub' object has no attribute 'files'
                             # Reason: Unsupported URL
                             except AttributeError:
                                 with open("err.log", "a") as file:
@@ -165,14 +165,14 @@ class FetchData:
                                 # update the exit status
                                 self.exit_status = fic.exit_status
 
-                                if not fic.file_name:
+                                if not fic.files:
                                     self.exit_status = 1
 
                                 else:
                                     self.exit_status, url_exit_status = save_data(
-                                        self.out_dir, fic.file_name,
-                                        fic.download_url, self.debug, self.force,
-                                        fic.cache_hash, self.exit_status, self.automated)
+                                        self.out_dir, fic.files,
+                                        self.debug, self.force,
+                                         self.exit_status, self.automated)
 
                                     with open("output.log", "a") as file:
                                         file.write(f"{url}\n")
@@ -184,7 +184,7 @@ class FetchData:
 
                                 pbar.update(1)
 
-                            # Error: 'FicHub' object has no attribute 'file_name'
+                            # Error: 'FicHub' object has no attribute 'files'
                             # Reason: Unsupported URL
                             except AttributeError:
                                 with open("err.log", "a") as file:
@@ -240,19 +240,19 @@ class FetchData:
                         # update the exit status
                         self.exit_status = fic.exit_status
 
-                        if not fic.file_name:
+                        if not fic.files:
                             self.exit_status = 1
 
                         else:
                             self.exit_status, _ = save_data(
-                                self.out_dir, fic.file_name,
-                                fic.download_url, self.debug, self.force,
-                                fic.cache_hash, self.exit_status, self.automated)
+                                self.out_dir, fic.files,
+                                self.debug, self.force,
+                                 self.exit_status, self.automated)
                             with open("output.log", "a") as file:
                                 file.write(f"{url[0]}\n")
                         pbar.update(1)
 
-                    # Error: 'FicHub' object has no attribute 'file_name'
+                    # Error: 'FicHub' object has no attribute 'files'
                     # Reason: Unsupported URL
                     except AttributeError:
                         with open("err.log", "a") as file:

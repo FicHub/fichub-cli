@@ -190,9 +190,7 @@ To report issues upstream for these sites, visit https://fichub.net/#contact
         if fic.exit_status == 1:
             typer.echo(
                 Fore.RED +
-                "\nThe CLI ran into some errors! Check " + Style.RESET_ALL +
-                Fore.YELLOW + "err.log" + Style.RESET_ALL + Fore.RED +
-                " in the current directory!" + Style.RESET_ALL)
+                "\nThe CLI ran into some errors! Check the console for the log messages!" + Style.RESET_ALL)
 
         if os.path.exists("output.log"):
             with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'r') as f:

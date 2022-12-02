@@ -87,19 +87,20 @@ def check_url(url: str, debug: bool = False,
         return True, exit_status
 
 
-def save_data(out_dir: str, file_name: list, download_url: list,
-              debug: bool, force: bool, cache_hash: list,
+def save_data(out_dir: str, files: dict,
+              debug: bool, force: bool,
               exit_status: int, automated: bool) -> int:
 
     exit_status = url_exit_status = 0
-    for i in range(len(file_name)):
-        ebook_file = os.path.join(out_dir, file_name[i])
+    for file_name, file_data in files.items():
+        ebook_file = os.path.join(out_dir, file_name)
 
         try:
-            hash_flag = check_hash(ebook_file, cache_hash[i])
+            hash_flag = check_hash(ebook_file,file_data["hash"])
 
         except FileNotFoundError:
             hash_flag = False
+
 
         if os.path.exists(ebook_file) and force is False and hash_flag is True:
             exit_status = url_exit_status = 1
@@ -121,7 +122,7 @@ def save_data(out_dir: str, file_name: list, download_url: list,
                     f"--force flag was passed. Overwriting {ebook_file}")
 
             fic = FicHub(debug, automated, exit_status)
-            fic.get_fic_data(download_url[i])
+            fic.get_fic_data(file_data["download_url"])
 
             try:
                 with open(ebook_file, "wb") as f:
@@ -129,7 +130,7 @@ def save_data(out_dir: str, file_name: list, download_url: list,
                         logger.info(
                             f"Saving {ebook_file}")
                     f.write(fic.response_data.content)
-                downloaded_log(debug, file_name[i])
+                downloaded_log(debug, file_name)
             except FileNotFoundError:
                 tqdm.write(Fore.RED + "Output directory doesn't exist. Exiting!")
                 sys.exit(1)
