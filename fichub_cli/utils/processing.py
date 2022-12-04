@@ -94,6 +94,8 @@ def save_data(out_dir: str, files: dict,
               exit_status: int, automated: bool) -> int:
 
     exit_status = url_exit_status = 0
+    files['meta']['fichub_id'] = files['meta']['id']
+    del files['meta']['id']
     for file_name, file_data in files.items():
         if file_name != "meta":
             app_dirs = PlatformDirs("fichub_cli", "fichub")
@@ -349,7 +351,6 @@ Total URLs without any updates: {len(no_updates_urls)}
                 file.write(f"\n{url}")
 
 def construct_filename(file_name: str, file_meta: dict, filename_format: str):
-    file_meta = file_meta.pop('extraMeta')
     for key, value in recursive_items(file_meta):
         if f'[{key}]' in filename_format:
             filename_format = filename_format.replace(f'[{key}]',value)
