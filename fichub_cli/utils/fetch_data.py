@@ -105,7 +105,9 @@ class FetchData:
 
                             # Error: 'FicHub' object has no attribute 'files'
                             # Reason: Unsupported URL
-                            except AttributeError:
+                            except Exception as e:
+                                if self.debug:
+                                    logger.error(str(e))
                                 with open("err.log", "a") as file:
                                     file.write(url.strip()+"\n")
                                 err_urls.append(url)
@@ -186,7 +188,9 @@ class FetchData:
 
                             # Error: 'FicHub' object has no attribute 'files'
                             # Reason: Unsupported URL
-                            except AttributeError:
+                            except Exception as e:
+                                if self.debug:
+                                    logger.error(str(e))
                                 with open("err.log", "a") as file:
                                     file.write(url.strip()+"\n")
                                 err_urls.append(url)
@@ -254,7 +258,9 @@ class FetchData:
 
                     # Error: 'FicHub' object has no attribute 'files'
                     # Reason: Unsupported URL
-                    except AttributeError:
+                    except Exception as e:
+                        if self.debug:
+                            logger.error(str(e))
                         with open("err.log", "a") as file:
                             file.write(url[0].strip()+"\n")
                         pbar.update(1)
