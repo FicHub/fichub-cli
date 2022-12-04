@@ -114,7 +114,7 @@ fichub_cli -i urls.txt --changelog
 - Users can configure centain things like `db_up_time_format`, `fic_up_time_format`, `delete_output_log` & `filename_format` by editing the `config.json` file in the app directory.
 
 - Filename format props (case-sensitive):
-  `author, authorId, authorLocalId, authorUrl, chapters, created, description, chapters, crossover, fichub_id, fandom_ids, favorites, follows, genres, id, language, published, rated, raw_fandom, reviews, updated, words, source, sourceId, status, title, updated, words`
+  `author, fichubAuthorId, authorId, chapters, created, fichubId, genres, id, language, rated, fandom, status, updated, title`
 
   Example:
 

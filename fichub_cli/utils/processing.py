@@ -94,8 +94,7 @@ def save_data(out_dir: str, files: dict,
               exit_status: int, automated: bool) -> int:
 
     exit_status = url_exit_status = 0
-    files['meta']['fichub_id'] = files['meta']['id']
-    del files['meta']['id']
+    filename_formats = fetch_filename_formats(files)
     for file_name, file_data in files.items():
         if file_name != "meta":
             app_dirs = PlatformDirs("fichub_cli", "fichub")
@@ -104,7 +103,7 @@ def save_data(out_dir: str, files: dict,
             if app_config["filename_format"] == "":
                 ebook_file = os.path.join(out_dir, file_name)
             else:
-                ebook_file = os.path.join(out_dir, construct_filename(file_name, files['meta'],app_config["filename_format"]))
+                ebook_file = os.path.join(out_dir, construct_filename(file_name,filename_formats,app_config["filename_format"]))
 
             try:
                 hash_flag = check_hash(ebook_file,file_data["hash"])
@@ -222,6 +221,8 @@ def appdir_config_info(app_dirs):
 
     for key, value in config.items():
         tqdm.write(f"{key}: {value}")
+
+    tqdm.write("\nFilename format props (case-sensitive): \nauthor, fichubAuthorId, authorId, chapters, created, fichubId, genres, id, language, rated, fandom, status, updated, title")
 
 
 def list_diff(urls_input, urls_output):
@@ -351,15 +352,30 @@ Total URLs without any updates: {len(no_updates_urls)}
                 file.write(f"\n{url}")
 
 def construct_filename(file_name: str, file_meta: dict, filename_format: str):
-    for key, value in recursive_items(file_meta):
+    for key, value in file_meta.items():
         if f'[{key}]' in filename_format:
-            filename_format = filename_format.replace(f'[{key}]',value)
+            filename_format = filename_format.replace(f'[{key}]',str(value))
 
     return filename_format+pathlib.Path(file_name ).suffix
 
-def recursive_items(dictionary):
-    for key, value in dictionary.items():
-        if type(value) is dict:
-            yield from recursive_items(value)
-        else:
-            yield (key, value)
+
+
+def fetch_filename_formats(files: dict):
+    filename_formats = {
+        "author": files['meta']['author'],
+        "fichubAuthorId": files['meta']['authorId'],
+        "authorId": files['meta']['authorLocalId'],
+        "chapters": files['meta']['chapters'],
+        "created": files['meta']['created'],
+        "fichubId": files['meta']['id'],
+        "genres": (files['meta']['rawExtendedMeta']['genres'] if 'genres' in files['meta']['rawExtendedMeta'] else None) if files['meta']['rawExtendedMeta'] != None else None,
+        "id": (files['meta']['rawExtendedMeta']['id'] if 'id' in files['meta']['rawExtendedMeta'] else None) if files['meta']['rawExtendedMeta'] != None else None,
+        "language": (files['meta']['rawExtendedMeta']['language'] if 'language' in files['meta']['rawExtendedMeta'] else None) if files['meta']['rawExtendedMeta'] != None else None,
+        "rated": (files['meta']['rawExtendedMeta']['rated'] if 'rated' in files['meta']['rawExtendedMeta'] else None) if files['meta']['rawExtendedMeta'] != None else None,
+        "fandom":  (files['meta']['rawExtendedMeta']['raw_fandom'] if 'raw_fandom' in files['meta']['rawExtendedMeta'] else None) if files['meta']['rawExtendedMeta'] != None else None,
+        "status": files['meta']['status'],
+        "updated": files['meta']['updated'],
+        "title": files['meta']['title'],
+    }
+
+    return filename_formats

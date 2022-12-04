@@ -16,6 +16,7 @@ import typer
 from tqdm import tqdm
 from colorama import Fore
 from loguru import logger
+import traceback
 
 from .fichub import FicHub
 from .logging import init_log, download_processing_log, \
@@ -107,7 +108,7 @@ class FetchData:
                             # Reason: Unsupported URL
                             except Exception as e:
                                 if self.debug:
-                                    logger.error(str(e))
+                                    logger.error(str(traceback.format_exc()))
                                 with open("err.log", "a") as file:
                                     file.write(url.strip()+"\n")
                                 err_urls.append(url)
@@ -190,7 +191,7 @@ class FetchData:
                             # Reason: Unsupported URL
                             except Exception as e:
                                 if self.debug:
-                                    logger.error(str(e))
+                                    logger.error(str(traceback.format_exc()))
                                 with open("err.log", "a") as file:
                                     file.write(url.strip()+"\n")
                                 err_urls.append(url)
@@ -258,9 +259,9 @@ class FetchData:
 
                     # Error: 'FicHub' object has no attribute 'files'
                     # Reason: Unsupported URL
-                    except Exception as e:
+                    except Exception:
                         if self.debug:
-                            logger.error(str(e))
+                            logger.error(str(traceback.format_exc()))
                         with open("err.log", "a") as file:
                             file.write(url[0].strip()+"\n")
                         pbar.update(1)

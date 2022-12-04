@@ -70,7 +70,7 @@ class FicHub:
                 break
             except (ConnectionError, TimeoutError, Exception) as e:
                 if self.debug:
-                    logger.error(str(e))
+                    logger.error(str(traceback.format_exc()))
                 tqdm.write("\n" + Fore.RED + str(e) + Style.RESET_ALL +
                            Fore.GREEN + "\nWill retry in 3s!" +
                            Style.RESET_ALL)
@@ -147,7 +147,7 @@ class FicHub:
                 break
             except (ConnectionError, TimeoutError, Exception) as e:
                 if self.debug:
-                    logger.error(str(e))
+                    logger.error(str(traceback.format_exc()))
                 tqdm.write("\n" + Fore.RED + str(e) + Style.RESET_ALL +
                            Fore.GREEN + "\nWill retry in 3s!" +
                            Style.RESET_ALL)
