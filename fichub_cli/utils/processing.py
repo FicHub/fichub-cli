@@ -105,6 +105,9 @@ def save_data(out_dir: str, files: dict,
             else:
                 ebook_file = os.path.join(out_dir, construct_filename(file_name,filename_formats,app_config["filename_format"]))
 
+            # clean the filename
+            ebook_file = re.sub(r"[\\/:\"*?<>|]+", "", ebook_file, re.MULTILINE) 
+
             try:
                 hash_flag = check_hash(ebook_file,file_data["hash"])
 
@@ -133,7 +136,7 @@ def save_data(out_dir: str, files: dict,
 
                 fic = FicHub(debug, automated, exit_status)
                 fic.get_fic_data(file_data["download_url"])
-
+                
                 try:
                     with open(ebook_file, "wb") as f:
                         if debug:
