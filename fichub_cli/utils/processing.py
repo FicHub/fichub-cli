@@ -349,6 +349,7 @@ Total URLs without any updates: {len(no_updates_urls)}
                 file.write(f"\n{url}")
 
 def construct_filename(file_name: str, file_meta: dict, filename_format: str):
+    file_meta = file_meta.pop('extraMeta')
     for key, value in recursive_items(file_meta):
         if f'[{key}]' in filename_format:
             filename_format = filename_format.replace(f'[{key}]',value)
