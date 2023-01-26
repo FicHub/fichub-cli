@@ -371,14 +371,46 @@ def fetch_filename_formats(files: dict):
         "chapters": files['meta']['chapters'],
         "created": files['meta']['created'],
         "fichubId": files['meta']['id'],
-        "genres": (files['meta']['rawExtendedMeta']['genres'] if 'genres' in files['meta']['rawExtendedMeta'] else None) if files['meta']['rawExtendedMeta'] != None else None,
-        "id": (files['meta']['rawExtendedMeta']['id'] if 'id' in files['meta']['rawExtendedMeta'] else None) if files['meta']['rawExtendedMeta'] != None else None,
-        "language": (files['meta']['rawExtendedMeta']['language'] if 'language' in files['meta']['rawExtendedMeta'] else None) if files['meta']['rawExtendedMeta'] != None else None,
-        "rated": (files['meta']['rawExtendedMeta']['rated'] if 'rated' in files['meta']['rawExtendedMeta'] else None) if files['meta']['rawExtendedMeta'] != None else None,
-        "fandom":  (files['meta']['rawExtendedMeta']['raw_fandom'] if 'raw_fandom' in files['meta']['rawExtendedMeta'] else None) if files['meta']['rawExtendedMeta'] != None else None,
+        "genres": process_extendedMeta(files['meta'],"genres"),
+        "id": process_extendedMeta(files['meta'],"id"),
+        "language": process_extendedMeta(files['meta'],"language"),
+        "rated": process_extendedMeta(files['meta'],"rated"),
+        "fandom": process_extendedMeta(files['meta'],"fandom"),
         "status": files['meta']['status'],
         "updated": files['meta']['updated'],
         "title": files['meta']['title'],
     }
 
     return filename_formats
+
+def process_extendedMeta(files, prop):
+    if files['rawExtendedMeta'] != None:
+        if prop in files['rawExtendedMeta']:
+            found = files['rawExtendedMeta'][prop] 
+        else:
+            found = None
+    elif files['extraMeta'] != None:
+        found = process_extraMeta(files['extraMeta'], prop)
+    else: 
+        found = None
+    
+    return found
+
+def process_extraMeta(extraMeta: str, prop):
+    """ Process the extraMetadata string and return
+        fields like language, genre etc
+    """
+    try:
+        extraMeta = extraMeta.split(' - ')
+    except AttributeError:
+        tqdm.write(Fore.RED +
+                   "'extraMetadata' key not found in the API response. Adding Null for missing fields.")
+        extraMeta = ['']
+        pass
+    for x in extraMeta:
+        if x.strip().startswith(prop):
+            found =  x.replace(prop, '').strip()
+        else:
+            found = None
+
+    return found
