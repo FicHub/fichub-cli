@@ -407,9 +407,12 @@ def process_extraMeta(extraMeta: str, prop):
                    "'extraMetadata' key not found in the API response. Adding Null for missing fields.")
         extraMeta = ['']
         pass
+    if prop == "favorites":
+        prop = "favs" # FFNet! *shrugs*
     for x in extraMeta:
-        if x.strip().startswith(prop):
-            found =  x.replace(prop, '').strip()
+        if re.match(prop, x.strip(), re.IGNORECASE):
+            found =  (re.sub(prop+":","",x.strip(),0, re.MULTILINE | re.IGNORECASE)).strip()
+            break
         else:
             found = None
 
