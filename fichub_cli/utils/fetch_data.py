@@ -16,18 +16,19 @@ import typer
 from tqdm import tqdm
 from colorama import Fore
 from loguru import logger
+import traceback
 
 from .fichub import FicHub
 from .logging import init_log, download_processing_log, \
     verbose_log
 from .processing import check_url, save_data, \
-    urls_preprocessing, check_output_log, build_changelog
+    urls_preprocessing, build_changelog
 
 bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
 
 
 class FetchData:
-    def __init__(self, format_type=0, out_dir="", force=False,
+    def __init__(self, format_type=[0], out_dir="", force=False,
                  debug=False, changelog=False, automated=False, verbose=False):
         self.format_type = format_type
         self.out_dir = out_dir
@@ -84,14 +85,14 @@ class FetchData:
                                 # update the exit status
                                 self.exit_status = fic.exit_status
 
-                                if fic.file_name is None:
+                                if not fic.files:
                                     self.exit_status = 1
 
                                 else:
                                     self.exit_status, url_exit_status = save_data(
-                                        self.out_dir, fic.file_name,
-                                        fic.download_url, self.debug, self.force,
-                                        fic.cache_hash, self.exit_status,
+                                        self.out_dir, fic.files,
+                                        self.debug, self.force,
+                                         self.exit_status,
                                         self.automated)
 
                                     with open("output.log", "a") as file:
@@ -103,9 +104,11 @@ class FetchData:
                                         no_updates_urls.append(url)
                                 pbar.update(1)
 
-                            # Error: 'FicHub' object has no attribute 'file_name'
+                            # Error: 'FicHub' object has no attribute 'files'
                             # Reason: Unsupported URL
-                            except AttributeError:
+                            except Exception as e:
+                                if self.debug:
+                                    logger.error(str(traceback.format_exc()))
                                 with open("err.log", "a") as file:
                                     file.write(url.strip()+"\n")
                                 err_urls.append(url)
@@ -165,14 +168,14 @@ class FetchData:
                                 # update the exit status
                                 self.exit_status = fic.exit_status
 
-                                if fic.file_name is None:
+                                if not fic.files:
                                     self.exit_status = 1
 
                                 else:
                                     self.exit_status, url_exit_status = save_data(
-                                        self.out_dir, fic.file_name,
-                                        fic.download_url, self.debug, self.force,
-                                        fic.cache_hash, self.exit_status, self.automated)
+                                        self.out_dir, fic.files,
+                                        self.debug, self.force,
+                                         self.exit_status, self.automated)
 
                                     with open("output.log", "a") as file:
                                         file.write(f"{url}\n")
@@ -184,9 +187,11 @@ class FetchData:
 
                                 pbar.update(1)
 
-                            # Error: 'FicHub' object has no attribute 'file_name'
+                            # Error: 'FicHub' object has no attribute 'files'
                             # Reason: Unsupported URL
-                            except AttributeError:
+                            except Exception as e:
+                                if self.debug:
+                                    logger.error(str(traceback.format_exc()))
                                 with open("err.log", "a") as file:
                                     file.write(url.strip()+"\n")
                                 err_urls.append(url)
@@ -217,54 +222,56 @@ class FetchData:
         if self.debug:
             logger.info("-u flag used!")
 
-        url = check_output_log([url_input], self.debug)
-
+        url, _ = urls_preprocessing([url_input], self.debug)
         if url:
-            init_log(self.debug, self.force)
-            with tqdm(total=1, ascii=False,
-                      unit="file", bar_format=bar_format) as pbar:
+            if url[0]:
+                init_log(self.debug, self.force)
+                with tqdm(total=1, ascii=False,
+                        unit="file", bar_format=bar_format) as pbar:
 
-                download_processing_log(self.debug, url[0])
-                supported_url, self.exit_status = check_url(
-                    url[0], self.debug, self.exit_status)
+                    download_processing_log(self.debug, url[0])
+                    supported_url, self.exit_status = check_url(
+                        url[0], self.debug, self.exit_status)
 
-                if supported_url:
-                    try:
-                        fic = FicHub(self.debug, self.automated,
-                                     self.exit_status)
-                        fic.get_fic_metadata(url[0], self.format_type)
+                    if supported_url:
+                        try:
+                            fic = FicHub(self.debug, self.automated,
+                                        self.exit_status)
+                            fic.get_fic_metadata(url[0], self.format_type)
 
-                        if self.verbose:
-                            verbose_log(self.debug, fic)
+                            if self.verbose:
+                                verbose_log(self.debug, fic)
 
-                        # update the exit status
-                        self.exit_status = fic.exit_status
+                            # update the exit status
+                            self.exit_status = fic.exit_status
 
-                        if fic.file_name is None:
+                            if not fic.files:
+                                self.exit_status = 1
+
+                            else:
+                                self.exit_status, _ = save_data(
+                                    self.out_dir, fic.files,
+                                    self.debug, self.force,
+                                    self.exit_status, self.automated)
+                                with open("output.log", "a") as file:
+                                    file.write(f"{url[0]}\n")
+                            pbar.update(1)
+
+                        # Error: 'FicHub' object has no attribute 'files'
+                        # Reason: Unsupported URL
+                        except Exception:
+                            if self.debug:
+                                logger.error(str(traceback.format_exc()))
+                            with open("err.log", "a") as file:
+                                file.write(url[0].strip()+"\n")
+                            pbar.update(1)
                             self.exit_status = 1
+                            pass  # skip the unsupported url
 
-                        else:
-                            self.exit_status, _ = save_data(
-                                self.out_dir, fic.file_name,
-                                fic.download_url, self.debug, self.force,
-                                fic.cache_hash, self.exit_status, self.automated)
-                            with open("output.log", "a") as file:
-                                file.write(f"{url[0]}\n")
-                        pbar.update(1)
-
-                    # Error: 'FicHub' object has no attribute 'file_name'
-                    # Reason: Unsupported URL
-                    except AttributeError:
+                    else:  # skip the unsupported url
                         with open("err.log", "a") as file:
                             file.write(url[0].strip()+"\n")
                         pbar.update(1)
-                        self.exit_status = 1
-                        pass  # skip the unsupported url
-
-                else:  # skip the unsupported url
-                    with open("err.log", "a") as file:
-                        file.write(url[0].strip()+"\n")
-                    pbar.update(1)
-        else:
-            typer.echo(Fore.RED +
-                       "No new urls found! If output.log exists, please clear it.")
+            else:
+                typer.echo(Fore.RED +
+                        "No new urls found! If output.log exists, please clear it.")

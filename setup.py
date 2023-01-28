@@ -10,7 +10,7 @@ setup(
     description="A CLI for the fichub.net API",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version="0.8.1",
+    version="0.9.0",
     license='Apache License',
     url="https://github.com/FicHub/fichub-cli",
     packages=find_packages(include=['fichub_cli', 'fichub_cli.*']),
@@ -24,10 +24,11 @@ setup(
         'colorama>=0.4.4',
         'platformdirs>=2.5.1'
     ],
-    entry_points='''
-        [console_scripts]
-        fichub_cli=fichub_cli.cli:app
-    ''',
+    entry_points= {
+        'console_scripts': [
+            'fichub_cli=fichub_cli.cli:app'
+        ]
+        },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",

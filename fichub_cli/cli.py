@@ -34,16 +34,15 @@ timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
 
 app = typer.Typer(add_completion=False)
 app_dirs = PlatformDirs("fichub_cli", "fichub")
-
 discovered_plugins = {
     name: importlib.import_module(name)
     for finder, name, ispkg
     in pkgutil.iter_modules()
     if name.startswith('fichub_cli_')
 }
-
 for plugin in discovered_plugins.values():
-    app.add_typer(plugin.app)
+    if not plugin.__name__.endswith("-script"):
+        app.add_typer(plugin.app)
 
 # build/update the app directory & the config file
 appdir_builder(app_dirs)
@@ -72,7 +71,7 @@ def default(
         "", "-o", " --out-dir", help="Path to the Output directory for files (default: Current Directory)"),
 
     format: str = typer.Option(
-        "epub", help="Download Format: epub (default), mobi, pdf or html"),
+        "epub", help="Download Formats, comma separated if multiple: epub (default), mobi, pdf or html"),
 
     force: bool = typer.Option(
         False, "--force", help="Force overwrite of an existing file", is_flag=True),
@@ -191,9 +190,7 @@ To report issues upstream for these sites, visit https://fichub.net/#contact
         if fic.exit_status == 1:
             typer.echo(
                 Fore.RED +
-                "\nThe CLI ran into some errors! Check " + Style.RESET_ALL +
-                Fore.YELLOW + "err.log" + Style.RESET_ALL + Fore.RED +
-                " in the current directory!" + Style.RESET_ALL)
+                "\nThe CLI ran into some errors! Check the console for the log messages!" + Style.RESET_ALL)
 
         if os.path.exists("output.log"):
             with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'r') as f:

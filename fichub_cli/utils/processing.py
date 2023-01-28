@@ -19,6 +19,7 @@ import re
 import os
 import sys
 import hashlib
+import pathlib
 import requests
 from bs4 import BeautifulSoup
 
@@ -26,26 +27,30 @@ from colorama import Fore, Style
 from tqdm import tqdm
 from loguru import logger
 import typer
+from platformdirs import PlatformDirs
 
 from .fichub import FicHub
 from .logging import downloaded_log
 
 
 def get_format_type(_format: str = "epub") -> int:
-    if re.search(r"\bepub\b", _format, re.I):
-        format_type = 0
+    _format_list = _format.split(",")
+    format_type = []
+    for format in _format_list:
+        if re.search(r"\bepub\b", format, re.I):
+            format_type.append(0)
 
-    elif re.search(r"\bmobi\b", _format, re.I):
-        format_type = 1
+        elif re.search(r"\bmobi\b", format, re.I):
+            format_type.append(1)
 
-    elif re.search(r"\bpdf\b", _format, re.I):
-        format_type = 2
+        elif re.search(r"\bpdf\b", format, re.I):
+            format_type.append(2)
 
-    elif re.search(r"\bhtml\b", _format, re.I):
-        format_type = 3
+        elif re.search(r"\bhtml\b", format, re.I):
+            format_type.append(3)
 
-    else:  # default epub format
-        format_type = 0
+        else:  # default epub format
+            format_type.append(0)
 
     return format_type
 
@@ -84,52 +89,64 @@ def check_url(url: str, debug: bool = False,
         return True, exit_status
 
 
-def save_data(out_dir: str, file_name:  str, download_url: str,
-              debug: bool, force: bool, cache_hash: str,
+def save_data(out_dir: str, files: dict,
+              debug: bool, force: bool,
               exit_status: int, automated: bool) -> int:
 
-    ebook_file = os.path.join(out_dir, file_name)
+    exit_status = url_exit_status = 0
+    filename_formats = fetch_filename_formats(files)
+    for file_name, file_data in files.items():
+        if file_name != "meta":
+            app_dirs = PlatformDirs("fichub_cli", "fichub")
+            with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'r') as f:
+                app_config = json.load(f)
+            if app_config["filename_format"] == "":
+                ebook_file = os.path.join(out_dir, file_name)
+            else:
+                ebook_file = os.path.join(out_dir, construct_filename(file_name,filename_formats,app_config["filename_format"]))
 
-    try:
-        hash_flag = check_hash(ebook_file, cache_hash)
+            # clean the filename
+            ebook_file = re.sub(r"[\\/:\"*?<>|]+", "", ebook_file, re.MULTILINE) 
 
-    except FileNotFoundError:
-        hash_flag = False
+            try:
+                hash_flag = check_hash(ebook_file,file_data["hash"])
 
-    url_exit_status = 0
-    if os.path.exists(ebook_file) and force is False and hash_flag is True:
+            except FileNotFoundError:
+                hash_flag = False
 
-        exit_status = url_exit_status = 1
-        if debug:
-            logger.warning(
-                "The md5 hash of the local file & the remote file are the same.")
 
-            logger.error(
-                f"{ebook_file} is already the latest version. Skipping download. Use --force flag to overwrite.")
-
-        tqdm.write(
-            Fore.RED +
-            f"{ebook_file} is already the latest version. Skipping download." +
-            Style.RESET_ALL + Fore.CYAN + " Use --force flag to overwrite.")
-
-    else:
-        if force and debug:
-            logger.warning(
-                f"--force flag was passed. Overwriting {ebook_file}")
-
-        fic = FicHub(debug, automated, exit_status)
-        fic.get_fic_data(download_url)
-
-        try:
-            with open(ebook_file, "wb") as f:
+            if os.path.exists(ebook_file) and force is False and hash_flag is True:
+                exit_status = url_exit_status = 1
                 if debug:
-                    logger.info(
-                        f"Saving {ebook_file}")
-                f.write(fic.response_data.content)
-            downloaded_log(debug, file_name)
-        except FileNotFoundError:
-            tqdm.write(Fore.RED + "Output directory doesn't exist. Exiting!")
-            sys.exit(1)
+                    logger.warning(
+                        "The md5 hash of the local file & the remote file are the same.")
+
+                    logger.error(
+                        f"{ebook_file} is already the latest version. Skipping download. Use --force flag to overwrite.")
+
+                tqdm.write(
+                    Fore.RED +
+                    f"{ebook_file} is already the latest version. Skipping download." +
+                    Style.RESET_ALL + Fore.CYAN + " Use --force flag to overwrite.")
+
+            else:
+                if force and debug:
+                    logger.warning(
+                        f"--force flag was passed. Overwriting {ebook_file}")
+
+                fic = FicHub(debug, automated, exit_status)
+                fic.get_fic_data(file_data["download_url"])
+                
+                try:
+                    with open(ebook_file, "wb") as f:
+                        if debug:
+                            logger.info(
+                                f"Saving {ebook_file}")
+                        f.write(fic.response_data.content)
+                    downloaded_log(debug, ebook_file)
+                except FileNotFoundError:
+                    tqdm.write(Fore.RED + "Output directory doesn't exist. Exiting!")
+                    sys.exit(1)
 
     return exit_status, url_exit_status
 
@@ -164,7 +181,8 @@ def appdir_builder(app_dirs, show_output = False):
     config_file = os.path.join(app_dirs.user_data_dir, 'config.json')
     base_config= {'db_up_time_format': r'%Y-%m-%dT%H:%M:%S%z',
                 'fic_up_time_format':  r'%Y-%m-%dT%H:%M:%S',
-                'delete_output_log': ''}
+                'delete_output_log': '',
+                "filename_format":''}
 
     if os.path.exists(config_file):
         if show_output:
@@ -206,6 +224,8 @@ def appdir_config_info(app_dirs):
 
     for key, value in config.items():
         tqdm.write(f"{key}: {value}")
+
+    tqdm.write("\nFilename format props (case-sensitive): \nauthor, fichubAuthorId, authorId, chapters, created, fichubId, genres, id, language, rated, fandom, status, updated, title")
 
 
 def list_diff(urls_input, urls_output):
@@ -285,6 +305,9 @@ def urls_preprocessing(urls_input, debug):
     except FileNotFoundError:
         urls = urls_input_dedup
 
+    urls = [str(url.encode('ascii','ignore'),"utf-8") for url in urls]
+    urls_input_dedup = [str(url.encode('ascii','ignore'),"utf-8") for url in urls_input_dedup]
+
     return urls, urls_input_dedup
 
 
@@ -330,3 +353,67 @@ Total URLs without any updates: {len(no_updates_urls)}
             file.write("\n\n## URLs without any updates")
             for url in no_updates_urls:
                 file.write(f"\n{url}")
+
+def construct_filename(file_name: str, file_meta: dict, filename_format: str):
+    for key, value in file_meta.items():
+        if f'[{key}]' in filename_format:
+            filename_format = filename_format.replace(f'[{key}]',str(value))
+
+    return filename_format+pathlib.Path(file_name ).suffix
+
+
+
+def fetch_filename_formats(files: dict):
+    filename_formats = {
+        "author": files['meta']['author'],
+        "fichubAuthorId": files['meta']['authorId'],
+        "authorId": files['meta']['authorLocalId'],
+        "chapters": files['meta']['chapters'],
+        "created": files['meta']['created'],
+        "fichubId": files['meta']['id'],
+        "genres": process_extendedMeta(files['meta'],"genres"),
+        "id": process_extendedMeta(files['meta'],"id"),
+        "language": process_extendedMeta(files['meta'],"language"),
+        "rated": process_extendedMeta(files['meta'],"rated"),
+        "fandom": process_extendedMeta(files['meta'],"fandom"),
+        "status": files['meta']['status'],
+        "updated": files['meta']['updated'],
+        "title": files['meta']['title'],
+    }
+
+    return filename_formats
+
+def process_extendedMeta(files, prop):
+    if files['rawExtendedMeta'] != None:
+        if prop in files['rawExtendedMeta']:
+            found = files['rawExtendedMeta'][prop] 
+        else:
+            found = None
+    elif files['extraMeta'] != None:
+        found = process_extraMeta(files['extraMeta'], prop)
+    else: 
+        found = None
+    
+    return found
+
+def process_extraMeta(extraMeta: str, prop):
+    """ Process the extraMetadata string and return
+        fields like language, genre etc
+    """
+    try:
+        extraMeta = extraMeta.split(' - ')
+    except AttributeError:
+        tqdm.write(Fore.RED +
+                   "'extraMetadata' key not found in the API response. Adding Null for missing fields.")
+        extraMeta = ['']
+        pass
+    if prop == "favorites":
+        prop = "favs" # FFNet! *shrugs*
+    for x in extraMeta:
+        if re.match(prop, x.strip(), re.IGNORECASE):
+            found =  (re.sub(prop+":","",x.strip(),0, re.MULTILINE | re.IGNORECASE)).strip()
+            break
+        else:
+            found = None
+
+    return found
