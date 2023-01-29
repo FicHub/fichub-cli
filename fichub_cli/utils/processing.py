@@ -100,14 +100,14 @@ def save_data(out_dir: str, files: dict,
             app_dirs = PlatformDirs("fichub_cli", "fichub")
             with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'r') as f:
                 app_config = json.load(f)
-            if app_config["filename_format"] == "":
-                ebook_file = os.path.join(out_dir, file_name)
-            else:
-                ebook_file = os.path.join(out_dir, construct_filename(file_name,filename_formats,app_config["filename_format"]))
+
+            if not app_config["filename_format"] == "":
+                file_name= construct_filename(file_name,filename_formats,app_config["filename_format"])
 
             # clean the filename
-            ebook_file = re.sub(r"[\\/:\"*?<>|]+", "", ebook_file, re.MULTILINE) 
-
+            file_name = re.sub(r"[\\/:\"*?<>|]+", "", file_name, re.MULTILINE) 
+            ebook_file = os.path.join(out_dir, file_name)
+            
             try:
                 hash_flag = check_hash(ebook_file,file_data["hash"])
 
