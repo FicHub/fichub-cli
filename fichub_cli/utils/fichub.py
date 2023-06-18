@@ -15,7 +15,7 @@
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-
+import traceback
 import re
 import time
 from colorama import Fore, Style
@@ -68,7 +68,7 @@ class FicHub:
                         logger.debug(
                             f"Headers: {response.request.headers}")
                 break
-            except (ConnectionError, TimeoutError, Exception) as e:
+            except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
                 if self.debug:
                     logger.error(str(traceback.format_exc()))
                 tqdm.write("\n" + Fore.RED + str(e) + Style.RESET_ALL +
@@ -78,9 +78,9 @@ class FicHub:
 
         try:
             self.response = response.json()
-            self.file_format =[]
+            self.file_format = []
             self.cache_hash = {}
-            cache_urls= {}
+            cache_urls = {}
 
             for format in format_type:
                 if format == 0:
@@ -99,17 +99,17 @@ class FicHub:
                     self.file_format.append(".pdf")
 
                 elif format == 3:
-                    cache_urls['zip'] =self.response['urls']['html']
+                    cache_urls['zip'] = self.response['urls']['html']
                     self.cache_hash['zip'] = self.response['hashes']['epub']
                     self.file_format.append(".zip")
-            
+
             self.files = {}
             self.files["meta"] = self.response['meta']
             for file_format in self.file_format:
                 self.files[self.response['urls']['epub'].split(
-                "/")[4].split("?")[0].replace(".epub", file_format)] = {
-                "hash": self.cache_hash[file_format.replace(".","")],
-                "download_url": "https://fichub.net"+cache_urls[file_format.replace(".","")]
+                    "/")[4].split("?")[0].replace(".epub", file_format)] = {
+                    "hash": self.cache_hash[file_format.replace(".", "")],
+                    "download_url": "https://fichub.net" + cache_urls[file_format.replace(".", "")]
                 }
         # Error: 'epub_url'
         # Reason: Unsupported URL
@@ -145,7 +145,7 @@ class FicHub:
                     logger.debug(
                         f"GET: {self.response_data.status_code}: {self.response_data.url}")
                 break
-            except (ConnectionError, TimeoutError, Exception) as e:
+            except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
                 if self.debug:
                     logger.error(str(traceback.format_exc()))
                 tqdm.write("\n" + Fore.RED + str(e) + Style.RESET_ALL +
