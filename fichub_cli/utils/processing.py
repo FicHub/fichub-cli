@@ -417,3 +417,18 @@ def process_extraMeta(extraMeta: str, prop):
             found = None
 
     return found
+
+def output_log_cleanup(app_dirs):
+    if os.path.exists("output.log"):
+        with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'r') as f:
+            config = json.load(f)
+        
+        if config["delete_output_log"] == "":
+            rm_output_log = typer.confirm(
+                Fore.BLUE+"Delete the output.log?", abort=False, show_default=True)
+            if rm_output_log is True:
+                os.remove("output.log")
+        elif config["delete_output_log"] == "true":
+            os.remove("output.log")
+        elif config["delete_output_log"] == "false":
+            pass

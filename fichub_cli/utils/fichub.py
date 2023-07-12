@@ -116,6 +116,7 @@ class FicHub:
         except (KeyError, UnboundLocalError) as e:
             if self.debug:
                 logger.error(f"Error: {str(e)} not found!")
+                logger.error(f"GET:Response: {str(self.response)}")
                 logger.error(
                     f"Skipping unsupported URL: {url}")
 

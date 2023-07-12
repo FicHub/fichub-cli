@@ -26,7 +26,7 @@ import pkgutil
 
 from .utils.fetch_data import FetchData
 from .utils.processing import get_format_type, out_dir_exists_check, \
-     appdir_builder, appdir_config_info, check_cli_outdated
+     appdir_builder, appdir_config_info, check_cli_outdated, output_log_cleanup
 from fichub_cli import __version__
 
 init(autoreset=True)  # colorama init
@@ -192,21 +192,7 @@ To report issues upstream for these sites, visit https://fichub.net/#contact
                 Fore.RED +
                 "\nThe CLI ran into some errors! Check the console for the log messages!" + Style.RESET_ALL)
 
-        if os.path.exists("output.log"):
-            with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'r') as f:
-                config = json.load(f)
-            
-            if config["delete_output_log"] == "":
-                rm_output_log = typer.confirm(
-                    Fore.BLUE+"Delete the output.log?", abort=False, show_default=True)
-                if rm_output_log is True:
-                    os.remove("output.log")
-            elif config["delete_output_log"] == "true":
-                os.remove("output.log")
-            elif config["delete_output_log"] == "false":
-                pass
-
-
+        output_log_cleanup(app_dirs)
         sys.exit(fic.exit_status)
 
     # FileNotFoundError: output.log doesnt exist, when run 1st time
