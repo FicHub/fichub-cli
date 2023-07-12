@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import typer
+import sys
 from tqdm import tqdm
 from colorama import Fore
 from loguru import logger
@@ -128,7 +129,7 @@ class FetchData:
                            "No new urls found! If output.log exists, please clear it.")
 
         except KeyboardInterrupt:
-            pass
+            sys.exit(2)
 
         finally:
             if self.changelog:
@@ -210,7 +211,7 @@ class FetchData:
                            "No new urls found! If output.log exists, please clear it.")
 
         except KeyboardInterrupt:
-            pass
+            sys.exit(2)
 
         finally:
             if self.changelog:
