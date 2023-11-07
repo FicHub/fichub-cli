@@ -1,9 +1,9 @@
-<h1 align="center">fichub-cli</h1>
+<h1 align="center">fichub-cli </h1>
 
-A CLI for the fichub.net API<br><br>
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/arzkar)
 
+A CLI for the fichub.net API<br>
 To report issues upstream for the supported sites, visit https://fichub.net/#contact<br>
-
 To report issues for the CLI, open an issue at https://github.com/FicHub/fichub-cli/issues
 
 # Installation
