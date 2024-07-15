@@ -122,6 +122,8 @@ fichub_cli -i urls.txt --changelog
   "filename_format": "[title] by [author]"
   ```
 
+- You can also add API keys to the `api_key_v0` which will include it in the header when making API calls to fichub
+
 - To locate the config file, run `fichub_cli --config-info` and open the `config.json` file in an editor and make the necessary changes.
 
 ## Notes

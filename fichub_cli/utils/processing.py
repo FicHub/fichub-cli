@@ -182,7 +182,8 @@ def appdir_builder(app_dirs, show_output = False):
     base_config= {'db_up_time_format': r'%Y-%m-%dT%H:%M:%S%z',
                 'fic_up_time_format':  r'%Y-%m-%dT%H:%M:%S',
                 'delete_output_log': '',
-                "filename_format":''}
+                "filename_format":'',
+                "api_key_v0": ''}
 
     if os.path.exists(config_file):
         if show_output:

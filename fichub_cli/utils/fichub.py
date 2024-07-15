@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+import os
+import sys
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -22,10 +25,8 @@ from colorama import Fore, Style
 from tqdm import tqdm
 from loguru import logger
 from fichub_cli import __version__
+from platformdirs import PlatformDirs
 
-headers = {
-    'User-Agent': f'fichub_cli/{__version__}'
-}
 
 retry_strategy = Retry(
     total=3,
@@ -43,6 +44,22 @@ class FicHub:
         self.http = requests.Session()
         self.http.mount("https://", adapter)
         self.http.mount("http://", adapter)
+        self.files = {}
+        self.response = ""
+        self.file_format = []
+        self.cache_hash = {}
+        self.headers = { 'User-Agent': f'fichub_cli/{__version__}' }
+        self.api_key = None
+        try:
+            app_dirs = PlatformDirs("fichub_cli", "fichub")
+            with open(os.path.join(app_dirs.user_data_dir, 'config.json'), "r") as f:
+                config = json.load(f)
+                self.api_key = config.get('api_key_v0')
+        except FileNotFoundError:
+            pass
+
+        if self.api_key:
+            self.headers['Authorization'] = f'Bearer {self.api_key}'
 
     def get_fic_metadata(self, url: str, format_type: list):
         """
@@ -59,7 +76,7 @@ class FicHub:
             try:
                 response = self.http.get(
                     "https://fichub.net/api/v0/epub", params=params,
-                    allow_redirects=True, headers=headers, timeout=(6.1, 300)
+                    allow_redirects=True, headers=self.headers, timeout=(6.1, 300)
                 )
                 if self.debug:
                     logger.debug(
@@ -78,10 +95,11 @@ class FicHub:
 
         try:
             self.response = response.json()
-            self.file_format = []
-            self.cache_hash = {}
-            cache_urls = {}
+            if response.status_code == 403:
+                tqdm.write("\n" + Fore.RED + "API Key was invalid! Please recheck & use a valid key!" + Style.RESET_ALL)
+                sys.exit(3)
 
+            cache_urls = {}
             for format in format_type:
                 if format == 0:
                     cache_urls['epub'] = self.response['urls']['epub']
@@ -103,7 +121,6 @@ class FicHub:
                     self.cache_hash['zip'] = self.response['hashes']['epub']
                     self.file_format.append(".zip")
 
-            self.files = {}
             self.files["meta"] = self.response['meta']
             for file_format in self.file_format:
                 self.files[self.response['urls']['epub'].split(
@@ -140,7 +157,7 @@ class FicHub:
         for _ in range(2):
             try:
                 self.response_data = self.http.get(
-                    download_url, allow_redirects=True, headers=headers,
+                    download_url, allow_redirects=True, headers=self.headers,
                     params=params, timeout=(6.1, 300))
                 if self.debug:
                     logger.debug(
