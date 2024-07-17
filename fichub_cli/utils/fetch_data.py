@@ -111,16 +111,12 @@ class FetchData:
                             except Exception as e:
                                 if self.debug:
                                     logger.error(str(traceback.format_exc()))
-                                with open("err.log", "a") as file:
-                                    file.write(url.strip()+"\n")
                                 err_urls.append(url)
                                 pbar.update(1)
                                 self.exit_status = 1
                                 pass  # skip the unsupported url
 
                         else:  # skip the unsupported url
-                            with open("err.log", "a") as file:
-                                file.write(url.strip()+"\n")
                             err_urls.append(url)
                             pbar.update(1)
                             continue
@@ -195,16 +191,12 @@ class FetchData:
                             except Exception as e:
                                 if self.debug:
                                     logger.error(str(traceback.format_exc()))
-                                with open("err.log", "a") as file:
-                                    file.write(url.strip()+"\n")
                                 err_urls.append(url)
                                 pbar.update(1)
                                 self.exit_status = 1
                                 pass  # skip the unsupported url
 
                         else:  # skip the unsupported url
-                            with open("err.log", "a") as file:
-                                file.write(url.strip()+"\n")
                             err_urls.append(url)
                             pbar.update(1)
                             continue
@@ -266,15 +258,11 @@ class FetchData:
                         except Exception:
                             if self.debug:
                                 logger.error(str(traceback.format_exc()))
-                            with open("err.log", "a") as file:
-                                file.write(url[0].strip()+"\n")
                             pbar.update(1)
                             self.exit_status = 1
                             pass  # skip the unsupported url
 
                     else:  # skip the unsupported url
-                        with open("err.log", "a") as file:
-                            file.write(url[0].strip()+"\n")
                         pbar.update(1)
             else:
                 typer.echo(Fore.RED +
