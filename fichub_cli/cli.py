@@ -73,6 +73,9 @@ def default(
     force: bool = typer.Option(
         False, "--force", help="Force overwrite of an existing file", is_flag=True),
 
+    disamgibuation_suffix = typer.Option(
+        "", "--disambiguation-suffix", help="Suffix to use when two different fics have the same filename"),
+
     supported_sites: bool = typer.Option(
         False, "-ss", "--supported-sites", help="List of supported sites", is_flag=True),
 
@@ -136,19 +139,19 @@ def default(
 
     format_type = get_format_type(format)
     if infile:
-        fic = FetchData(format_type=format_type, out_dir=out_dir, force=force,
+        fic = FetchData(format_type=format_type, out_dir=out_dir, force=force or (disamgibuation_suffix if not disamgibuation_suffix == "" else False),
                         debug=debug, changelog=changelog,
                         automated=automated, verbose=verbose)
         fic.get_fic_with_infile(infile)
 
     elif list_url:
-        fic = FetchData(format_type=format_type, out_dir=out_dir, force=force,
+        fic = FetchData(format_type=format_type, out_dir=out_dir, force=force or (disamgibuation_suffix if not disamgibuation_suffix == "" else False),
                         debug=debug, changelog=changelog,
                         automated=automated, verbose=verbose)
         fic.get_fic_with_list(list_url)
 
     elif url:
-        fic = FetchData(format_type=format_type, out_dir=out_dir, force=force,
+        fic = FetchData(format_type=format_type, out_dir=out_dir, force=force or (disamgibuation_suffix if not disamgibuation_suffix == "" else False),
                         debug=debug, automated=automated, verbose=verbose)
         fic.get_fic_with_url(url)
 
