@@ -90,7 +90,7 @@ def check_url(url: str, debug: bool = False,
 
 
 def save_data(out_dir: str, files: dict,
-              debug: bool, force: bool,
+              debug: bool, force: bool | str,
               exit_status: int, automated: bool) -> int:
 
     exit_status = url_exit_status = 0
@@ -101,12 +101,25 @@ def save_data(out_dir: str, files: dict,
             with open(os.path.join(app_dirs.user_data_dir, "config.json"), 'r') as f:
                 app_config = json.load(f)
 
-            if not app_config["filename_format"] == "":
-                file_name= construct_filename(file_name,filename_formats,app_config["filename_format"])
+            def build_full_file_path(file_name: str, filename_formats: dict, filename_format: str, out_dir: str, suffix: str):
+                if not filename_format == "":
+                    if suffix == "":
+                        name = construct_filename(file_name, filename_formats, filename_format)
+                    else:
+                        name = construct_filename(file_name, filename_formats, filename_format + suffix)
+                else:
+                    if suffix == "":
+                        name = file_name
+                    else:
+                        base_name = pathlib.Path(file_name).with_suffix('')
+                        templated = construct_filename(file_name, filename_formats, suffix)
+                        name = base_name + templated
 
-            # clean the filename
-            file_name = re.sub(r"[\\/:\"*?<>|]+", "", file_name, re.MULTILINE) 
-            ebook_file = os.path.join(out_dir, file_name)
+                name = re.sub(r"[\\/:\"*?<>|]+", "", name, re.MULTILINE)
+                return os.path.join(out_dir, name)
+
+            filename_format = app_config["filename_format"]
+            ebook_file = build_full_file_path(file_name, filename_formats, filename_format, out_dir, "")
             
             try:
                 hash_flag = check_hash(ebook_file,file_data["hash"])
@@ -115,38 +128,56 @@ def save_data(out_dir: str, files: dict,
                 hash_flag = False
 
 
-            if os.path.exists(ebook_file) and force is False and hash_flag is True:
-                exit_status = url_exit_status = 1
-                if debug:
-                    logger.warning(
-                        "The md5 hash of the local file & the remote file are the same.")
-
-                    logger.error(
-                        f"{ebook_file} is already the latest version. Skipping download. Use --force flag to overwrite.")
-
-                tqdm.write(
-                    Fore.RED +
-                    f"{ebook_file} is already the latest version. Skipping download." +
-                    Style.RESET_ALL + Fore.CYAN + " Use --force flag to overwrite.")
-
-            else:
-                if force and debug:
-                    logger.warning(
-                        f"--force flag was passed. Overwriting {ebook_file}")
-
-                fic = FicHub(debug, automated, exit_status)
-                fic.get_fic_data(file_data["download_url"])
-                
-                try:
-                    with open(ebook_file, "wb") as f:
+            if os.path.exists(ebook_file):
+                if force is True:
+                    # --force, always overwrite (fallthrough)
+                    if debug:
+                        logger.warning(
+                            f"--force flag was passed. Overwriting {ebook_file}")
+                elif force is False:
+                    # no --force, only overwrite if out of date
+                    if hash_flag is True:
+                        exit_status = url_exit_status = 1
                         if debug:
-                            logger.info(
-                                f"Saving {ebook_file}")
-                        f.write(fic.response_data.content)
-                    downloaded_log(debug, ebook_file)
-                except FileNotFoundError:
-                    tqdm.write(Fore.RED + "Output directory doesn't exist. Exiting!")
+                            logger.warning(
+                                "The md5 hash of the local file & the remote file are the same.")
+
+                            logger.error(
+                                f"{ebook_file} is already the latest version. Skipping download. Use --force flag to overwrite.")
+
+                        tqdm.write(
+                            Fore.RED +
+                            f"{ebook_file} is already the latest version. Skipping download." +
+                            Style.RESET_ALL + Fore.CYAN + " Use --force flag to overwrite.")
+                        continue # don't overwrite if up to date
+                elif isinstance(force, str):
+                    # --force="file_suffix", modify filename and write
+                    ebook_file = build_full_file_path(file_name, filename_formats, filename_format, out_dir, force)
+                    if debug:
+                        logger.warning(f"--force flag passed with file suffix {force}")
+                else:
+                    # Invalid argument
+                    logger.error(f"--force flag has invalid argument {force}")
                     sys.exit(1)
+                    # continue
+            else:
+                pass
+                # Nothing special to do if the filename doesn't exist
+
+            # download file
+            fic = FicHub(debug, automated, exit_status)
+            fic.get_fic_data(file_data["download_url"])
+            
+            try:
+                with open(ebook_file, "wb") as f:
+                    if debug:
+                        logger.info(
+                            f"Saving {ebook_file}")
+                    f.write(fic.response_data.content)
+                downloaded_log(debug, ebook_file)
+            except FileNotFoundError:
+                tqdm.write(Fore.RED + "Output directory doesn't exist. Exiting!")
+                sys.exit(1)
 
     return exit_status, url_exit_status
 
